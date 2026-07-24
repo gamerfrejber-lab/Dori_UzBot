@@ -450,7 +450,7 @@
 
             resultsDiv.innerHTML = results.map(dori => `
                 <div class="glass-card dori-card">
-                    <h3>${dori.nomi || dori.name}</h3>
+                    <h3>${(currentLang === 'ru' && (dori.nomi_ru || dori.nameRu)) || dori.nomi || dori.name}</h3>
                     <p><strong>${currentLang === 'uz' ? 'Ishlab chiqaruvchi:' : 'Производитель:'}</strong> ${dori.ishlab_chiqaruvchi || dori.manufacturer || 'N/A'}</p>
                     <p><strong>${currentLang === 'uz' ? 'Narx:' : 'Цена:'}</strong> ${(dori.narx || dori.price || 0).toLocaleString()} so'm</p>
                     <p><strong>${currentLang === 'uz' ? 'Tavsif:' : 'Описание:'}</strong> ${dori.tavsif || dori.description || ''}</p>
