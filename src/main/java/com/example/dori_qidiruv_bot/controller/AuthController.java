@@ -17,6 +17,9 @@ public class AuthController {
     
     private final AuthService authService;
 
+    @org.springframework.beans.factory.annotation.Value("${telegram.bot-username:dori_UzBot}")
+    private String botUsername;
+
     /**
      * Telefon raqam yuborish - SMS kod olish
      */
@@ -26,6 +29,12 @@ public class AuthController {
             String message = authService.sendVerificationCode(request.getPhoneNumber());
             return ResponseEntity.ok(new AuthResponse(null, message));
         } catch (Exception e) {
+            // Kod hech qanday kanal orqali yetib bormadi — foydalanuvchiga nima qilish kerakligini aytamiz.
+            if ("KOD_YETKAZILMADI".equals(e.getMessage())) {
+                return ResponseEntity.badRequest().body(new AuthResponse(null,
+                        "Kodni yuborib bo'lmadi. Iltimos, Telegramda @" + botUsername
+                                + " botiga /start bosib, telefon raqamingizni ulashing va qaytadan urinib ko'ring."));
+            }
             return ResponseEntity.badRequest()
                     .body(new AuthResponse(null, "Xatolik: " + e.getMessage()));
         }
