@@ -41,3 +41,14 @@
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
 2026-07-26T21:00:07.341+05:00  INFO 14148 --- [Dori_Qidiruv_bot] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-26T21:00:09.196+05:00  INFO 14148 --- [Dori_Qidiruv_bot] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-26T21:00:09.626+05:00  INFO 14148 --- [Dori_Qidiruv_bot] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-26T21:00:12.731+05:00  WARN 14148 --- [Dori_Qidiruv_bot] [           main] .s.a.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 6c4dbdfa-7371-4618-8569-ddc1ed105d84
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-07-26T21:00:12.755+05:00  INFO 14148 --- [Dori_Qidiruv_bot] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-07-26T21:00:13.116+05:00 DEBUG 14148 --- [Dori_Qidiruv_bot] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-07-26T21:00:13.343+05:00  INFO 14148 --- [Dori_Qidiruv_bot] [           main] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page: class path resource [static/index.html]
