@@ -101,7 +101,9 @@ public class SmsService {
             botClient.post().uri(url).retrieve().toBodilessEntity();
             return true;
         } catch (Exception e) {
-            log.warn("Telegram bot orqali yuborib bo'lmadi ({}): {}", phoneNumber, e.getMessage());
+            // Manzilni ham logga yozamiz — noto'g'ri sozlangan URL eng ko'p uchraydigan sabab.
+            log.warn("Telegram bot orqali yuborib bo'lmadi ({}), url={}: {}",
+                    phoneNumber, telegramNotifyUrl, e.getMessage());
             return false;
         }
     }
