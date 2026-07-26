@@ -312,7 +312,7 @@
                     <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
                     <button class="lang-btn" onclick="setLang('ru')">RU</button>
                 </div>
-                <button class="login-btn" onclick="location.href='login.html'" data-uz="Kirish" data-ru="Войти">Kirish</button>
+                <button class="login-btn" id="profileBtn" onclick="location.href='profil.html'">Profil</button>
             </nav>
         </div>
     </header>
@@ -431,6 +431,13 @@
             });
         }
 
+        // Bu sahifaga faqat token bilan kirilgani uchun tugma doim profilga olib boradi.
+        const profileBtn = document.getElementById('profileBtn');
+        if (profileBtn) {
+            profileBtn.textContent = localStorage.getItem('userName')
+                || (currentLang === 'uz' ? 'Profil' : 'Профиль');
+        }
+
         const searchInput = document.getElementById('searchInput');
         let searchTimeout;
 
@@ -523,31 +530,47 @@
         }
 
         async function loadPharmacies() {
+            if (!userLocation) userLocation = await requestLocation();
             try {
                 const response = await fetch('/api/dorixona');
+                if (!response.ok) throw new Error('server error');
                 const data = await response.json();
-                displayPharmacies(data);
+                displayPharmacies(sortPharmaciesByDistance(data));
             } catch (error) {
-                console.log('API unavailable, using mock data');
-                const mockPharmacies = [
-                    { nomi: 'Farmatsiya №1', manzil: 'Amir Temur ko\'chasi, 15', telefon: '+998 71 123-45-67', ish_vaqti: '08:00 - 22:00' },
-                    { nomi: 'Salomatlik Dorixonasi', manzil: 'Bobur ko\'chasi, 28', telefon: '+998 71 234-56-78', ish_vaqti: '24/7' },
-                    { nomi: 'Shifo Apteka', manzil: 'Navoi ko\'chasi, 42', telefon: '+998 71 345-67-89', ish_vaqti: '09:00 - 21:00' }
-                ];
-                displayPharmacies(mockPharmacies);
+                console.log('API unavailable', error);
+                document.getElementById('nearbyPharmacies').innerHTML =
+                    `<p>${currentLang === 'uz'
+                        ? 'Dorixonalarni yuklab bo\'lmadi.'
+                        : 'Не удалось загрузить аптеки.'}</p>`;
             }
+        }
+
+        /** Dorixonalarni foydalanuvchiga eng yaqinidan boshlab tartiblaydi va masofani qo'shadi. */
+        function sortPharmaciesByDistance(pharmacies) {
+            if (!userLocation || !Array.isArray(pharmacies)) return pharmacies;
+            return pharmacies
+                .map(ph => ({
+                    ...ph,
+                    _km: ph.latitude && ph.longitude
+                        ? distanceKm(userLocation.lat, userLocation.lon, ph.latitude, ph.longitude)
+                        : null
+                }))
+                .sort((a, b) => (a._km ?? Infinity) - (b._km ?? Infinity));
         }
 
         function displayPharmacies(pharmacies) {
             const container = document.getElementById('nearbyPharmacies');
-            const displayList = pharmacies.slice(0, 3);
+            if (!pharmacies || pharmacies.length === 0) {
+                container.innerHTML = `<p>${currentLang === 'uz' ? 'Dorixonalar topilmadi' : 'Аптеки не найдены'}</p>`;
+                return;
+            }
 
-            container.innerHTML = displayList.map(dorixona => `
+            container.innerHTML = pharmacies.slice(0, 3).map(dorixona => `
                 <div class="glass-card dorixona-card">
-                    <h3>${dorixona.nomi || dorixona.name}</h3>
-                    <p><span class="icon">📍</span>${dorixona.manzil || dorixona.address}</p>
-                    <p><span class="icon">📞</span>${dorixona.telefon || dorixona.phone}</p>
-                    <p><span class="icon">🕐</span>${dorixona.ish_vaqti || dorixona.working_hours}</p>
+                    <h3>🏥 ${dorixona.nomi || dorixona.name}</h3>
+                    <p><span class="icon">📍</span>${dorixona.manzil || dorixona.address || ''}</p>
+                    <p><span class="icon">📞</span>${dorixona.telefon || dorixona.phone || ''}</p>
+                    ${dorixona._km != null ? `<p><span class="icon">📏</span>${formatDistance(dorixona._km)}</p>` : ''}
                 </div>
             `).join('');
         }
