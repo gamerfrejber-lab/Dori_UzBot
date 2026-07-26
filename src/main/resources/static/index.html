@@ -299,6 +299,74 @@
                 font-size: 2rem;
             }
         }
+        .dori-card {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .dori-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(79, 195, 247, 0.2);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            z-index: 300;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal {
+            background: #101a33;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 520px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            color: #7c4dff;
+            margin-bottom: 1.2rem;
+            padding-right: 2rem;
+        }
+
+        .modal p { margin-bottom: 0.6rem; }
+
+        .modal-close {
+            float: right;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.6rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-close:hover { color: #fff; }
+
+        .modal-map-btn {
+            margin-top: 1rem;
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #4fc3f7;
+            background: rgba(79, 195, 247, 0.1);
+            color: #4fc3f7;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .modal-map-btn:hover { background: rgba(79, 195, 247, 0.2); }
     </style>
 </head>
 <body>
@@ -376,6 +444,10 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal" id="modalBox"></div>
+    </div>
+
     <footer>
         <p data-uz="© 2024 Dori Qidiruv. Barcha huquqlar himoyalangan." data-ru="© 2024 Поиск лекарств. Все права защищены.">© 2024 Dori Qidiruv. Barcha huquqlar himoyalangan.</p>
     </footer>
@@ -388,6 +460,7 @@
 
         let currentLang = 'uz';
         let userLocation = null;
+        let lastResults = [];
 
         /** Brauzerdan joriy lokatsiyani so'raydi (har qidiruvda yangilanadi). Ruxsat berilmasa null. */
         function requestLocation() {
@@ -505,14 +578,15 @@
                 return;
             }
 
+            lastResults = results;
             const uz = currentLang === 'uz';
-            resultsDiv.innerHTML = results.map(dori => {
+            resultsDiv.innerHTML = results.map((dori, i) => {
                 const ph = dori.dorixona;
                 const drugName = (currentLang === 'ru' && (dori.nomi_ru || dori.nameRu)) || dori.nomi || dori.name;
                 const price = (dori.narx || dori.price || 0).toLocaleString();
                 const available = dori.available !== false;
                 return `
-                <div class="glass-card dori-card">
+                <div class="glass-card dori-card" onclick="openSearchDrug(${i})">
                     <h3>💊 ${drugName}</h3>
                     <p><strong>${uz ? 'Ishlab chiqaruvchi:' : 'Производитель:'}</strong> ${dori.ishlab_chiqaruvchi || dori.manufacturer || '—'}</p>
                     <p><strong>${uz ? 'Narx:' : 'Цена:'}</strong> ${price} ${uz ? "so'm" : 'сум'}</p>
@@ -528,6 +602,50 @@
 
             resultsDiv.classList.add('show');
         }
+
+        function esc(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        /** Qidiruv natijasi bosilganda dori haqida to'liq ma'lumotni ko'rsatadi. */
+        function openSearchDrug(index) {
+            const dori = lastResults[index];
+            if (!dori) return;
+            const ph = dori.dorixona;
+            const uz = currentLang === 'uz';
+            const drugName = (currentLang === 'ru' && dori.nameRu) || dori.name;
+
+            document.getElementById('modalBox').innerHTML = `
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <h2>💊 ${esc(drugName)}</h2>
+                ${dori.name ? `<p><strong>${uz ? 'Nomi' : 'Название'}:</strong> ${esc(dori.name)}</p>` : ''}
+                ${dori.nameRu ? `<p><strong>${uz ? 'Ruscha nomi' : 'На русском'}:</strong> ${esc(dori.nameRu)}</p>` : ''}
+                <p><strong>${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}:</strong> ${esc(dori.manufacturer || '—')}</p>
+                <p><strong>${uz ? 'Narxi' : 'Цена'}:</strong> <b>${(dori.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>
+                <p><strong>${uz ? 'Holat' : 'Статус'}:</strong> ${dori.available !== false
+                    ? (uz ? '🟢 Mavjud' : '🟢 В наличии')
+                    : (uz ? '🔴 Mavjud emas' : '🔴 Нет в наличии')}</p>
+                ${ph ? `<p><strong>${uz ? 'Dorixona' : 'Аптека'}:</strong> 🏥 ${esc(ph.name || '')}</p>
+                <p><strong>${uz ? 'Manzil' : 'Адрес'}:</strong> 📍 ${esc(ph.address || '')}</p>
+                <p><strong>${uz ? 'Telefon' : 'Телефон'}:</strong> ☎️ ${esc(ph.telefon || '')}</p>
+                ${dori._km != null ? `<p><strong>${uz ? 'Masofa' : 'Расстояние'}:</strong> 📏 ${formatDistance(dori._km)}</p>` : ''}
+                ${ph.latitude && ph.longitude ? `<button class="modal-map-btn" onclick="window.open('https://yandex.com/maps/?pt=${ph.longitude},${ph.latitude}&z=17&l=map','_blank')">
+                    ${uz ? '📍 Xaritada ko\'rish' : '📍 Показать на карте'}</button>` : ''}` : ''}`;
+            document.getElementById('modalOverlay').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target.id === 'modalOverlay') closeModal();
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
 
         async function loadPharmacies() {
             if (!userLocation) userLocation = await requestLocation();

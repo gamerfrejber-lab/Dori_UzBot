@@ -262,6 +262,32 @@
             border-bottom: none;
         }
 
+        .drug-clickable {
+            cursor: pointer;
+            border-radius: 10px;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            transition: background 0.2s;
+        }
+
+        .drug-clickable:hover {
+            background: rgba(79, 195, 247, 0.12);
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: #4fc3f7;
+            cursor: pointer;
+            font-size: 0.95rem;
+            padding: 0;
+            margin-bottom: 0.8rem;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
         .drug-name {
             font-weight: 600;
         }
@@ -432,6 +458,8 @@
         }
 
         let loadedPharmacies = [];
+        let loadedDrugs = [];
+        let currentPharmacyIndex = null;
 
         function esc(value) {
             return String(value == null ? '' : value)
@@ -510,6 +538,7 @@
         async function openPharmacy(index) {
             const pharmacy = loadedPharmacies[index];
             if (!pharmacy) return;
+            currentPharmacyIndex = index;
 
             const overlay = document.getElementById('modalOverlay');
             const box = document.getElementById('modalBox');
@@ -528,8 +557,8 @@
             if (!pharmacy.id) return;
             try {
                 const response = await fetch(`/api/dorixona/${pharmacy.id}/dorilar`);
-                const drugs = response.ok ? await response.json() : [];
-                box.querySelector('.drug-list').innerHTML = renderDrugs(drugs);
+                loadedDrugs = response.ok ? await response.json() : [];
+                box.querySelector('.drug-list').innerHTML = renderDrugs(loadedDrugs);
             } catch (error) {
                 box.querySelector('.drug-list').innerHTML =
                     `<p class="subtitle">${currentLang === 'uz' ? 'Dorilarni yuklab bo\'lmadi' : 'Не удалось загрузить лекарства'}</p>`;
@@ -541,19 +570,47 @@
                 return `<p class="subtitle">${currentLang === 'uz' ? 'Bu dorixonada hozircha dori yo\'q' : 'В этой аптеке пока нет лекарств'}</p>`;
             }
             const title = currentLang === 'uz' ? `💊 Dorilar (${drugs.length})` : `💊 Лекарства (${drugs.length})`;
-            const rows = drugs.map(drug => {
+            const rows = drugs.map((drug, i) => {
                 const drugName = currentLang === 'ru' && drug.nameRu ? drug.nameRu : drug.name;
                 const price = (drug.price || 0).toLocaleString();
                 const status = drug.available
                     ? `<span class="drug-price">${price} ${currentLang === 'uz' ? 'so\'m' : 'сум'}</span>`
                     : `<span class="drug-out">${currentLang === 'uz' ? 'Mavjud emas' : 'Нет в наличии'}</span>`;
-                return `<div class="drug-row">
+                return `<div class="drug-row drug-clickable" onclick="openDrug(${i})">
                     <span><span class="drug-name">${esc(drugName)}</span>
                     <span class="drug-manufacturer">${esc(drug.manufacturer || '')}</span></span>
                     ${status}
                 </div>`;
             }).join('');
             return `<h3 style="margin-bottom:0.8rem;">${title}</h3>${rows}`;
+        }
+
+        /** Dori qatori bosilganda o'sha dori haqida to'liq ma'lumotni ko'rsatadi. */
+        function openDrug(index) {
+            const drug = loadedDrugs[index];
+            const pharmacy = loadedPharmacies[currentPharmacyIndex];
+            if (!drug) return;
+            const uz = currentLang === 'uz';
+            const box = document.getElementById('modalBox');
+            const drugName = currentLang === 'ru' && drug.nameRu ? drug.nameRu : drug.name;
+
+            box.innerHTML = `
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <button class="back-btn" onclick="openPharmacy(${currentPharmacyIndex})">${uz ? '← Orqaga' : '← Назад'}</button>
+                <h2>💊 ${esc(drugName)}</h2>
+                <div class="pharmacy-info">
+                    ${drug.name ? `<div class="info-row"><span class="info-icon">🔤</span><span class="info-text">${uz ? 'Nomi' : 'Название'}: ${esc(drug.name)}</span></div>` : ''}
+                    ${drug.nameRu ? `<div class="info-row"><span class="info-icon">🇷🇺</span><span class="info-text">${uz ? 'Ruscha nomi' : 'На русском'}: ${esc(drug.nameRu)}</span></div>` : ''}
+                    <div class="info-row"><span class="info-icon">🏭</span><span class="info-text">${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}: ${esc(drug.manufacturer || '—')}</span></div>
+                    <div class="info-row"><span class="info-icon">💵</span><span class="info-text">${uz ? 'Narxi' : 'Цена'}: <b>${(drug.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></span></div>
+                    <div class="info-row"><span class="info-icon">📦</span><span class="info-text">${uz ? 'Holat' : 'Статус'}: ${drug.available
+                        ? (uz ? '🟢 Mavjud' : '🟢 В наличии')
+                        : (uz ? '🔴 Mavjud emas' : '🔴 Нет в наличии')}</span></div>
+                    ${pharmacy ? `<div class="info-row"><span class="info-icon">🏥</span><span class="info-text">${uz ? 'Dorixona' : 'Аптека'}: ${esc(pharmacy.name || '')}</span></div>
+                    <div class="info-row"><span class="info-icon">📍</span><span class="info-text">${esc(pharmacy.address || '')}</span></div>
+                    <div class="info-row"><span class="info-icon">📞</span><span class="info-text">${esc(pharmacy.telefon || '')}</span></div>
+                    ${pharmacy._km != null ? `<div class="info-row"><span class="info-icon">📏</span><span class="info-text">${formatDistance(pharmacy._km)}</span></div>` : ''}` : ''}
+                </div>`;
         }
 
         function closeModal() {
