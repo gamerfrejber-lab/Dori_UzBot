@@ -3,6 +3,7 @@ package com.example.dori_qidiruv_bot.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -10,6 +11,7 @@ import org.springframework.web.client.RestClient;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Random;
@@ -20,6 +22,22 @@ public class SmsService {
 
     private final Random random = new Random();
     private final RestClient restClient = RestClient.create();
+
+    /**
+     * Bot xizmatiga murojaat uchun alohida klient: Render'ning bepul tarifida bot uzoq
+     * faolsizlikdan keyin "uxlab qoladi" va uyg'onishi 30 soniyagacha cho'zilishi mumkin.
+     * Standart qisqa timeout bunday holatda so'rovni uzib qo'yardi va kod yetib bormasdi.
+     */
+    private final RestClient botClient = RestClient.builder()
+            .requestFactory(botRequestFactory())
+            .build();
+
+    private static SimpleClientHttpRequestFactory botRequestFactory() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(Duration.ofSeconds(20));
+        factory.setReadTimeout(Duration.ofSeconds(90));
+        return factory;
+    }
 
     @Value("${eskiz.base-url}")
     private String baseUrl;
@@ -43,9 +61,10 @@ public class SmsService {
     private volatile Instant tokenExpiresAt = Instant.EPOCH;
 
     /**
-     * SMS yuborish. Avval Telegram bot orqali yuborishga urinadi (agar foydalanuvchi botga
-     * /start bosgan bo'lsa). Ishlamasa Eskiz.uz'ga o'tadi; Eskiz ham sozlanmagan bo'lsa
-     * (email/password bo'sh) test rejimida ishlaydi va kodni faqat logga yozadi.
+     * Tasdiqlash kodini yetkazadi. Avval Telegram bot orqali urinadi (foydalanuvchi botga
+     * /start bosgan bo'lishi kerak), keyin Eskiz.uz SMS orqali. Hech biri ishlamasa
+     * IllegalStateException tashlaydi — shunda foydalanuvchiga "yuborildi" deb yolg'on
+     * aytilmaydi, balki nima qilish kerakligi ko'rsatiladi.
      */
     public void sendVerificationCode(String phoneNumber, String code) {
         if (sendViaTelegram(phoneNumber, code)) {
@@ -53,23 +72,24 @@ public class SmsService {
             return;
         }
 
-        if (email.isBlank() || password.isBlank()) {
-            log.info("SMS yuborildi (test rejimi): {} raqamiga kod: {}", phoneNumber, code);
-            return;
+        if (!email.isBlank() && !password.isBlank()) {
+            try {
+                sendViaEskiz(phoneNumber, "Dori Qidiruv tasdiqlash kodi: " + code);
+                log.info("SMS Eskiz orqali yuborildi: {}", phoneNumber);
+                return;
+            } catch (Exception e) {
+                log.error("Eskiz orqali SMS yuborib bo'lmadi ({})", phoneNumber, e);
+            }
         }
 
-        String message = "Dori Qidiruv tasdiqlash kodi: " + code;
-        try {
-            sendViaEskiz(phoneNumber, message);
-            log.info("SMS Eskiz orqali yuborildi: {}", phoneNumber);
-        } catch (Exception e) {
-            log.error("Eskiz orqali SMS yuborib bo'lmadi ({}). Kod: {}", phoneNumber, code, e);
-        }
+        // Hech qanday kanal ishlamadi: kodni faqat logga yozamiz va xato qaytaramiz.
+        log.warn("Kodni yetkazib bo'lmadi: {} (kod: {})", phoneNumber, code);
+        throw new IllegalStateException("KOD_YETKAZILMADI");
     }
 
     /**
      * Telegram bot orqali yuborishga urinadi. Foydalanuvchi botga /start bosmagan bo'lsa
-     * yoki bot ishlamayotgan bo'lsa, jim qolib false qaytaradi (keyingi kanal sinaladi).
+     * yoki bot ishlamayotgan bo'lsa false qaytaradi (keyingi kanal sinaladi).
      */
     private boolean sendViaTelegram(String phoneNumber, String code) {
         if (telegramNotifyUrl.isBlank()) return false;
@@ -78,7 +98,7 @@ public class SmsService {
                     + "?phone=" + URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8)
                     + "&code=" + URLEncoder.encode(code, StandardCharsets.UTF_8)
                     + "&token=" + URLEncoder.encode(telegramNotifyToken, StandardCharsets.UTF_8);
-            restClient.post().uri(url).retrieve().toBodilessEntity();
+            botClient.post().uri(url).retrieve().toBodilessEntity();
             return true;
         } catch (Exception e) {
             log.warn("Telegram bot orqali yuborib bo'lmadi ({}): {}", phoneNumber, e.getMessage());
