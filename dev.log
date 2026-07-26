@@ -1,0 +1,561 @@
+Starting a Gradle Daemon, 4 busy and 1 incompatible Daemons could not be reused, use --status for details
+> Task :compileJava UP-TO-DATE
+> Task :processResources
+> Task :classes
+> Task :resolveMainClassName
+
+> Task :bootRun
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.0)
+
+2026-07-27T01:06:38.291+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] c.e.d.DoriQidiruvBotApplication          : Starting DoriQidiruvBotApplication using Java 17.0.20 with PID 7920 (D:\G59\Model_6\Dori_Qidiruv_bot\build\classes\java\main started by Suxrob in D:\G59\Model_6\Dori_Qidiruv_bot)
+2026-07-27T01:06:38.298+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] c.e.d.DoriQidiruvBotApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-07-27T01:06:39.454+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-27T01:06:39.582+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 114 ms. Found 2 JPA repository interfaces.
+2026-07-27T01:06:41.470+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-07-27T01:06:41.501+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-27T01:06:41.502+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-07-27T01:06:41.685+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3311 ms
+2026-07-27T01:06:42.303+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-07-27T01:06:42.453+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-07-27T01:06:43.829+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-27T01:06:43.968+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-07-27T01:06:47.385+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2bc59ab7
+2026-07-27T01:06:47.387+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-07-27T01:06:49.026+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://ep-winter-thunder-aykulwdu.c-5.us-east-2.aws.neon.tech:5432/neondb?sslmode=require]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.4
+	Default catalog/schema: neondb/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-07-27T01:06:52.131+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-27T01:06:53.445+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-27T01:06:53.950+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-27T01:06:56.354+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [           main] .s.a.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: bff137ba-b8b6-4544-9dce-6fe4f756e846
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-07-27T01:06:56.373+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-07-27T01:06:56.749+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-07-27T01:06:56.851+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page: class path resource [static/index.html]
+2026-07-27T01:06:57.510+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-07-27T01:06:57.525+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [           main] c.e.d.DoriQidiruvBotApplication          : Started DoriQidiruvBotApplication in 20.045 seconds (process running for 20.836)
+2026-07-27T01:07:30.999+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-27T01:07:30.999+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-07-27T01:07:31.016+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 17 ms
+2026-07-27T01:07:31.050+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /index.html
+2026-07-27T01:07:31.068+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:31.068+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /index.html
+2026-07-27T01:07:31.218+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /login.html
+2026-07-27T01:07:31.219+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:31.219+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /login.html
+2026-07-27T01:07:31.220+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /api/dorixona
+2026-07-27T01:07:31.221+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:31.221+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /api/dorixona
+2026-07-27T01:07:31.338+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:07:31.339+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:31.339+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:07:31.356+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:07:31.357+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:31.358+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:07:40.124+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing POST /api/auth/send-code
+2026-07-27T01:07:40.241+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:40.243+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured POST /api/auth/send-code
+2026-07-27T01:07:40.675+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] c.e.dori_qidiruv_bot.service.SmsService  : Telegram bot orqali yuborib bo'lmadi (+998950792008): I/O error on POST request for "http://127.0.0.1:8091/send-code": null
+2026-07-27T01:07:40.675+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] c.e.dori_qidiruv_bot.service.SmsService  : SMS yuborildi (test rejimi): +998950792008 raqamiga kod: 770311
+2026-07-27T01:07:40.740+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /sms.html
+2026-07-27T01:07:40.743+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:40.744+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /sms.html
+2026-07-27T01:07:40.867+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:07:40.867+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:40.867+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:07:40.867+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:07:40.867+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:40.867+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:07:44.622+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /login.html
+2026-07-27T01:07:44.624+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:44.627+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /login.html
+2026-07-27T01:07:44.719+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:07:44.723+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:44.728+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:07:44.729+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:07:44.729+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:44.729+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:07:46.646+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /index.html
+2026-07-27T01:07:46.650+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:46.650+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /index.html
+2026-07-27T01:07:46.755+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /login.html
+2026-07-27T01:07:46.756+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api/dorixona
+2026-07-27T01:07:46.757+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:46.757+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:46.757+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /login.html
+2026-07-27T01:07:46.757+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /api/dorixona
+2026-07-27T01:07:46.987+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:07:46.987+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:46.987+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:07:46.987+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:07:46.987+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:07:46.987+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:08:02.700+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /index.html
+2026-07-27T01:08:02.700+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:08:02.700+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /index.html
+2026-07-27T01:08:02.744+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /api/dorixona
+2026-07-27T01:08:02.746+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:08:02.746+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /api/dorixona
+2026-07-27T01:08:02.771+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:08:02.772+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:08:02.774+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:08:02.776+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:08:02.780+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:08:02.781+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:08:47.085+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /api/dori/qidirish?nomi=Paracetamol
+2026-07-27T01:08:47.098+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:08:47.099+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /api/dori/qidirish?nomi=Paracetamol
+2026-07-27T01:09:11.917+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /api/dori/qidirish?nomi=Paracetamol
+2026-07-27T01:09:11.917+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:11.918+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /api/dori/qidirish?nomi=Paracetamol
+2026-07-27T01:09:29.729+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /dorixonalar.html
+2026-07-27T01:09:29.730+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:29.730+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /dorixonalar.html
+2026-07-27T01:09:29.884+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:09:29.886+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:29.888+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:09:29.890+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /api/dorixona
+2026-07-27T01:09:29.891+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:29.892+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:09:29.892+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /api/dorixona
+2026-07-27T01:09:29.893+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:29.893+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:09:45.281+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api/dorixona
+2026-07-27T01:09:45.281+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:45.281+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /api/dorixona
+2026-07-27T01:09:55.416+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@2bc59ab7 (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.
+2026-07-27T01:09:56.244+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /profil.html
+2026-07-27T01:09:56.244+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:56.244+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /profil.html
+2026-07-27T01:09:56.320+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:09:56.321+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:56.322+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:09:56.327+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:09:56.326+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /api/auth/profile
+2026-07-27T01:09:56.328+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:56.329+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:09:56.602+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:56.604+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /api/auth/profile
+2026-07-27T01:09:57.985+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /login.html
+2026-07-27T01:09:57.986+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:57.987+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /login.html
+2026-07-27T01:09:58.069+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:09:58.073+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:58.074+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:09:58.079+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:09:58.080+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:09:58.082+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:03.615+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing POST /api/auth/send-code
+2026-07-27T01:10:03.619+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:03.619+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured POST /api/auth/send-code
+2026-07-27T01:10:03.705+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] c.e.dori_qidiruv_bot.service.SmsService  : Telegram bot orqali yuborib bo'lmadi (+998998881118): I/O error on POST request for "http://127.0.0.1:8091/send-code": null
+2026-07-27T01:10:03.706+05:00  INFO 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] c.e.dori_qidiruv_bot.service.SmsService  : SMS yuborildi (test rejimi): +998998881118 raqamiga kod: 877451
+2026-07-27T01:10:03.769+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /sms.html
+2026-07-27T01:10:03.774+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:03.776+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /sms.html
+2026-07-27T01:10:03.874+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:10:03.874+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:03.878+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:03.879+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:10:03.881+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:03.881+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:05.445+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@7f9d81b (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.
+2026-07-27T01:10:08.070+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /api/auth/verify
+2026-07-27T01:10:08.071+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:08.071+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /api/auth/verify
+2026-07-27T01:10:09.853+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /login.html
+2026-07-27T01:10:09.853+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:09.853+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /login.html
+2026-07-27T01:10:09.957+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:10:09.964+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:09.964+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:09.964+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:10:09.964+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:09.964+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:12.691+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /index.html
+2026-07-27T01:10:12.693+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:12.694+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /index.html
+2026-07-27T01:10:12.804+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /login.html
+2026-07-27T01:10:12.806+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:12.807+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /login.html
+2026-07-27T01:10:12.807+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /api/dorixona
+2026-07-27T01:10:12.808+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:12.809+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /api/dorixona
+2026-07-27T01:10:12.899+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:10:12.900+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:12.901+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:12.902+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:10:12.903+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:12.904+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [io-8080-exec-10] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:15.458+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@16d0f218 (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.
+2026-07-27T01:10:15.499+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 08003
+2026-07-27T01:10:15.499+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] org.hibernate.orm.jdbc.error             : HikariPool-1 - Connection is not available, request timed out after 30181ms (total=7, active=1, idle=6, waiting=0)
+2026-07-27T01:10:15.499+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 08003
+2026-07-27T01:10:15.499+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] org.hibernate.orm.jdbc.error             : HikariPool-1 - Connection is not available, request timed out after 30181ms (total=7, active=1, idle=6, waiting=0)
+2026-07-27T01:10:15.578+05:00 ERROR 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction] with root cause
+
+org.postgresql.util.PSQLException: Соединение уже было закрыто
+	at org.postgresql.jdbc.PgConnection.checkClosed(PgConnection.java:1026) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.jdbc.PgConnection.setNetworkTimeout(PgConnection.java:1771) ~[postgresql-42.7.11.jar:42.7.11]
+	at com.zaxxer.hikari.pool.PoolBase.setNetworkTimeout(PoolBase.java:585) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.isConnectionDead(PoolBase.java:177) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:166) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:142) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:127) ~[HikariCP-7.0.2.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DataSourceConnectionProvider.getConnection(DataSourceConnectionProvider.java:149) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:62) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquire(LogicalConnectionManagedImpl.java:187) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:87) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:126) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:135) ~[spring-orm-7.0.8.jar:7.0.8]
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:411) ~[spring-orm-7.0.8.jar:7.0.8]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:532) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:628) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:365) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.8.jar:7.0.8]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:135) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.8.jar:7.0.8]
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:166) ~[spring-data-jpa-4.1.0.jar:4.1.0]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.8.jar:7.0.8]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:222) ~[spring-aop-7.0.8.jar:7.0.8]
+	at jdk.proxy2/jdk.proxy2.$Proxy132.findAll(Unknown Source) ~[na:na]
+	at com.example.dori_qidiruv_bot.controller.DorixonaController.getAll(DorixonaController.java:26) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:252) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:184) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1000) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:892) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:622) ~[tomcat-embed-core-11.0.22.jar:6.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.22.jar:6.1]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$2(FilterChainProxy.java:235) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:376) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:132) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:86) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:181) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at com.example.dori_qidiruv_bot.config.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:67) ~[main/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:110) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:96) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:237) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:195) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:317) ~[spring-security-config-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:355) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:272) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:1272) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1801) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+2026-07-27T01:10:15.656+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:10:15.656+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:15.656+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-2] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:16.289+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /login.html
+2026-07-27T01:10:16.291+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:16.293+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /login.html
+2026-07-27T01:10:16.397+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:10:16.399+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:16.401+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:16.405+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:10:16.405+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:16.406+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-4] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:17.191+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /sms.html
+2026-07-27T01:10:17.194+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:17.196+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /sms.html
+2026-07-27T01:10:17.266+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
+2026-07-27T01:10:17.267+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:17.267+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:17.267+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:10:17.267+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:17.267+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-6] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:22.825+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@2f0536b5 (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.
+2026-07-27T01:10:32.851+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@25dbd6c1 (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.
+2026-07-27T01:10:42.869+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@5d9102d8 (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.
+2026-07-27T01:10:42.871+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 08003
+2026-07-27T01:10:42.873+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] org.hibernate.orm.jdbc.error             : HikariPool-1 - Connection is not available, request timed out after 30059ms (total=4, active=0, idle=3, waiting=0)
+2026-07-27T01:10:42.875+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 08003
+2026-07-27T01:10:42.875+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] org.hibernate.orm.jdbc.error             : HikariPool-1 - Connection is not available, request timed out after 30059ms (total=4, active=0, idle=3, waiting=0)
+2026-07-27T01:10:42.889+05:00 ERROR 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction] with root cause
+
+org.postgresql.util.PSQLException: Соединение уже было закрыто
+	at org.postgresql.jdbc.PgConnection.checkClosed(PgConnection.java:1026) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.jdbc.PgConnection.setNetworkTimeout(PgConnection.java:1771) ~[postgresql-42.7.11.jar:42.7.11]
+	at com.zaxxer.hikari.pool.PoolBase.setNetworkTimeout(PoolBase.java:585) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.isConnectionDead(PoolBase.java:177) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:166) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:142) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:127) ~[HikariCP-7.0.2.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DataSourceConnectionProvider.getConnection(DataSourceConnectionProvider.java:149) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:62) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquire(LogicalConnectionManagedImpl.java:187) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:87) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:126) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:135) ~[spring-orm-7.0.8.jar:7.0.8]
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:411) ~[spring-orm-7.0.8.jar:7.0.8]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:532) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:628) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:365) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.8.jar:7.0.8]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:135) ~[spring-tx-7.0.8.jar:7.0.8]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.8.jar:7.0.8]
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:166) ~[spring-data-jpa-4.1.0.jar:4.1.0]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.8.jar:7.0.8]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:222) ~[spring-aop-7.0.8.jar:7.0.8]
+	at jdk.proxy2/jdk.proxy2.$Proxy132.findAll(Unknown Source) ~[na:na]
+	at com.example.dori_qidiruv_bot.controller.DorixonaController.getAll(DorixonaController.java:26) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:252) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:184) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1000) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:892) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:622) ~[tomcat-embed-core-11.0.22.jar:6.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.22.jar:6.1]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$2(FilterChainProxy.java:235) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:376) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:132) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:86) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:181) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at com.example.dori_qidiruv_bot.config.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:67) ~[main/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:110) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:96) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:385) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:237) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:195) ~[spring-security-web-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:317) ~[spring-security-config-7.1.0.jar:7.1.0]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:355) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:272) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:1272) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1801) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+2026-07-27T01:10:42.918+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-07-27T01:10:42.918+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-27T01:10:42.918+05:00 DEBUG 7920 --- [Dori_Qidiruv_bot] [nio-8080-exec-8] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-07-27T01:10:43.250+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@7ff0e665 (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.
+2026-07-27T01:10:54.981+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@7bcf6d43 (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.
+2026-07-27T01:11:04.998+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@7782732a (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.
+2026-07-27T01:11:15.023+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@f1cb1b0 (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.
+2026-07-27T01:11:15.851+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (9aa62644-79b6-4b71-9537-7f817607bd0b)
+
+org.postgresql.util.PSQLException: Ошибка при попытке подсоединения.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:437) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:52) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:290) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.Driver.makeConnection(Driver.java:448) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.Driver.connect(Driver.java:298) ~[postgresql-42.7.11.jar:42.7.11]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+Caused by: java.net.UnknownHostException: ep-winter-thunder-aykulwdu.c-5.us-east-2.aws.neon.tech
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:572) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:271) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.core.PGStream.<init>(PGStream.java:132) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:219) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:365) ~[postgresql-42.7.11.jar:42.7.11]
+	... 14 common frames omitted
+
+2026-07-27T01:12:21.078+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (7f1e2b82-ff09-4d01-a717-c2fb8b08c8ed)
+
+org.postgresql.util.PSQLException: Ошибка при попытке подсоединения.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:437) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:52) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:290) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.Driver.makeConnection(Driver.java:448) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.Driver.connect(Driver.java:298) ~[postgresql-42.7.11.jar:42.7.11]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+Caused by: java.net.UnknownHostException: ep-winter-thunder-aykulwdu.c-5.us-east-2.aws.neon.tech
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:572) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:271) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.core.PGStream.<init>(PGStream.java:132) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:219) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:365) ~[postgresql-42.7.11.jar:42.7.11]
+	... 14 common frames omitted
+
+2026-07-27T01:15:14.067+05:00  WARN 7920 --- [Dori_Qidiruv_bot] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@3a9d30c4 (Соединение уже было закрыто). Possibly consider using a shorter maxLifetime value.

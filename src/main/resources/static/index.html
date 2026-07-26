@@ -381,7 +381,41 @@
     </footer>
 
     <script>
+        // Ilova kabi: avval ro'yxatdan o'tish shart — token bo'lmasa login sahifasiga yuboriladi.
+        if (!localStorage.getItem('token')) {
+            window.location.replace('login.html');
+        }
+
         let currentLang = 'uz';
+        let userLocation = null;
+
+        /** Brauzerdan joriy lokatsiyani so'raydi (har qidiruvda yangilanadi). Ruxsat berilmasa null. */
+        function requestLocation() {
+            return new Promise(resolve => {
+                if (!navigator.geolocation) return resolve(null);
+                navigator.geolocation.getCurrentPosition(
+                    pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+                    () => resolve(null),
+                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+                );
+            });
+        }
+
+        /** Ikki koordinata orasidagi masofa (km) — Haversine formulasi. */
+        function distanceKm(lat1, lon1, lat2, lon2) {
+            const toRad = deg => deg * Math.PI / 180;
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+            const a = Math.sin(dLat / 2) ** 2
+                + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+            return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        function formatDistance(km) {
+            return km < 1
+                ? `${Math.round(km * 1000)} ${currentLang === 'uz' ? 'm' : 'м'}`
+                : `${km.toFixed(1)} ${currentLang === 'uz' ? 'km' : 'км'}`;
+        }
 
         function setLang(lang) {
             currentLang = lang;
@@ -418,6 +452,8 @@
         }
 
         async function searchMedicine(query) {
+            // Har qidiruvda lokatsiya so'raladi — natijalar eng yaqin dorixonadan boshlab chiqadi.
+            userLocation = await requestLocation();
             try {
                 const response = await fetch(`/api/dori/qidirish?nomi=${encodeURIComponent(query)}`);
                 if (response.status === 404) {
@@ -428,15 +464,29 @@
                     throw new Error('server error');
                 }
                 const data = await response.json();
-                displaySearchResults(data);
+                displaySearchResults(sortByDistance(data));
             } catch (error) {
-                console.log('API unavailable, using mock data');
-                const mockData = [
-                    { nomi: query, ishlab_chiqaruvchi: 'Farmstandart', narx: 10000, tavsif: 'Samarali dori' },
-                    { nomi: query + ' forte', ishlab_chiqaruvchi: 'Jurabek Lab', narx: 15000, tavsif: 'Kuchli ta\'sir' }
-                ];
-                displaySearchResults(mockData);
+                console.log('API unavailable', error);
+                document.getElementById('searchResults').innerHTML =
+                    `<div class="glass-card"><p style="text-align:center;">${currentLang === 'uz'
+                        ? 'Qidiruvni bajarib bo\'lmadi. Keyinroq urinib ko\'ring.'
+                        : 'Не удалось выполнить поиск. Попробуйте позже.'}</p></div>`;
+                document.getElementById('searchResults').classList.add('show');
             }
+        }
+
+        /** Natijalarni foydalanuvchiga eng yaqin dorixona bo'yicha tartiblaydi va masofani qo'shadi. */
+        function sortByDistance(results) {
+            if (!userLocation || !Array.isArray(results)) return results;
+            return results
+                .map(item => {
+                    const ph = item.dorixona;
+                    const km = ph && ph.latitude && ph.longitude
+                        ? distanceKm(userLocation.lat, userLocation.lon, ph.latitude, ph.longitude)
+                        : null;
+                    return { ...item, _km: km };
+                })
+                .sort((a, b) => (a._km ?? Infinity) - (b._km ?? Infinity));
         }
 
         function displaySearchResults(results) {
@@ -448,14 +498,26 @@
                 return;
             }
 
-            resultsDiv.innerHTML = results.map(dori => `
+            const uz = currentLang === 'uz';
+            resultsDiv.innerHTML = results.map(dori => {
+                const ph = dori.dorixona;
+                const drugName = (currentLang === 'ru' && (dori.nomi_ru || dori.nameRu)) || dori.nomi || dori.name;
+                const price = (dori.narx || dori.price || 0).toLocaleString();
+                const available = dori.available !== false;
+                return `
                 <div class="glass-card dori-card">
-                    <h3>${(currentLang === 'ru' && (dori.nomi_ru || dori.nameRu)) || dori.nomi || dori.name}</h3>
-                    <p><strong>${currentLang === 'uz' ? 'Ishlab chiqaruvchi:' : 'Производитель:'}</strong> ${dori.ishlab_chiqaruvchi || dori.manufacturer || 'N/A'}</p>
-                    <p><strong>${currentLang === 'uz' ? 'Narx:' : 'Цена:'}</strong> ${(dori.narx || dori.price || 0).toLocaleString()} so'm</p>
-                    <p><strong>${currentLang === 'uz' ? 'Tavsif:' : 'Описание:'}</strong> ${dori.tavsif || dori.description || ''}</p>
-                </div>
-            `).join('');
+                    <h3>💊 ${drugName}</h3>
+                    <p><strong>${uz ? 'Ishlab chiqaruvchi:' : 'Производитель:'}</strong> ${dori.ishlab_chiqaruvchi || dori.manufacturer || '—'}</p>
+                    <p><strong>${uz ? 'Narx:' : 'Цена:'}</strong> ${price} ${uz ? "so'm" : 'сум'}</p>
+                    ${ph ? `<p><strong>${uz ? 'Dorixona:' : 'Аптека:'}</strong> 🏥 ${ph.name || ''}</p>
+                    <p><strong>${uz ? 'Manzil:' : 'Адрес:'}</strong> 📍 ${ph.address || ''}</p>
+                    <p><strong>${uz ? 'Telefon:' : 'Телефон:'}</strong> ☎️ ${ph.telefon || ''}</p>` : ''}
+                    ${dori._km != null ? `<p><strong>${uz ? 'Masofa:' : 'Расстояние:'}</strong> 📏 ${formatDistance(dori._km)}</p>` : ''}
+                    <p><strong>${uz ? 'Holat:' : 'Статус:'}</strong> ${available
+                        ? (uz ? '🟢 Mavjud' : '🟢 В наличии')
+                        : (uz ? '🔴 Mavjud emas' : '🔴 Нет в наличии')}</p>
+                </div>`;
+            }).join('');
 
             resultsDiv.classList.add('show');
         }
