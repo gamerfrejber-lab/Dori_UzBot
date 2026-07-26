@@ -1,42 +1,19 @@
 package com.example.dori_qidiruv_bot.repository;
 
 import com.example.dori_qidiruv_bot.entity.User;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Optional;
 
-@Repository
-public class UserRepository {
-    private final Map<Long, User> users = new ConcurrentHashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    public User save(User user) {
-        if (user.getId() == null) {
-            user.setId(idGenerator.getAndIncrement());
-            user.setCreatedAt(LocalDateTime.now());
-        }
-        users.put(user.getId(), user);
-        return user;
-    }
-
-    public Optional<User> findById(Long id) {
-        return Optional.ofNullable(users.get(id));
-    }
-
-    public Optional<User> findByPhoneNumber(String phoneNumber) {
-        return users.values().stream()
-                .filter(u -> u.getPhoneNumber().equals(phoneNumber))
-                .findFirst();
-    }
-
-    public List<User> findAll() {
-        return new ArrayList<>(users.values());
-    }
-
-    public void deleteById(Long id) {
-        users.remove(id);
-    }
+    /**
+     * Telefon raqami bo'yicha qidiradi. Faqat raqamlar solishtiriladi, chunki bot Telegram
+     * kontaktidan "998..." (+ belgisiz), veb-sayt esa "+998..." ko'rinishida saqlashi mumkin.
+     */
+    @Query(value = "SELECT * FROM bot_user WHERE regexp_replace(phone, '[^0-9]', '', 'g') "
+            + "= regexp_replace(:phone, '[^0-9]', '', 'g') LIMIT 1", nativeQuery = true)
+    Optional<User> findByPhoneNumber(@Param("phone") String phoneNumber);
 }

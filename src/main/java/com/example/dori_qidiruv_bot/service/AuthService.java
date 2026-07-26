@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,27 +24,20 @@ public class AuthService {
         
         // Kod generatsiya qilish
         String code = smsService.generateVerificationCode();
-        
-        // User topish yoki yangi yaratish
-        Optional<User> existingUser = userRepository.findByPhoneNumber(phoneNumber);
-        User user;
-        
-        if (existingUser.isPresent()) {
-            user = existingUser.get();
-        } else {
-            user = new User();
-            user.setPhoneNumber(phoneNumber);
-            user.setIsVerified(false);
-        }
-        
+
+        // Foydalanuvchi yozuvi botda /start bosilganda yaratiladi — bu yerda faqat topamiz.
+        // Topilmasa kodni yetkazishning ham imkoni yo'q, shuning uchun darhol aytamiz.
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new IllegalStateException("KOD_YETKAZILMADI"));
+
         // Kodni saqlash (5 daqiqa amal qiladi)
         user.setVerificationCode(code);
         user.setCodeExpiry(LocalDateTime.now().plusMinutes(5));
         userRepository.save(user);
-        
-        // SMS yuborish
+
+        // Kodni yetkazish (Telegram bot, keyin SMS) — yetkazilmasa xato tashlanadi
         smsService.sendVerificationCode(phoneNumber, code);
-        
+
         return "Kod yuborildi";
     }
 
