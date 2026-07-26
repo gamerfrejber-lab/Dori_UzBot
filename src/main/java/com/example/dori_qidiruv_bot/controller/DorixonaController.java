@@ -1,6 +1,8 @@
 package com.example.dori_qidiruv_bot.controller;
 
+import com.example.dori_qidiruv_bot.entity.Dori;
 import com.example.dori_qidiruv_bot.entity.Dorixona;
+import com.example.dori_qidiruv_bot.repository.DoriRepository;
 import com.example.dori_qidiruv_bot.repository.DorixonaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,9 @@ import java.util.List;
 @RequestMapping("/api/dorixona")
 @RequiredArgsConstructor
 public class DorixonaController {
-    
+
     private final DorixonaRepository dorixonaRepository;
+    private final DoriRepository doriRepository;
 
     /**
      * Barcha dorixonalarni olish
@@ -31,6 +34,17 @@ public class DorixonaController {
         return dorixonaRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * Berilgan dorixonadagi barcha dorilar — foydalanuvchi dorixona kartasini bosganda ko'rsatiladi
+     */
+    @GetMapping("/{id}/dorilar")
+    public ResponseEntity<List<Dori>> getDrugs(@PathVariable Long id) {
+        if (dorixonaRepository.findById(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(doriRepository.findByDorixonaIdOrderByNameAsc(id));
     }
 
     /**

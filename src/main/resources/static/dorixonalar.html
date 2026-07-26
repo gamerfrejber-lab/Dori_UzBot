@@ -192,6 +192,98 @@
             transform: translateY(-2px);
         }
 
+        .pharmacy-card {
+            cursor: pointer;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            z-index: 200;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: #101a33;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 560px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            color: #7c4dff;
+            margin-bottom: 1.2rem;
+            padding-right: 2rem;
+        }
+
+        .modal-close {
+            float: right;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.6rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .drug-list {
+            margin-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.2rem;
+        }
+
+        .drug-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .drug-row:last-child {
+            border-bottom: none;
+        }
+
+        .drug-name {
+            font-weight: 600;
+        }
+
+        .drug-manufacturer {
+            display: block;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .drug-price {
+            color: #4fc3f7;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .drug-out {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
         .loading {
             text-align: center;
             padding: 4rem 2rem;
@@ -263,6 +355,10 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal" id="modalBox"></div>
+    </div>
+
     <footer>
         <p data-uz="© 2024 Dori Qidiruv. Barcha huquqlar himoyalangan." data-ru="© 2024 Поиск лекарств. Все права защищены.">© 2024 Dori Qidiruv. Barcha huquqlar himoyalangan.</p>
     </footer>
@@ -298,60 +394,125 @@
                 const data = await response.json();
                 displayPharmacies(data);
             } catch (error) {
-                console.log('API unavailable, using mock data');
-                const mockPharmacies = [
-                    { nomi: 'Farmatsiya №1', manzil: 'Amir Temur ko\'chasi, 15', telefon: '+998 71 123-45-67', ish_vaqti: '08:00 - 22:00' },
-                    { nomi: 'Salomatlik Dorixonasi', manzil: 'Bobur ko\'chasi, 28', telefon: '+998 71 234-56-78', ish_vaqti: '24/7' },
-                    { nomi: 'Shifo Apteka', manzil: 'Navoi ko\'chasi, 42', telefon: '+998 71 345-67-89', ish_vaqti: '09:00 - 21:00' },
-                    { nomi: 'Darmon Dorixonasi', manzil: 'Mustaqillik shoh ko\'chasi, 67', telefon: '+998 71 456-78-90', ish_vaqti: '08:00 - 20:00' },
-                    { nomi: 'Sog\'lom Hayot', manzil: 'Mirzo Ulug\'bek ko\'chasi, 89', telefon: '+998 71 567-89-01', ish_vaqti: '24/7' },
-                    { nomi: 'Medika Plus', manzil: 'Shahriston ko\'chasi, 12', telefon: '+998 71 678-90-12', ish_vaqti: '09:00 - 23:00' }
-                ];
-                displayPharmacies(mockPharmacies);
+                console.log('API unavailable', error);
+                document.getElementById('pharmaciesContainer').innerHTML =
+                    `<p class="subtitle">${currentLang === 'uz'
+                        ? 'Dorixonalarni yuklab bo\'lmadi. Keyinroq urinib ko\'ring.'
+                        : 'Не удалось загрузить аптеки. Попробуйте позже.'}</p>`;
             }
+        }
+
+        let loadedPharmacies = [];
+
+        function esc(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
         function displayPharmacies(pharmacies) {
             const container = document.getElementById('pharmaciesContainer');
-            
+
             if (!pharmacies || pharmacies.length === 0) {
                 container.innerHTML = '<p class="subtitle">Dorixonalar topilmadi 😔</p>';
                 return;
             }
 
+            loadedPharmacies = pharmacies;
             const grid = document.createElement('div');
             grid.className = 'pharmacies-grid';
 
-            grid.innerHTML = pharmacies.map(pharmacy => `
-                <div class="glass-card pharmacy-card">
-                    <h3>🏥 ${pharmacy.nomi || pharmacy.name}</h3>
+            grid.innerHTML = pharmacies.map((pharmacy, index) => {
+                const hasLocation = pharmacy.latitude && pharmacy.longitude;
+                return `
+                <div class="glass-card pharmacy-card" onclick="openPharmacy(${index})">
+                    <h3>🏥 ${esc(pharmacy.nomi || pharmacy.name)}</h3>
                     <div class="pharmacy-info">
                         <div class="info-row">
                             <span class="info-icon">📍</span>
-                            <span class="info-text">${pharmacy.manzil || pharmacy.address}</span>
+                            <span class="info-text">${esc(pharmacy.manzil || pharmacy.address)}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-icon">📞</span>
-                            <span class="info-text">${pharmacy.telefon || pharmacy.phone}</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-icon">🕐</span>
-                            <span class="info-text">${pharmacy.ish_vaqti || pharmacy.working_hours}</span>
+                            <span class="info-text">${esc(pharmacy.telefon || pharmacy.phone)}</span>
                         </div>
                     </div>
-                    <button class="map-btn" onclick="showOnMap('${pharmacy.nomi || pharmacy.name}')">
-                        <span data-uz="📍 Xaritada ko'rish" data-ru="📍 Показать на карте">${currentLang === 'uz' ? '📍 Xaritada ko\'rish' : '📍 Показать на карте'}</span>
-                    </button>
-                </div>
-            `).join('');
+                    ${hasLocation ? `<button class="map-btn" onclick="showOnMap(event, ${index})">
+                        ${currentLang === 'uz' ? '📍 Xaritada ko\'rish' : '📍 Показать на карте'}
+                    </button>` : ''}
+                </div>`;
+            }).join('');
 
             container.innerHTML = '';
             container.appendChild(grid);
         }
 
-        function showOnMap(pharmacyName) {
-            alert((currentLang === 'uz' ? 'Xaritada ochilmoqda: ' : 'Открывается на карте: ') + pharmacyName);
+        function showOnMap(event, index) {
+            event.stopPropagation();
+            const pharmacy = loadedPharmacies[index];
+            if (!pharmacy || !pharmacy.latitude || !pharmacy.longitude) return;
+            window.open(`https://yandex.com/maps/?pt=${pharmacy.longitude},${pharmacy.latitude}&z=17&l=map`, '_blank');
         }
+
+        async function openPharmacy(index) {
+            const pharmacy = loadedPharmacies[index];
+            if (!pharmacy) return;
+
+            const overlay = document.getElementById('modalOverlay');
+            const box = document.getElementById('modalBox');
+            const name = esc(pharmacy.nomi || pharmacy.name);
+
+            box.innerHTML = `
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <h2>🏥 ${name}</h2>
+                <div class="pharmacy-info">
+                    <div class="info-row"><span class="info-icon">📍</span><span class="info-text">${esc(pharmacy.manzil || pharmacy.address)}</span></div>
+                    <div class="info-row"><span class="info-icon">📞</span><span class="info-text">${esc(pharmacy.telefon || pharmacy.phone)}</span></div>
+                </div>
+                <div class="drug-list"><p class="subtitle">${currentLang === 'uz' ? 'Dorilar yuklanmoqda...' : 'Загрузка лекарств...'}</p></div>`;
+            overlay.classList.add('show');
+
+            if (!pharmacy.id) return;
+            try {
+                const response = await fetch(`/api/dorixona/${pharmacy.id}/dorilar`);
+                const drugs = response.ok ? await response.json() : [];
+                box.querySelector('.drug-list').innerHTML = renderDrugs(drugs);
+            } catch (error) {
+                box.querySelector('.drug-list').innerHTML =
+                    `<p class="subtitle">${currentLang === 'uz' ? 'Dorilarni yuklab bo\'lmadi' : 'Не удалось загрузить лекарства'}</p>`;
+            }
+        }
+
+        function renderDrugs(drugs) {
+            if (!drugs || drugs.length === 0) {
+                return `<p class="subtitle">${currentLang === 'uz' ? 'Bu dorixonada hozircha dori yo\'q' : 'В этой аптеке пока нет лекарств'}</p>`;
+            }
+            const title = currentLang === 'uz' ? `💊 Dorilar (${drugs.length})` : `💊 Лекарства (${drugs.length})`;
+            const rows = drugs.map(drug => {
+                const drugName = currentLang === 'ru' && drug.nameRu ? drug.nameRu : drug.name;
+                const price = (drug.price || 0).toLocaleString();
+                const status = drug.available
+                    ? `<span class="drug-price">${price} ${currentLang === 'uz' ? 'so\'m' : 'сум'}</span>`
+                    : `<span class="drug-out">${currentLang === 'uz' ? 'Mavjud emas' : 'Нет в наличии'}</span>`;
+                return `<div class="drug-row">
+                    <span><span class="drug-name">${esc(drugName)}</span>
+                    <span class="drug-manufacturer">${esc(drug.manufacturer || '')}</span></span>
+                    ${status}
+                </div>`;
+            }).join('');
+            return `<h3 style="margin-bottom:0.8rem;">${title}</h3>${rows}`;
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target.id === 'modalOverlay') closeModal();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
 
         loadPharmacies();
     </script>
