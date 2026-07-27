@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin panel - Dori Qidiruv</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #0d1b3e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        header {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin-left: 1.2rem;
+        }
+
+        nav a:hover { color: #4fc3f7; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+        h1 { font-size: 1.9rem; margin-bottom: 0.4rem; }
+
+        .subtitle { color: rgba(255, 255, 255, 0.6); margin-bottom: 2rem; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .stat-value { font-size: 2rem; font-weight: 700; color: #4fc3f7; }
+        .stat-label { color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; }
+
+        .tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+
+        .tab {
+            padding: 0.6rem 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.75);
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.8rem;
+            display: none;
+        }
+
+        .panel.active { display: block; }
+
+        .panel h2 { font-size: 1.2rem; margin-bottom: 1.2rem; color: #7c4dff; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            border-radius: 12px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus { border-color: #4fc3f7; }
+        input::placeholder { color: rgba(255, 255, 255, 0.4); }
+        select option { background: #101a33; color: #fff; }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
+            color: #fff;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn:hover { transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .btn-danger {
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-danger:hover { background: rgba(255, 107, 107, 0.3); }
+
+        .btn-small {
+            background: rgba(79, 195, 247, 0.15);
+            border: 1px solid #4fc3f7;
+            color: #4fc3f7;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-right: 0.4rem;
+        }
+
+        .btn-small:hover { background: rgba(79, 195, 247, 0.3); }
+
+        .list { margin-top: 1.5rem; max-height: 55vh; overflow-y: auto; }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            flex-wrap: wrap;
+        }
+
+        .row:last-child { border-bottom: none; }
+        .row-main { font-weight: 600; }
+        .row-sub { display: block; font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); }
+
+        .message {
+            margin-top: 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .message.show { display: block; }
+        .message.ok { background: rgba(76, 175, 80, 0.15); border: 1px solid #4caf50; color: #a5d6a7; }
+        .message.err { background: rgba(255, 107, 107, 0.15); border: 1px solid #ff6b6b; color: #ffabab; }
+
+        .denied { text-align: center; padding: 5rem 2rem; }
+        .denied h2 { font-size: 1.6rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">💊 Dori Qidiruv</div>
+            <nav>
+                <a href="index.html">Bosh sahifa</a>
+                <a href="dorixonalar.html">Dorixonalar</a>
+                <a href="profil.html">Profil</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container" id="container">
+        <p class="subtitle">Tekshirilmoqda...</p>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+
+        function authHeaders(extra) {
+            const headers = Object.assign({ 'Authorization': 'Bearer ' + token }, extra || {});
+            return headers;
+        }
+
+        function esc(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function showMessage(text, ok) {
+            const el = document.getElementById('message');
+            if (!el) return;
+            el.textContent = text;
+            el.className = 'message show ' + (ok ? 'ok' : 'err');
+            setTimeout(function () { el.className = 'message'; }, 4000);
+        }
+
+        // Admin emasligini bilsak, panelni umuman ko'rsatmaymiz.
+        fetch('/api/admin/check', { headers: authHeaders() })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data && data.admin) renderPanel();
+                else renderDenied();
+            })
+            .catch(renderDenied);
+
+        function renderDenied() {
+            document.getElementById('container').innerHTML =
+                '<div class="denied"><h2>⛔ Ruxsat yo\'q</h2>' +
+                '<p class="subtitle">Bu bo\'lim faqat administratorlar uchun.</p>' +
+                '<a href="index.html" class="btn" style="text-decoration:none;">Bosh sahifaga qaytish</a></div>';
+        }
+
+        function renderPanel() {
+            document.getElementById('container').innerHTML = `
+                <h1>🔐 Admin panel</h1>
+                <p class="subtitle">Dorixonalar, dorilar va foydalanuvchilarni boshqarish</p>
+
+                <div class="stats" id="stats"></div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="openTab('pharmacies', this)">🏥 Dorixonalar</button>
+                    <button class="tab" onclick="openTab('drugs', this)">💊 Dorilar</button>
+                    <button class="tab" onclick="openTab('users', this)">👥 Foydalanuvchilar</button>
+                </div>
+
+                <div class="panel active" id="tab-pharmacies">
+                    <h2>➕ Dorixona qo'shish</h2>
+                    <div class="form-grid">
+                        <input id="phName" placeholder="Nomi *">
+                        <input id="phAddress" placeholder="Manzil">
+                        <input id="phPhone" placeholder="Telefon">
+                        <input id="phLat" placeholder="Kenglik (41.3451)">
+                        <input id="phLon" placeholder="Uzunlik (69.2861)">
+                    </div>
+                    <button class="btn" onclick="addPharmacy()">Qo'shish</button>
+                    <div class="message" id="message"></div>
+                    <div class="list" id="pharmacyList"></div>
+                </div>
+
+                <div class="panel" id="tab-drugs">
+                    <h2>➕ Dori qo'shish</h2>
+                    <div class="form-grid">
+                        <input id="drName" placeholder="Nomi *">
+                        <input id="drNameRu" placeholder="Ruscha nomi">
+                        <input id="drManufacturer" placeholder="Ishlab chiqaruvchi">
+                        <input id="drPrice" placeholder="Narxi (so'm) *" type="number">
+                        <select id="drPharmacy"></select>
+                        <select id="drAvailable">
+                            <option value="true">🟢 Mavjud</option>
+                            <option value="false">🔴 Mavjud emas</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="addDrug()">Qo'shish</button>
+                    <div class="form-grid" style="margin-top:1.5rem;">
+                        <select id="filterPharmacy" onchange="loadDrugs()"></select>
+                    </div>
+                    <div class="list" id="drugList"></div>
+                </div>
+
+                <div class="panel" id="tab-users">
+                    <h2>👥 Ro'yxatdan o'tgan foydalanuvchilar</h2>
+                    <div class="list" id="userList"></div>
+                </div>`;
+
+            loadStats();
+            loadPharmacies();
+        }
+
+        function openTab(name, button) {
+            document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+            document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
+            button.classList.add('active');
+            document.getElementById('tab-' + name).classList.add('active');
+            if (name === 'users') loadUsers();
+            if (name === 'drugs') loadDrugs();
+        }
+
+        function loadStats() {
+            fetch('/api/admin/stats', { headers: authHeaders() })
+                .then(function (r) { return r.json(); })
+                .then(function (s) {
+                    document.getElementById('stats').innerHTML = `
+                        <div class="stat"><div class="stat-value">${s.users}</div><div class="stat-label">Foydalanuvchi</div></div>
+                        <div class="stat"><div class="stat-value">${s.pharmacies}</div><div class="stat-label">Dorixona</div></div>
+                        <div class="stat"><div class="stat-value">${s.drugs}</div><div class="stat-label">Dori</div></div>`;
+                })
+                .catch(function () {});
+        }
+
+        let pharmacies = [];
+
+        function loadPharmacies() {
+            fetch('/api/dorixona')
+                .then(function (r) { return r.json(); })
+                .then(function (list) {
+                    pharmacies = list;
+                    document.getElementById('pharmacyList').innerHTML =
+                        '<h2 style="margin-top:1.5rem;">🏥 Barcha dorixonalar (' + list.length + ')</h2>' +
+                        list.map(function (p) {
+                            return `<div class="row">
+                                <span><span class="row-main">${esc(p.name)}</span>
+                                <span class="row-sub">${esc(p.address || '')} · ${esc(p.telefon || '')}</span></span>
+                                <button class="btn-danger" onclick="deletePharmacy(${p.id}, '${esc(p.name).replace(/'/g, "\\'")}')">O'chirish</button>
+                            </div>`;
+                        }).join('');
+                    fillPharmacySelects();
+                });
+        }
+
+        function fillPharmacySelects() {
+            const options = pharmacies.map(function (p) {
+                return '<option value="' + p.id + '">' + esc(p.name) + '</option>';
+            }).join('');
+            const drSelect = document.getElementById('drPharmacy');
+            const filter = document.getElementById('filterPharmacy');
+            if (drSelect) drSelect.innerHTML = options;
+            if (filter) filter.innerHTML = '<option value="">— Dorixonani tanlang (dorilarini ko\'rish) —</option>' + options;
+        }
+
+        function addPharmacy() {
+            const name = document.getElementById('phName').value.trim();
+            if (!name) { showMessage('Dorixona nomini kiriting', false); return; }
+            const body = {
+                name: name,
+                address: document.getElementById('phAddress').value.trim(),
+                telefon: document.getElementById('phPhone').value.trim(),
+                latitude: parseFloat(document.getElementById('phLat').value) || null,
+                longitude: parseFloat(document.getElementById('phLon').value) || null
+            };
+            fetch('/api/dorixona', {
+                method: 'POST',
+                headers: authHeaders({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify(body)
+            })
+                .then(function (r) {
+                    if (!r.ok) throw new Error();
+                    showMessage('✅ Dorixona qo\'shildi', true);
+                    ['phName', 'phAddress', 'phPhone', 'phLat', 'phLon'].forEach(function (id) {
+                        document.getElementById(id).value = '';
+                    });
+                    loadPharmacies();
+                    loadStats();
+                })
+                .catch(function () { showMessage('❌ Qo\'shib bo\'lmadi', false); });
+        }
+
+        function deletePharmacy(id, name) {
+            if (!confirm('«' + name + '» o\'chirilsinmi? Undagi dorilar ham o\'chadi.')) return;
+            fetch('/api/dorixona/' + id, { method: 'DELETE', headers: authHeaders() })
+                .then(function (r) {
+                    if (!r.ok) throw new Error();
+                    showMessage('✅ O\'chirildi', true);
+                    loadPharmacies();
+                    loadStats();
+                })
+                .catch(function () { showMessage('❌ O\'chirib bo\'lmadi', false); });
+        }
+
+        function addDrug() {
+            const name = document.getElementById('drName').value.trim();
+            const price = parseFloat(document.getElementById('drPrice').value);
+            const pharmacyId = document.getElementById('drPharmacy').value;
+            if (!name || !price || !pharmacyId) { showMessage('Nomi, narxi va dorixonani to\'ldiring', false); return; }
+            const body = {
+                name: name,
+                nameRu: document.getElementById('drNameRu').value.trim() || null,
+                manufacturer: document.getElementById('drManufacturer').value.trim(),
+                price: price,
+                available: document.getElementById('drAvailable').value === 'true',
+                dorixonaId: parseInt(pharmacyId, 10)
+            };
+            fetch('/api/dori', {
+                method: 'POST',
+                headers: authHeaders({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify(body)
+            })
+                .then(function (r) {
+                    if (!r.ok) throw new Error();
+                    showMessage('✅ Dori qo\'shildi', true);
+                    ['drName', 'drNameRu', 'drManufacturer', 'drPrice'].forEach(function (id) {
+                        document.getElementById(id).value = '';
+                    });
+                    loadStats();
+                    if (document.getElementById('filterPharmacy').value === pharmacyId) loadDrugs();
+                })
+                .catch(function () { showMessage('❌ Qo\'shib bo\'lmadi', false); });
+        }
+
+        function loadDrugs() {
+            const id = document.getElementById('filterPharmacy').value;
+            const list = document.getElementById('drugList');
+            if (!id) { list.innerHTML = '<p class="subtitle" style="margin-top:1rem;">Dorilarini ko\'rish uchun dorixonani tanlang.</p>'; return; }
+            fetch('/api/dorixona/' + id + '/dorilar')
+                .then(function (r) { return r.json(); })
+                .then(function (drugs) {
+                    list.innerHTML = '<h2 style="margin-top:1rem;">💊 Dorilar (' + drugs.length + ')</h2>' +
+                        drugs.map(function (d) {
+                            return `<div class="row">
+                                <span><span class="row-main">${esc(d.name)}</span>
+                                <span class="row-sub">${esc(d.nameRu || '')} · ${esc(d.manufacturer || '')} · ${(d.price || 0).toLocaleString()} so'm · ${d.available ? '🟢' : '🔴'}</span></span>
+                                <span>
+                                    <button class="btn-small" onclick="editPrice(${d.id}, ${d.price}, '${esc(d.name).replace(/'/g, "\\'")}')">Narx</button>
+                                    <button class="btn-danger" onclick="deleteDrug(${d.id}, '${esc(d.name).replace(/'/g, "\\'")}')">O'chirish</button>
+                                </span>
+                            </div>`;
+                        }).join('');
+                });
+        }
+
+        function editPrice(id, currentPrice, name) {
+            const input = prompt('«' + name + '» uchun yangi narx (so\'m):', currentPrice);
+            if (input === null) return;
+            const price = parseFloat(input);
+            if (!price || price < 0) { showMessage('Narx noto\'g\'ri', false); return; }
+            fetch('/api/dori/' + id, {
+                method: 'PUT',
+                headers: authHeaders({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify({ price: price })
+            })
+                .then(function (r) {
+                    if (!r.ok) throw new Error();
+                    showMessage('✅ Narx yangilandi', true);
+                    loadDrugs();
+                })
+                .catch(function () { showMessage('❌ Yangilab bo\'lmadi', false); });
+        }
+
+        function deleteDrug(id, name) {
+            if (!confirm('«' + name + '» o\'chirilsinmi?')) return;
+            fetch('/api/dori/' + id, { method: 'DELETE', headers: authHeaders() })
+                .then(function (r) {
+                    if (!r.ok) throw new Error();
+                    showMessage('✅ O\'chirildi', true);
+                    loadDrugs();
+                    loadStats();
+                })
+                .catch(function () { showMessage('❌ O\'chirib bo\'lmadi', false); });
+        }
+
+        function loadUsers() {
+            fetch('/api/admin/users', { headers: authHeaders() })
+                .then(function (r) { return r.json(); })
+                .then(function (users) {
+                    document.getElementById('userList').innerHTML =
+                        '<p class="subtitle">Jami: ' + users.length + '</p>' +
+                        users.map(function (u) {
+                            return `<div class="row">
+                                <span><span class="row-main">${esc(u.name || 'Noma\'lum')}</span>
+                                <span class="row-sub">📞 ${esc(u.phoneNumber || '—')} · ID ${u.id} · ${u.isVerified ? '✅ tasdiqlangan' : '⏳ tasdiqlanmagan'}</span></span>
+                            </div>`;
+                        }).join('');
+                })
+                .catch(function () {
+                    document.getElementById('userList').innerHTML = '<p class="subtitle">Yuklab bo\'lmadi</p>';
+                });
+        }
+    </script>
+</body>
+</html>

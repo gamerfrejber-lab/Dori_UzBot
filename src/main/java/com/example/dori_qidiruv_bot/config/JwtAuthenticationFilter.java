@@ -67,12 +67,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Faqat raqamlar bo'yicha solishtiradi: baza "998..." ko'rinishida saqlashi, sozlamada esa
+     * "+998..." yozilgan bo'lishi mumkin — bunday farq admin huquqini yo'qotmasligi kerak.
+     */
     private boolean isAdminPhone(String phoneNumber) {
-        if (phoneNumber == null || adminPhonesRaw == null || adminPhonesRaw.isBlank()) return false;
+        String normalized = onlyDigits(phoneNumber);
+        if (normalized.isEmpty() || adminPhonesRaw == null || adminPhonesRaw.isBlank()) return false;
         Set<String> adminPhones = Arrays.stream(adminPhonesRaw.split(","))
-                .map(String::trim)
+                .map(JwtAuthenticationFilter::onlyDigits)
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toSet());
-        return adminPhones.contains(phoneNumber.trim());
+        return adminPhones.contains(normalized);
+    }
+
+    private static String onlyDigits(String value) {
+        return value == null ? "" : value.replaceAll("[^0-9]", "");
     }
 }
