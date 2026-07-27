@@ -29,8 +29,12 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/*.html", "/api/auth/**",
+                        .requestMatchers("/", "/*.html", "/*.js", "/api/auth/**",
                                 "/css/**", "/js/**", "/images/**").permitAll()
+                        // Admin ekanini tekshirish hammaga ochiq (token bo'lmasa "admin emas" deydi),
+                        // qolgan admin ma'lumotlari faqat adminga.
+                        .requestMatchers("/api/admin/check").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/dori/**", "/api/dorixona/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/dori/**", "/api/dorixona/**").hasRole("ADMIN")

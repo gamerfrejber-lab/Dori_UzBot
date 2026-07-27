@@ -6,16 +6,20 @@ import com.example.dori_qidiruv_bot.dto.UpdateNameRequest;
 import com.example.dori_qidiruv_bot.dto.VerifyRequest;
 import com.example.dori_qidiruv_bot.entity.User;
 import com.example.dori_qidiruv_bot.service.AuthService;
+import com.example.dori_qidiruv_bot.service.TelegramAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    
+
     private final AuthService authService;
+    private final TelegramAuthService telegramAuthService;
 
     @org.springframework.beans.factory.annotation.Value("${telegram.bot-username:dori_UzBot}")
     private String botUsername;
@@ -37,6 +41,20 @@ public class AuthController {
             }
             return ResponseEntity.badRequest()
                     .body(new AuthResponse(null, "Xatolik: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Telegram Mini App orqali kirish — telefon va SMS kodsiz, initData imzosi asosida
+     */
+    @PostMapping("/telegram")
+    public ResponseEntity<AuthResponse> loginWithTelegram(@RequestBody Map<String, String> request) {
+        try {
+            String token = telegramAuthService.loginWithInitData(request.get("initData"));
+            return ResponseEntity.ok(new AuthResponse(token, "Muvaffaqiyatli"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new AuthResponse(null, "Telegram orqali kirib bo'lmadi"));
         }
     }
 
