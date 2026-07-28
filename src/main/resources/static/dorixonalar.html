@@ -366,8 +366,8 @@
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
                 <div class="lang-switch">
-                    <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
-                    <button class="lang-btn" onclick="setLang('ru')">RU</button>
+                    <button type="button" class="lang-btn active" data-lang="uz" onclick="setLang('uz')">UZ</button>
+                    <button type="button" class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
                 </div>
                 <a href="profil.html" class="profile-btn" id="profileBtn" data-uz="Profil" data-ru="Профиль">Kirish</a>
             </nav>
@@ -394,19 +394,72 @@
     <script>
         // Kirish nazorati auth-guard.js'da (Mini App avtomatik kirishi bilan birga) bajariladi.
 
-        let currentLang = 'uz';
+        // Til tanlovi barcha sahifalarda bir xil saqlanadi (kirish sahifasidan boshlab).
+        let currentLang = localStorage.getItem('lang') || 'uz';
         let userLocation = null;
 
-        /** Brauzerdan joriy lokatsiyani so'raydi. Ruxsat berilmasa null qaytadi. */
+        /** Lokatsiya nega olinmagani: 'unsupported' | 'denied' | 'unavailable' | null. */
+        let locationError = null;
+
+        /**
+         * Brauzerdan joylashuvni so'raydi. Ruxsat berilmasa null qaytaradi va sababini
+         * locationError'ga yozadi — foydalanuvchiga nima qilish kerakligini aytish uchun.
+         *
+         * enableHighAccuracy o'chirilgan: kompyuterlarda GPS yo'q va aniq joylashuvni
+         * qidirish ko'pincha vaqt tugashi bilan tugardi, natijada masofa umuman
+         * ko'rsatilmasdi. maximumAge yaqindagi javobni qayta ishlatadi.
+         */
         function requestLocation() {
             return new Promise(resolve => {
-                if (!navigator.geolocation) return resolve(null);
+                if (!navigator.geolocation) {
+                    locationError = 'unsupported';
+                    return resolve(null);
+                }
                 navigator.geolocation.getCurrentPosition(
-                    pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
-                    () => resolve(null),
-                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+                    pos => {
+                        locationError = null;
+                        resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+                    },
+                    err => {
+                        locationError = err && err.code === 1 ? 'denied' : 'unavailable';
+                        resolve(null);
+                    },
+                    { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
                 );
             });
+        }
+
+        /** Masofa ko'rsatilmagan bo'lsa, sababini va nima qilish kerakligini tushuntiradi. */
+        function locationBanner() {
+            if (userLocation || !locationError) return '';
+            const uz = currentLang === 'uz';
+            let matn;
+            if (locationError === 'denied') {
+                matn = uz
+                    ? 'Masofa ko\'rsatilmadi, chunki joylashuvga ruxsat berilmagan. Brauzer manzil satridagi 🔒 belgisini bosing → «Joylashuv» → «Ruxsat berish», so\'ng sahifani yangilang.'
+                    : 'Расстояние не показано: доступ к геолокации запрещён. Нажмите 🔒 в адресной строке → «Местоположение» → «Разрешить», затем обновите страницу.';
+            } else if (locationError === 'unsupported') {
+                matn = uz
+                    ? 'Bu brauzer joylashuvni aniqlay olmaydi, shuning uchun masofa ko\'rsatilmaydi.'
+                    : 'Этот браузер не умеет определять местоположение, поэтому расстояние не показывается.';
+            } else {
+                matn = uz
+                    ? 'Joylashuvni aniqlab bo\'lmadi, shuning uchun masofa ko\'rsatilmadi.'
+                    : 'Не удалось определить местоположение, поэтому расстояние не показано.';
+            }
+            const tugma = locationError === 'denied' ? '' :
+                `<button onclick="joylashuvniQaytaSora()" style="margin-top:0.7rem;padding:0.5rem 1.1rem;border:none;border-radius:20px;background:linear-gradient(135deg,#4fc3f7,#7c4dff);color:#fff;font-weight:600;cursor:pointer;">
+                    ${uz ? '📍 Joylashuvga ruxsat berish' : '📍 Разрешить геолокацию'}
+                 </button>`;
+            return `<div class="glass-card" style="border-color:rgba(79,195,247,0.35);margin-bottom:1rem;">
+                        <p style="margin:0;">📍 ${matn}</p>${tugma}
+                    </div>`;
+        }
+
+        /** Banner tugmasi: joylashuvni qayta so'rab, ro'yxatni yangilaydi. */
+        async function joylashuvniQaytaSora() {
+            userLocation = await requestLocation();
+            loadPharmacies();
         }
 
         /** Ikki koordinata orasidagi masofa (km) — Haversine formulasi. */
@@ -427,8 +480,12 @@
 
         function setLang(lang) {
             currentLang = lang;
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            localStorage.setItem('lang', lang);
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+            });
 
             document.querySelectorAll('[data-uz]').forEach(el => {
                 el.textContent = el.getAttribute('data-' + lang);
@@ -498,7 +555,8 @@
             const container = document.getElementById('pharmaciesContainer');
 
             if (!pharmacies || pharmacies.length === 0) {
-                container.innerHTML = '<p class="subtitle">Dorixonalar topilmadi 😔</p>';
+                container.innerHTML = '<p class="subtitle">'
+                    + (currentLang === 'uz' ? 'Dorixonalar topilmadi 😔' : 'Аптеки не найдены 😔') + '</p>';
                 return;
             }
 
@@ -539,7 +597,7 @@
                 </div>`;
             }).join('');
 
-            container.innerHTML = '';
+            container.innerHTML = locationBanner();
             container.appendChild(grid);
         }
 
@@ -642,6 +700,7 @@
             if (e.key === 'Escape') closeModal();
         });
 
+        setLang(currentLang);
         loadPharmacies();
     </script>
 </body>

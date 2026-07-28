@@ -72,23 +72,40 @@
         }
 
         .phone-input-wrapper {
-            position: relative;
+            display: flex;
+            gap: 0.6rem;
             margin-bottom: 2rem;
         }
 
-        .prefix {
-            position: absolute;
-            left: 1.5rem;
-            top: 50%;
-            transform: translateY(-50%);
+        /* Davlat kodi tanlovi: O'zbekiston (+998) va Rossiya (+7) raqamlari ham qabul qilinadi. */
+        .country-select {
+            flex: 0 0 auto;
+            padding: 1.2rem 0.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
             color: #4fc3f7;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .country-select:focus {
+            border-color: #4fc3f7;
+            box-shadow: 0 0 20px rgba(79, 195, 247, 0.3);
+        }
+
+        .country-select option {
+            background: #0d1b3e;
+            color: #fff;
         }
 
         .phone-input {
-            width: 100%;
-            padding: 1.2rem 1.5rem 1.2rem 5.5rem;
+            flex: 1;
+            min-width: 0;
+            padding: 1.2rem 1.1rem;
             border: 2px solid rgba(255, 255, 255, 0.1);
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -221,6 +238,12 @@
 
             .phone-input {
                 font-size: 1rem;
+                letter-spacing: 0;
+            }
+
+            .country-select {
+                padding: 1.2rem 0.35rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -232,8 +255,8 @@
         
         <div class="glass-card">
             <div class="lang-switch">
-                <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
-                <button class="lang-btn" onclick="setLang('ru')">RU</button>
+                <button type="button" class="lang-btn active" data-lang="uz" onclick="setLang('uz', this)">UZ</button>
+                <button type="button" class="lang-btn" data-lang="ru" onclick="setLang('ru', this)">RU</button>
             </div>
 
             <h1 data-uz="Telefon raqamingizni kiriting" data-ru="Введите номер телефона">Telefon raqamingizni kiriting</h1>
@@ -246,18 +269,23 @@
 
             <form id="loginForm" onsubmit="handleSubmit(event)">
                 <div class="phone-input-wrapper">
-                    <span class="prefix">+998</span>
-                    <input 
-                        type="tel" 
-                        class="phone-input" 
-                        id="phoneInput" 
+                    <select class="country-select" id="countrySelect" onchange="onCountryChange()"
+                            data-uz-aria="Davlat kodi" data-ru-aria="Код страны" aria-label="Davlat kodi">
+                        <option value="998">🇺🇿 +998</option>
+                        <option value="7">🇷🇺 +7</option>
+                    </select>
+                    <input
+                        type="tel"
+                        class="phone-input"
+                        id="phoneInput"
                         placeholder="00 000 00 00"
-                        maxlength="12"
+                        maxlength="14"
                         autocomplete="off"
                         required
                     >
                 </div>
-                <p class="error-message" id="errorMessage">Iltimos, to'g'ri raqam kiriting</p>
+                <p class="error-message" id="errorMessage"
+                   data-uz="Iltimos, to'g'ri raqam kiriting" data-ru="Пожалуйста, введите правильный номер">Iltimos, to'g'ri raqam kiriting</p>
                 
                 <button type="submit" class="submit-btn" id="submitBtn" data-uz="Kod yuborish" data-ru="Отправить код">Kod yuborish</button>
                 <a href="index.html" class="back-link" data-uz="← Bosh sahifaga qaytish" data-ru="← Вернуться на главную">← Bosh sahifaga qaytish</a>
@@ -266,12 +294,26 @@
     </div>
 
     <script>
-        let currentLang = 'uz';
+        /*
+         * Qo'llab-quvvatlanadigan davlatlar. Har birining milliy raqami uzunligi va
+         * guruhlab yozilishi har xil: O'zbekistonda 9 xona (90 123 45 67),
+         * Rossiyada 10 xona (912 345 67 89).
+         */
+        const COUNTRIES = {
+            '998': { digits: 9,  groups: [2, 3, 2, 2], placeholder: '00 000 00 00' },
+            '7':   { digits: 10, groups: [3, 3, 2, 2], placeholder: '000 000 00 00' }
+        };
 
-        function setLang(lang) {
+        // Til tanlovi sahifalar orasida saqlanadi, aks holda har o'tishda o'zbekchaga qaytardi.
+        let currentLang = localStorage.getItem('lang') || 'uz';
+
+        function setLang(lang, button) {
             currentLang = lang;
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            localStorage.setItem('lang', lang);
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+            });
 
             document.querySelectorAll('[data-uz]').forEach(el => {
                 el.textContent = el.getAttribute('data-' + lang);
@@ -280,50 +322,69 @@
             document.querySelectorAll('[data-uz-html]').forEach(el => {
                 el.innerHTML = el.getAttribute('data-' + lang + '-html');
             });
+
+            document.querySelectorAll('[data-uz-aria]').forEach(el => {
+                el.setAttribute('aria-label', el.getAttribute('data-' + lang + '-aria'));
+            });
+
+            document.documentElement.lang = lang;
+            applyCountry();
         }
 
         const phoneInput = document.getElementById('phoneInput');
+        const countrySelect = document.getElementById('countrySelect');
         const errorMessage = document.getElementById('errorMessage');
 
+        function country() {
+            return COUNTRIES[countrySelect.value] || COUNTRIES['998'];
+        }
+
+        /** Raqamlarni tanlangan davlat qoidasi bo'yicha guruhlab yozadi. */
+        function formatPhone(digits, rules) {
+            let out = '';
+            let at = 0;
+            for (const size of rules.groups) {
+                if (at >= digits.length) break;
+                out += (out ? ' ' : '') + digits.slice(at, at + size);
+                at += size;
+            }
+            return out;
+        }
+
+        function applyCountry() {
+            phoneInput.placeholder = country().placeholder;
+            phoneInput.value = formatPhone(phoneInput.value.replace(/\D/g, '').slice(0, country().digits), country());
+        }
+
+        function onCountryChange() {
+            localStorage.setItem('countryCode', countrySelect.value);
+            errorMessage.classList.remove('show');
+            applyCountry();
+            phoneInput.focus();
+        }
+
         phoneInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            
-            if (value.length > 9) {
-                value = value.slice(0, 9);
-            }
-
-            let formatted = '';
-            if (value.length > 0) {
-                formatted = value.slice(0, 2);
-            }
-            if (value.length > 2) {
-                formatted += ' ' + value.slice(2, 5);
-            }
-            if (value.length > 5) {
-                formatted += ' ' + value.slice(5, 7);
-            }
-            if (value.length > 7) {
-                formatted += ' ' + value.slice(7, 9);
-            }
-
-            e.target.value = formatted;
+            const rules = country();
+            const value = e.target.value.replace(/\D/g, '').slice(0, rules.digits);
+            e.target.value = formatPhone(value, rules);
             errorMessage.classList.remove('show');
         });
 
         async function handleSubmit(e) {
             e.preventDefault();
 
-            const phone = phoneInput.value.replace(/\s/g, '');
+            const rules = country();
+            const phone = phoneInput.value.replace(/\D/g, '');
 
-            if (phone.length !== 9) {
+            if (phone.length !== rules.digits) {
                 errorMessage.textContent = currentLang === 'uz'
-                    ? 'Iltimos, to\'g\'ri raqam kiriting'
-                    : 'Пожалуйста, введите правильный номер';
+                    ? 'Iltimos, to\'g\'ri raqam kiriting (' + rules.digits + ' ta raqam)'
+                    : 'Пожалуйста, введите правильный номер (' + rules.digits + ' цифр)';
                 errorMessage.classList.add('show');
                 return;
             }
 
-            const fullPhone = '+998' + phone;
+            const fullPhone = '+' + countrySelect.value + phone;
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
@@ -357,6 +418,9 @@
             }
         }
 
+        // Oldingi tanlovlarni tiklaymiz: til va davlat kodi.
+        countrySelect.value = localStorage.getItem('countryCode') || '998';
+        setLang(currentLang);
         phoneInput.focus();
     </script>
 </body>

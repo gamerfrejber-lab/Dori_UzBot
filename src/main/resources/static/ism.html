@@ -178,8 +178,8 @@
         
         <div class="glass-card">
             <div class="lang-switch">
-                <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
-                <button class="lang-btn" onclick="setLang('ru')">RU</button>
+                <button type="button" class="lang-btn active" data-lang="uz" onclick="setLang('uz')">UZ</button>
+                <button type="button" class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
             </div>
 
             <h1 data-uz="Ismingizni kiriting" data-ru="Введите ваше имя">Ismingizni kiriting</h1>
@@ -204,19 +204,26 @@
     </div>
 
     <script>
-        let currentLang = 'uz';
+        // Til tanlovi oldingi sahifalardan shu yerga ham o'tadi.
+        let currentLang = localStorage.getItem('lang') || 'uz';
 
         function setLang(lang) {
             currentLang = lang;
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            localStorage.setItem('lang', lang);
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+            });
 
             document.querySelectorAll('[data-uz]').forEach(el => {
-                if (el.tagName === 'INPUT') {
-                    el.placeholder = el.getAttribute('data-placeholder-' + lang);
-                } else {
-                    el.textContent = el.getAttribute('data-' + lang);
-                }
+                el.textContent = el.getAttribute('data-' + lang);
+            });
+
+            // Placeholder alohida belgilanadi: bunday maydonlarda data-uz bo'lmaydi,
+            // shuning uchun ular yuqoridagi aylanishga tushmay qolardi.
+            document.querySelectorAll('[data-placeholder-uz]').forEach(el => {
+                el.placeholder = el.getAttribute('data-placeholder-' + lang);
             });
         }
 
@@ -291,6 +298,7 @@
             }
         }
 
+        setLang(currentLang);
         nameInput.focus();
     </script>
 </body>
