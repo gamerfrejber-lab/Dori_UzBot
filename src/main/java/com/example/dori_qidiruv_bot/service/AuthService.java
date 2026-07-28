@@ -72,14 +72,19 @@ public class AuthService {
     }
 
     /**
-     * Telefon raqamni tozalash
+     * Telefon raqamni xalqaro formatga keltiradi.
+     * Mamlakat kodi bilan kelgan bo'lsa o'sha saqlanadi, kodsiz (milliy) kelsa uzunligiga
+     * qarab aniqlanadi: 9 xonali — O'zbekiston (+998), 10 xonali — Rossiya (+7).
+     * Rossiyada ichki formatda ishlatiladigan 8 bilan boshlanuvchi raqam ham +7 ga o'giriladi.
      */
     private String cleanPhoneNumber(String phoneNumber) {
-        phoneNumber = phoneNumber.replaceAll("[^0-9+]", "");
-        if (!phoneNumber.startsWith("+")) {
-            phoneNumber = "+998" + phoneNumber;
-        }
-        return phoneNumber;
+        String digits = phoneNumber == null ? "" : phoneNumber.replaceAll("[^0-9]", "");
+        if (digits.length() == 12 && digits.startsWith("998")) return "+" + digits;
+        if (digits.length() == 11 && digits.startsWith("7")) return "+" + digits;
+        if (digits.length() == 11 && digits.startsWith("8")) return "+7" + digits.substring(1);
+        if (digits.length() == 9) return "+998" + digits;
+        if (digits.length() == 10) return "+7" + digits;
+        return "+" + digits;
     }
 
     /**
