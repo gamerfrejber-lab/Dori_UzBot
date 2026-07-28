@@ -260,6 +260,7 @@
                 <div class="tabs">
                     <button class="tab active" onclick="openTab('pharmacies', this)">🏥 Dorixonalar</button>
                     <button class="tab" onclick="openTab('drugs', this)">💊 Dorilar</button>
+                    <button class="tab" onclick="openTab('stock', this)">📦 Ombor / Hisobot</button>
                     <button class="tab" onclick="openTab('users', this)">👥 Foydalanuvchilar</button>
                 </div>
 
@@ -297,6 +298,18 @@
                     <div class="list" id="drugList"></div>
                 </div>
 
+                <div class="panel" id="tab-stock">
+                    <h2>📦 Ombor hisobi</h2>
+                    <p class="subtitle">Dorixonani tanlang — qancha mahsulot kelgan, qancha sotilgan va qancha qolgani ko'rinadi.
+                        Qoldiq alohida saqlanmaydi, u kirim va chiqimdan hisoblanadi.</p>
+                    <div class="form-grid" style="margin-top:1rem;">
+                        <select id="stockPharmacy" onchange="loadStock()"></select>
+                    </div>
+                    <div class="message" id="stockMessage"></div>
+                    <div class="stats" id="stockTotals" style="margin-top:1rem;"></div>
+                    <div class="list" id="stockList"></div>
+                </div>
+
                 <div class="panel" id="tab-users">
                     <h2>👥 Ro'yxatdan o'tgan foydalanuvchilar</h2>
                     <div class="list" id="userList"></div>
@@ -313,6 +326,7 @@
             document.getElementById('tab-' + name).classList.add('active');
             if (name === 'users') loadUsers();
             if (name === 'drugs') loadDrugs();
+            if (name === 'stock') loadStock();
         }
 
         function loadStats() {
@@ -353,8 +367,10 @@
             }).join('');
             const drSelect = document.getElementById('drPharmacy');
             const filter = document.getElementById('filterPharmacy');
+            const stockSelect = document.getElementById('stockPharmacy');
             if (drSelect) drSelect.innerHTML = options;
             if (filter) filter.innerHTML = '<option value="">— Dorixonani tanlang (dorilarini ko\'rish) —</option>' + options;
+            if (stockSelect) stockSelect.innerHTML = '<option value="">— Dorixonani tanlang (hisobotini ko\'rish) —</option>' + options;
         }
 
         function addPharmacy() {
@@ -437,7 +453,7 @@
                         drugs.map(function (d) {
                             return `<div class="row">
                                 <span><span class="row-main">${esc(d.name)}</span>
-                                <span class="row-sub">${esc(d.nameRu || '')} · ${esc(d.manufacturer || '')} · ${(d.price || 0).toLocaleString()} so'm · ${d.available ? '🟢' : '🔴'}</span></span>
+                                <span class="row-sub">${esc(d.nameRu || '')} · ${esc(d.manufacturer || '')} · ${(d.price || 0).toLocaleString()} so'm · ${omborHolati(d)}</span></span>
                                 <span>
                                     <button class="btn-small" onclick="editPrice(${d.id}, ${d.price}, '${esc(d.name).replace(/'/g, "\\'")}')">Narx</button>
                                     <button class="btn-danger" onclick="deleteDrug(${d.id}, '${esc(d.name).replace(/'/g, "\\'")}')">O'chirish</button>
@@ -445,6 +461,16 @@
                             </div>`;
                         }).join('');
                 });
+        }
+
+        /**
+         * Ombor holati. Hisob yuritilmagan mahsulotda qoldiq 0 chiqadi, lekin bu "tugagan"
+         * degani emas — shuning uchun bunday holatda faqat mavjud/mavjud emas belgisi qoladi.
+         */
+        function omborHolati(d) {
+            if (!d.hisobYuritiladi) return d.available ? '🟢 mavjud' : '🔴 mavjud emas';
+            if (!d.qoldiq || d.qoldiq <= 0) return '🔴 tugagan';
+            return '📦 ' + d.qoldiq + ' ta';
         }
 
         function editPrice(id, currentPrice, name) {
@@ -475,6 +501,85 @@
                     loadStats();
                 })
                 .catch(function () { showMessage('❌ O\'chirib bo\'lmadi', false); });
+        }
+
+        function son(value) { return (value || 0).toLocaleString('ru-RU').replace(/ /g, ' '); }
+
+        function loadStock() {
+            const id = document.getElementById('stockPharmacy').value;
+            const list = document.getElementById('stockList');
+            const totals = document.getElementById('stockTotals');
+            if (!id) {
+                totals.innerHTML = '';
+                list.innerHTML = '<p class="subtitle" style="margin-top:1rem;">Hisobotni ko\'rish uchun dorixonani tanlang.</p>';
+                return;
+            }
+            fetch('/api/admin/ombor/hisobot/' + id, { headers: authHeaders() })
+                .then(function (r) { return r.json(); })
+                .then(function (h) {
+                    totals.innerHTML = `
+                        <div class="stat"><div class="stat-value">${son(h.turlarSoni)}</div><div class="stat-label">Mahsulot turi</div></div>
+                        <div class="stat"><div class="stat-value">${son(h.jamiKelgan)}</div><div class="stat-label">📥 Kelgan</div></div>
+                        <div class="stat"><div class="stat-value">${son(h.jamiSotilgan)}</div><div class="stat-label">📤 Sotilgan</div></div>
+                        <div class="stat"><div class="stat-value">${son(h.jamiQoldiq)}</div><div class="stat-label">📊 Qoldiq</div></div>
+                        <div class="stat"><div class="stat-value">${son(Math.round(h.jamiTushum))}</div><div class="stat-label">💰 Tushum (so'm)</div></div>
+                        <div class="stat"><div class="stat-value">${son(Math.round(h.omborQiymati))}</div><div class="stat-label">🏷 Ombordagi tovar (so'm)</div></div>`;
+
+                    list.innerHTML = '<h2 style="margin-top:1.5rem;">📦 Mahsulotlar (' + h.mahsulotlar.length + ')</h2>' +
+                        h.mahsulotlar.map(function (m) {
+                            const holat = !m.hisobYuritiladi
+                                ? '<span class="row-sub">hisob yuritilmagan</span>'
+                                : (m.qoldiq <= 0 ? '🔴 tugagan' : '🟢 ' + son(m.qoldiq) + ' ta');
+                            const nomi = esc(m.nomi).replace(/'/g, "\\'");
+                            return `<div class="row">
+                                <span><span class="row-main">${esc(m.nomi)}</span>
+                                <span class="row-sub">📥 ${son(m.kelgan)} · 📤 ${son(m.sotilgan)} · 📊 ${son(m.qoldiq)} · 💰 ${son(Math.round(m.tushum))} so'm</span></span>
+                                <span>
+                                    ${holat}
+                                    <button class="btn-small" onclick="omborHarakat(${m.doriId}, 'kirim', '${nomi}', ${m.qoldiq})">📥 Kirim</button>
+                                    <button class="btn-small" onclick="omborHarakat(${m.doriId}, 'chiqim', '${nomi}', ${m.qoldiq})">📤 Sotildi</button>
+                                </span>
+                            </div>`;
+                        }).join('');
+                })
+                .catch(function () {
+                    totals.innerHTML = '';
+                    list.innerHTML = '<p class="subtitle">Hisobotni yuklab bo\'lmadi</p>';
+                });
+        }
+
+        function omborHarakat(doriId, turi, nomi, qoldiq) {
+            const savol = turi === 'kirim'
+                ? '«' + nomi + '» — nechta keldi?'
+                : '«' + nomi + '» — nechta sotildi? (omborda ' + qoldiq + ' ta)';
+            const input = prompt(savol, '');
+            if (input === null) return;
+            const soni = parseInt(input, 10);
+            if (!soni || soni <= 0) { stockMessage('❌ Son noto\'g\'ri, butun musbat raqam kiriting', false); return; }
+
+            fetch('/api/admin/ombor/' + turi, {
+                method: 'POST',
+                headers: authHeaders({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify({ doriId: doriId, soni: soni, izoh: 'sayt admin paneli' })
+            })
+                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (res) {
+                    if (!res.ok) {
+                        stockMessage('❌ ' + (res.data.xato || 'Yozib bo\'lmadi') + ' (qoldiq: ' + res.data.qoldiq + ')', false);
+                        return;
+                    }
+                    stockMessage('✅ ' + (turi === 'kirim' ? 'Kirim' : 'Sotuv') + ' yozildi. Yangi qoldiq: ' + res.data.qoldiq, true);
+                    loadStock();
+                })
+                .catch(function () { stockMessage('❌ Yozib bo\'lmadi', false); });
+        }
+
+        function stockMessage(text, ok) {
+            const box = document.getElementById('stockMessage');
+            if (!box) return;
+            box.textContent = text;
+            box.className = 'message show ' + (ok ? 'ok' : 'err');
+            setTimeout(function () { box.className = 'message'; }, 5000);
         }
 
         function loadUsers() {

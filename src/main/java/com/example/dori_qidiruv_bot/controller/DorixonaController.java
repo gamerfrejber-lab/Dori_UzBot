@@ -2,8 +2,8 @@ package com.example.dori_qidiruv_bot.controller;
 
 import com.example.dori_qidiruv_bot.entity.Dori;
 import com.example.dori_qidiruv_bot.entity.Dorixona;
-import com.example.dori_qidiruv_bot.repository.DoriRepository;
 import com.example.dori_qidiruv_bot.repository.DorixonaRepository;
+import com.example.dori_qidiruv_bot.service.DoriService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import java.util.List;
 public class DorixonaController {
 
     private final DorixonaRepository dorixonaRepository;
-    private final DoriRepository doriRepository;
+    private final DoriService doriService;
 
     /**
      * Barcha dorixonalarni olish
@@ -44,7 +44,7 @@ public class DorixonaController {
         if (dorixonaRepository.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(doriRepository.findByDorixonaIdOrderByNameAsc(id));
+        return ResponseEntity.ok(doriService.dorixonaDorilari(id));
     }
 
     /**

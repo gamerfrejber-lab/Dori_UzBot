@@ -583,7 +583,6 @@
                 const ph = dori.dorixona;
                 const drugName = (currentLang === 'ru' && (dori.nomi_ru || dori.nameRu)) || dori.nomi || dori.name;
                 const price = (dori.narx || dori.price || 0).toLocaleString();
-                const available = dori.available !== false;
                 return `
                 <div class="glass-card dori-card" onclick="openSearchDrug(${i})">
                     <h3>💊 ${drugName}</h3>
@@ -593,9 +592,7 @@
                     <p><strong>${uz ? 'Manzil:' : 'Адрес:'}</strong> 📍 ${ph.address || ''}</p>
                     <p><strong>${uz ? 'Telefon:' : 'Телефон:'}</strong> ☎️ ${ph.telefon || ''}</p>` : ''}
                     ${dori._km != null ? `<p><strong>${uz ? 'Masofa:' : 'Расстояние:'}</strong> 📏 ${formatDistance(dori._km)}</p>` : ''}
-                    <p><strong>${uz ? 'Holat:' : 'Статус:'}</strong> ${available
-                        ? (uz ? '🟢 Mavjud' : '🟢 В наличии')
-                        : (uz ? '🔴 Mavjud emas' : '🔴 Нет в наличии')}</p>
+                    <p><strong>${uz ? 'Holat:' : 'Статус:'}</strong> ${omborHolati(dori, uz)}</p>
                 </div>`;
             }).join('');
 
@@ -605,6 +602,22 @@
         function esc(value) {
             return String(value == null ? '' : value)
                 .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        /**
+         * Ombor holati. Dorixona ombor hisobini yuritayotgan bo'lsa aniq qoldiq ko'rsatiladi;
+         * hisob yuritilmagan mahsulotda qoldiq 0 chiqadi, lekin bu "tugagan" degani emas —
+         * shuning uchun unda faqat mavjud/mavjud emas belgisi qoladi.
+         */
+        function omborHolati(dori, uz) {
+            if (!dori.hisobYuritiladi) {
+                return dori.available !== false
+                    ? (uz ? '🟢 Mavjud' : '🟢 В наличии')
+                    : (uz ? '🔴 Mavjud emas' : '🔴 Нет в наличии');
+            }
+            const qoldiq = dori.qoldiq || 0;
+            if (qoldiq <= 0) return uz ? '🔴 Tugagan' : '🔴 Закончился';
+            return (uz ? '📦 Omborda: ' : '📦 На складе: ') + '<b>' + qoldiq + '</b>' + (uz ? ' ta' : ' шт.');
         }
 
         /** Qidiruv natijasi bosilganda dori haqida to'liq ma'lumotni ko'rsatadi. */
@@ -622,9 +635,7 @@
                 ${dori.nameRu ? `<p><strong>${uz ? 'Ruscha nomi' : 'На русском'}:</strong> ${esc(dori.nameRu)}</p>` : ''}
                 <p><strong>${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}:</strong> ${esc(dori.manufacturer || '—')}</p>
                 <p><strong>${uz ? 'Narxi' : 'Цена'}:</strong> <b>${(dori.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>
-                <p><strong>${uz ? 'Holat' : 'Статус'}:</strong> ${dori.available !== false
-                    ? (uz ? '🟢 Mavjud' : '🟢 В наличии')
-                    : (uz ? '🔴 Mavjud emas' : '🔴 Нет в наличии')}</p>
+                <p><strong>${uz ? 'Holat' : 'Статус'}:</strong> ${omborHolati(dori, uz)}</p>
                 ${ph ? `<p><strong>${uz ? 'Dorixona' : 'Аптека'}:</strong> 🏥 ${esc(ph.name || '')}</p>
                 <p><strong>${uz ? 'Manzil' : 'Адрес'}:</strong> 📍 ${esc(ph.address || '')}</p>
                 <p><strong>${uz ? 'Telefon' : 'Телефон'}:</strong> ☎️ ${esc(ph.telefon || '')}</p>

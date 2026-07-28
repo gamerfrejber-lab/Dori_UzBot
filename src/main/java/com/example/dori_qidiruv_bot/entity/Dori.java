@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,4 +38,18 @@ public class Dori {
 
     @Column(name = "dorixona_id")
     private Long dorixonaId;
+
+    /**
+     * Omborda qolgani (kirim minus chiqim). Bazada saqlanmaydi — ombor harakatlaridan
+     * hisoblanadi va javobga qo'shib yuboriladi.
+     */
+    @Transient
+    private Long qoldiq;
+
+    /**
+     * Bu mahsulot bo'yicha ombor hisobi yuritilyaptimi. Hech qanday kirim yozilmagan bo'lsa
+     * qoldiq 0 chiqadi, lekin bu "tugagan" degani emas — shunchaki hisob yuritilmagan.
+     */
+    @Transient
+    private Boolean hisobYuritiladi;
 }

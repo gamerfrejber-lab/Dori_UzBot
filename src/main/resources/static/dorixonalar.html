@@ -465,6 +465,22 @@
                 .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
+        /**
+         * Ombor holati. Dorixona ombor hisobini yuritayotgan bo'lsa aniq qoldiq ko'rsatiladi;
+         * hisob yuritilmagan mahsulotda qoldiq 0 chiqadi, lekin bu "tugagan" degani emas —
+         * shuning uchun unda faqat mavjud/mavjud emas belgisi qoladi.
+         */
+        function omborHolati(drug, uz) {
+            if (!drug.hisobYuritiladi) {
+                return drug.available
+                    ? (uz ? '🟢 Mavjud' : '🟢 В наличии')
+                    : (uz ? '🔴 Mavjud emas' : '🔴 Нет в наличии');
+            }
+            const qoldiq = drug.qoldiq || 0;
+            if (qoldiq <= 0) return uz ? '🔴 Tugagan' : '🔴 Закончился';
+            return (uz ? '📦 Omborda: ' : '📦 На складе: ') + '<b>' + qoldiq + '</b>' + (uz ? ' ta' : ' шт.');
+        }
+
         /** Dorixonalarni foydalanuvchiga eng yaqinidan boshlab tartiblaydi va masofani qo'shadi. */
         function sortByDistance(pharmacies) {
             if (!userLocation || !Array.isArray(pharmacies)) return pharmacies;
@@ -572,12 +588,16 @@
             const rows = drugs.map((drug, i) => {
                 const drugName = currentLang === 'ru' && drug.nameRu ? drug.nameRu : drug.name;
                 const price = (drug.price || 0).toLocaleString();
-                const status = drug.available
-                    ? `<span class="drug-price">${price} ${currentLang === 'uz' ? 'so\'m' : 'сум'}</span>`
-                    : `<span class="drug-out">${currentLang === 'uz' ? 'Mavjud emas' : 'Нет в наличии'}</span>`;
+                const tugagan = drug.hisobYuritiladi ? (drug.qoldiq || 0) <= 0 : !drug.available;
+                const status = tugagan
+                    ? `<span class="drug-out">${currentLang === 'uz' ? 'Tugagan' : 'Закончился'}</span>`
+                    : `<span class="drug-price">${price} ${currentLang === 'uz' ? 'so\'m' : 'сум'}</span>`;
+                const qoldiq = drug.hisobYuritiladi && (drug.qoldiq || 0) > 0
+                    ? ` · 📦 ${drug.qoldiq} ${currentLang === 'uz' ? 'ta' : 'шт.'}`
+                    : '';
                 return `<div class="drug-row drug-clickable" onclick="openDrug(${i})">
                     <span><span class="drug-name">${esc(drugName)}</span>
-                    <span class="drug-manufacturer">${esc(drug.manufacturer || '')}</span></span>
+                    <span class="drug-manufacturer">${esc(drug.manufacturer || '')}${qoldiq}</span></span>
                     ${status}
                 </div>`;
             }).join('');
@@ -602,9 +622,7 @@
                     ${drug.nameRu ? `<div class="info-row"><span class="info-icon">🇷🇺</span><span class="info-text">${uz ? 'Ruscha nomi' : 'На русском'}: ${esc(drug.nameRu)}</span></div>` : ''}
                     <div class="info-row"><span class="info-icon">🏭</span><span class="info-text">${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}: ${esc(drug.manufacturer || '—')}</span></div>
                     <div class="info-row"><span class="info-icon">💵</span><span class="info-text">${uz ? 'Narxi' : 'Цена'}: <b>${(drug.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></span></div>
-                    <div class="info-row"><span class="info-icon">📦</span><span class="info-text">${uz ? 'Holat' : 'Статус'}: ${drug.available
-                        ? (uz ? '🟢 Mavjud' : '🟢 В наличии')
-                        : (uz ? '🔴 Mavjud emas' : '🔴 Нет в наличии')}</span></div>
+                    <div class="info-row"><span class="info-icon">📦</span><span class="info-text">${uz ? 'Holat' : 'Статус'}: ${omborHolati(drug, uz)}</span></div>
                     ${pharmacy ? `<div class="info-row"><span class="info-icon">🏥</span><span class="info-text">${uz ? 'Dorixona' : 'Аптека'}: ${esc(pharmacy.name || '')}</span></div>
                     <div class="info-row"><span class="info-icon">📍</span><span class="info-text">${esc(pharmacy.address || '')}</span></div>
                     <div class="info-row"><span class="info-icon">📞</span><span class="info-text">${esc(pharmacy.telefon || '')}</span></div>
