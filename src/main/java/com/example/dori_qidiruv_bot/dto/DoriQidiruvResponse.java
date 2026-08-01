@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DoriQidiruvResponse {
+    /** Mahsulot id'si — bron qilish uchun kerak. */
+    private Long id;
     private String name;
     private String nameRu;
     private String manufacturer;

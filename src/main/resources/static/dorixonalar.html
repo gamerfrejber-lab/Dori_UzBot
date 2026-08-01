@@ -685,7 +685,69 @@
                     <div class="info-row"><span class="info-icon">📍</span><span class="info-text">${esc(pharmacy.address || '')}</span></div>
                     <div class="info-row"><span class="info-icon">📞</span><span class="info-text">${esc(pharmacy.telefon || '')}</span></div>
                     ${pharmacy._km != null ? `<div class="info-row"><span class="info-icon">📏</span><span class="info-text">${formatDistance(pharmacy._km)}</span></div>` : ''}` : ''}
-                </div>`;
+                </div>
+                ${bronTugmasi(drug, uz)}
+                <div id="bronNatija"></div>`;
+        }
+
+        /** Mahsulot bron qilinadigan holatdami: hisob yuritilsa qoldiq bo'lishi shart. */
+        function bronQilinadi(drug) {
+            if (!drug || !drug.id) return false;
+            if (drug.hisobYuritiladi) return (drug.qoldiq || 0) > 0;
+            return drug.available !== false;
+        }
+
+        function bronTugmasi(drug, uz) {
+            if (!bronQilinadi(drug)) return '';
+            return `<button class="map-btn" style="background:linear-gradient(135deg,#66bb6a,#43a047);margin-top:1rem;"
+                        onclick="bronBoshla(${drug.id}, '${esc(drug.name).replace(/'/g, "\\'")}')">
+                        ${uz ? '🛒 Bron qilish' : '🛒 Забронировать'}
+                    </button>`;
+        }
+
+        /**
+         * Bron qiladi. Bron bot bilan umumiy jadvalga yoziladi, shuning uchun dorixona
+         * egasiga xabar Telegram orqali boradi va javobi ham Telegram'ga qaytadi.
+         */
+        async function bronBoshla(doriId, nomi) {
+            const uz = currentLang === 'uz';
+            const natija = document.getElementById('bronNatija');
+            const kiritilgan = prompt(uz ? `«${nomi}» — nechta kerak?` : `«${nomi}» — сколько нужно?`, '1');
+            if (kiritilgan === null) return;
+            const soni = parseInt(kiritilgan, 10);
+            if (!soni || soni <= 0) {
+                natija.innerHTML = `<p style="color:#ff6b6b;">${uz ? 'Son noto\'g\'ri.' : 'Неверное количество.'}</p>`;
+                return;
+            }
+
+            natija.innerHTML = `<p>${uz ? 'Yuborilmoqda…' : 'Отправка…'}</p>`;
+            try {
+                const r = await fetch('/api/bron', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + (localStorage.getItem('token') || '')
+                    },
+                    body: JSON.stringify({ doriId: doriId, soni: soni })
+                });
+                const data = await r.json();
+                if (!r.ok) {
+                    natija.innerHTML = `<p style="color:#ff6b6b;">❌ ${esc(data.xato || (uz ? 'Bron qilib bo\'lmadi' : 'Не удалось забронировать'))}</p>`;
+                    return;
+                }
+                natija.innerHTML = `
+                    <div style="margin-top:1rem;padding:1rem;border-radius:16px;background:rgba(102,187,106,0.15);border:1px solid #66bb6a;">
+                        <p style="margin:0 0 0.5rem;"><b>${uz ? '✅ Bron qabul qilindi!' : '✅ Бронь принята!'}</b></p>
+                        <p style="margin:0;">${uz ? 'Soni' : 'Количество'}: <b>${data.soni}</b> ${uz ? 'ta' : 'шт.'}</p>
+                        <p style="margin:0;">${uz ? 'Olib ketish kodi' : 'Код получения'}: <b style="font-size:1.2rem;">${esc(data.kod)}</b></p>
+                        <p style="margin:0.5rem 0 0;font-size:0.9rem;opacity:0.85;">
+                            ${uz ? 'Dorixona tasdiqlaganda Telegram\'da xabar olasiz.'
+                                 : 'Когда аптека подтвердит, вы получите сообщение в Telegram.'}
+                        </p>
+                    </div>`;
+            } catch (e) {
+                natija.innerHTML = `<p style="color:#ff6b6b;">${uz ? 'Serverga ulanib bo\'lmadi.' : 'Не удалось подключиться к серверу.'}</p>`;
+            }
         }
 
         function closeModal() {

@@ -30,6 +30,7 @@ public class DoriService {
                             .orElse(null);
                     long[] ombor = qoldiqlar.getOrDefault(dori.getId(), new long[] { 0, 0 });
                     return new DoriQidiruvResponse(
+                            dori.getId(),
                             dori.getName(),
                             dori.getNameRu(),
                             dori.getManufacturer(),

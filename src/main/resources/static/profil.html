@@ -341,14 +341,9 @@
                     </div>
 
                     <div class="glass-card">
-                        <h3 class="card-title">📊 <span data-uz="Statistika" data-ru="Статистика">${currentLang === 'uz' ? 'Statistika' : 'Статистика'}</span></h3>
-                        <div class="info-row">
-                            <span class="info-label" data-uz="Qidiruvlar soni" data-ru="Количество поисков">${currentLang === 'uz' ? 'Qidiruvlar soni' : 'Количество поисков'}</span>
-                            <span class="info-value">0</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label" data-uz="Saqlangan dorilar" data-ru="Сохраненные лекарства">${currentLang === 'uz' ? 'Saqlangan dorilar' : 'Сохраненные лекарства'}</span>
-                            <span class="info-value">0</span>
+                        <h3 class="card-title">🛒 <span>${currentLang === 'uz' ? 'Mening bronlarim' : 'Мои брони'}</span></h3>
+                        <div id="bronlarim">
+                            <p style="opacity:0.7;">${currentLang === 'uz' ? 'Yuklanmoqda…' : 'Загрузка…'}</p>
                         </div>
                     </div>
 
@@ -357,6 +352,58 @@
                     </button>
                 </div>
             `;
+            bronlarniYukla();
+        }
+
+        /** Foydalanuvchining bronlari — holati va olib ketish kodi bilan. */
+        async function bronlarniYukla() {
+            const uz = currentLang === 'uz';
+            const box = document.getElementById('bronlarim');
+            if (!box) return;
+            try {
+                const r = await fetch('/api/bron/meniki', {
+                    headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('token') || '') }
+                });
+                if (!r.ok) throw new Error('xato');
+                const bronlar = await r.json();
+                if (!bronlar.length) {
+                    box.innerHTML = `<p style="opacity:0.7;">${uz
+                        ? 'Hozircha bron yo\'q. Dori qidirib, kartasidagi «Bron qilish» tugmasini bosing.'
+                        : 'Пока броней нет. Найдите лекарство и нажмите «Забронировать».'}</p>`;
+                    return;
+                }
+                box.innerHTML = bronlar.map(b => `
+                    <div style="padding:0.9rem 0;border-bottom:1px solid rgba(255,255,255,0.08);">
+                        <div style="display:flex;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;">
+                            <b>💊 ${esc(b.doriNomi)}</b>
+                            <span>${bronHolati(b.holat, uz)}</span>
+                        </div>
+                        <div style="opacity:0.8;font-size:0.92rem;margin-top:0.25rem;">
+                            🏥 ${esc(b.dorixonaNomi || '')}${b.manzil ? ' · 📍 ' + esc(b.manzil) : ''}
+                        </div>
+                        <div style="opacity:0.8;font-size:0.92rem;">
+                            ${uz ? 'Soni' : 'Кол-во'}: <b>${b.soni}</b> ${uz ? 'ta' : 'шт.'}
+                            · ${uz ? 'Kod' : 'Код'}: <b>${esc(b.kod || '—')}</b>
+                        </div>
+                    </div>`).join('');
+            } catch (e) {
+                box.innerHTML = `<p style="opacity:0.7;">${uz
+                    ? 'Bronlarni yuklab bo\'lmadi.' : 'Не удалось загрузить брони.'}</p>`;
+            }
+        }
+
+        function bronHolati(holat, uz) {
+            switch (holat) {
+                case 'TAYYOR': return uz ? '🟢 Tayyor' : '🟢 Готов';
+                case 'BERILDI': return uz ? '✅ Berildi' : '✅ Выдан';
+                case 'BEKOR': return uz ? '❌ Bekor qilindi' : '❌ Отменён';
+                default: return uz ? '🕐 Kutilmoqda' : '🕐 Ожидает';
+            }
+        }
+
+        function esc(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
         function displayLoginPrompt() {

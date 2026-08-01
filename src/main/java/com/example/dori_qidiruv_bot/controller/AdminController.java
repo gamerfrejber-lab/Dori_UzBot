@@ -3,6 +3,7 @@ package com.example.dori_qidiruv_bot.controller;
 import com.example.dori_qidiruv_bot.entity.User;
 import com.example.dori_qidiruv_bot.repository.DoriRepository;
 import com.example.dori_qidiruv_bot.repository.DorixonaRepository;
+import com.example.dori_qidiruv_bot.repository.SoovRepository;
 import com.example.dori_qidiruv_bot.repository.UserRepository;
 import com.example.dori_qidiruv_bot.service.OmborService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class AdminController {
     private final DorixonaRepository dorixonaRepository;
     private final DoriRepository doriRepository;
     private final OmborService omborService;
+    private final SoovRepository soovRepository;
 
     /**
      * Joriy foydalanuvchi admin yoki yo'qligini aytadi — sayt shunga qarab admin bo'limini
@@ -97,4 +99,62 @@ public class AdminController {
 
     /** Kirim/chiqim so'rovi tanasi. narx va izoh ixtiyoriy. */
     public record HarakatRequest(Long doriId, int soni, Double narx, String izoh) { }
+
+    // ——— Dorixona egaligi arizalari (botdagi "Arizalar" bo'limi bilan bir xil) ———
+
+    /** Ko'rib chiqilmagan arizalar ro'yxati. */
+    @GetMapping("/soov")
+    public ResponseEntity<List<Map<String, Object>>> arizalar() {
+        return ResponseEntity.ok(soovRepository.kutilayotganlar().stream()
+                .map(q -> {
+                    Map<String, Object> m = new java.util.LinkedHashMap<String, Object>();
+                    m.put("id", q.getId());
+                    m.put("dorixonaId", q.getDorixonaId());
+                    m.put("dorixonaNomi", q.getDorixonaNomi());
+                    m.put("telegramId", q.getTelegramId());
+                    m.put("ism", q.getIsm());
+                    m.put("username", q.getUsername());
+                    m.put("telefon", q.getTelefon());
+                    m.put("tekshiruvKodi", q.getTekshiruvKodi());
+                    m.put("sana", q.getSana() == null ? null : q.getSana().toString());
+                    return m;
+                })
+                .toList());
+    }
+
+    /**
+     * Dalil surati. Rasm bazadan baytlar bilan olinadi — Telegram bergan file_id faqat
+     * uni yuklagan botda ishlagani uchun saytda ko'rsatib bo'lmaydi.
+     * turi: "litsenziya" yoki "jonli".
+     */
+    @GetMapping("/soov/{id}/rasm/{turi}")
+    public ResponseEntity<byte[]> arizaRasmi(@PathVariable Long id, @PathVariable String turi) {
+        byte[] rasm = "jonli".equals(turi) ? soovRepository.jonliRasm(id) : soovRepository.litsenziyaRasm(id);
+        if (rasm == null || rasm.length == 0) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok()
+                .header("Content-Type", "image/jpeg")
+                .header("Cache-Control", "private, max-age=3600")
+                .body(rasm);
+    }
+
+    /** Arizani tasdiqlash yoki rad etish. */
+    @PostMapping("/soov/{id}/{qaror}")
+    @org.springframework.transaction.annotation.Transactional
+    public ResponseEntity<Map<String, Object>> arizaQarori(@PathVariable Long id, @PathVariable String qaror) {
+        boolean tasdiq = "tasdiq".equals(qaror);
+        List<SoovRepository.Qator> kutilmoqda = soovRepository.kutilayotganlar();
+        SoovRepository.Qator ariza = kutilmoqda.stream()
+                .filter(q -> q.getId().equals(id)).findFirst().orElse(null);
+        if (ariza == null) {
+            return ResponseEntity.status(409).body(Map.of("ok", false, "xato", "Ariza topilmadi yoki allaqachon hal qilingan"));
+        }
+        if (soovRepository.hal(id, tasdiq ? SoovRepository.TASDIQLANGAN : SoovRepository.RAD) == 0) {
+            return ResponseEntity.status(409).body(Map.of("ok", false, "xato", "Ariza allaqachon hal qilingan"));
+        }
+        if (tasdiq && soovRepository.egasiniBiriktir(ariza.getDorixonaId(), ariza.getTelegramId()) == 0) {
+            return ResponseEntity.ok(Map.of("ok", true,
+                    "ogohlantirish", "Bu dorixona allaqachon boshqa egaga biriktirilgan"));
+        }
+        return ResponseEntity.ok(Map.of("ok", true, "tasdiq", tasdiq));
+    }
 }
