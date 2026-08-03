@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dori Qidiruv — platforma haqida</title>
+<meta name="description" content="Kerakli dorini qaysi dorixonada borligini bilib, borishdan oldin band qilib qo'ying. Platforma haqida.">
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pharm: #0E6B5C;
+    --pharm-soft: #E3EFEB;
+    --signal: #C2571A;
+    --signal-soft: #F7E9DF;
+    --ink: #0B1F1C;
+    --paper: #F5F7F4;
+    --grey: #5E6E68;
+    --line: #CBD8D2;
+    --card: #FFFFFF;
+
+    --display: "Segoe UI Variable Display", "Segoe UI", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif;
+    --body: "Segoe UI Variable Text", "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono: ui-monospace, "Cascadia Mono", "SF Mono", "JetBrains Mono", Consolas, monospace;
+
+    --measure: 66ch;
+    --pad: clamp(1.1rem, 3.5vw, 2.2rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --pharm: #4FBFA8;
+      --pharm-soft: #10322D;
+      --signal: #E88B4E;
+      --signal-soft: #33210F;
+      --ink: #E8F0ED;
+      --paper: #071614;
+      --grey: #92A6A0;
+      --line: #1E3A35;
+      --card: #0C201D;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --pharm: #4FBFA8;
+    --pharm-soft: #10322D;
+    --signal: #E88B4E;
+    --signal-soft: #33210F;
+    --ink: #E8F0ED;
+    --paper: #071614;
+    --grey: #92A6A0;
+    --line: #1E3A35;
+    --card: #0C201D;
+  }
+
+  :root[data-theme="light"] {
+    --pharm: #0E6B5C;
+    --pharm-soft: #E3EFEB;
+    --signal: #C2571A;
+    --signal-soft: #F7E9DF;
+    --ink: #0B1F1C;
+    --paper: #F5F7F4;
+    --grey: #5E6E68;
+    --line: #CBD8D2;
+    --card: #FFFFFF;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: clamp(1rem, 0.97rem + 0.15vw, 1.075rem);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 5vw, 4rem) var(--pad) 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  /* ——— Yorliq tili: qadoqdagi kabi mayda, keng terilgan sarlavhalar ——— */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--pharm);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0 0 1.1rem;
+  }
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+
+  h1 {
+    font-size: clamp(2.1rem, 1.3rem + 3.6vw, 3.9rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+  h2 {
+    font-size: clamp(1.4rem, 1.1rem + 1.1vw, 1.95rem);
+    font-weight: 700;
+    letter-spacing: -0.022em;
+    line-height: 1.15;
+  }
+  h3 {
+    font-size: 1.06rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  p { margin: 0; max-width: var(--measure); }
+  .stack { display: flex; flex-direction: column; gap: 1rem; }
+  .stack-lg { display: flex; flex-direction: column; gap: 1.6rem; }
+
+  strong { font-weight: 700; }
+  .quiet { color: var(--grey); }
+
+  /* ——— Bosh qism ——— */
+  header .lede {
+    font-size: clamp(1.1rem, 1rem + 0.55vw, 1.35rem);
+    color: var(--grey);
+    max-width: 52ch;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pharm);
+    background: var(--pharm-soft);
+    border: 1px solid var(--line);
+    padding: 0.4rem 0.8rem;
+    align-self: flex-start;
+  }
+  .status .dot {
+    width: 0.45rem; height: 0.45rem; border-radius: 50%;
+    background: var(--pharm);
+  }
+
+  /* ——— Panel: dori qutisidagi bosma maydon ——— */
+  .panel {
+    border: 1px solid var(--line);
+    background: var(--card);
+    padding: clamp(1.1rem, 3vw, 1.7rem);
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .grid-3 > * {
+    background: var(--card);
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .grid-3 p { font-size: 0.96rem; }
+
+  .role {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+
+  /* ——— Oqim: raqamlangan qadamlar (haqiqiy ketma-ketlik) ——— */
+  ol.flow {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    counter-reset: step;
+  }
+  ol.flow li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--line);
+  }
+  ol.flow li:first-child { border-top: none; padding-top: 0; }
+  ol.flow li::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--pharm);
+    padding-top: 0.28rem;
+    font-variant-numeric: tabular-nums;
+  }
+  ol.flow p { font-size: 0.98rem; }
+  ol.flow .who {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--grey);
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  /* ——— Dalil: qo'lda yozilgan kod — sahifadagi yagona "qog'oz" lahzasi ——— */
+  .proof {
+    border: 1px solid var(--line);
+    background: var(--card);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1px;
+    background: var(--line);
+  }
+  .proof > div {
+    background: var(--card);
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .layer {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pharm);
+  }
+  .code-slip {
+    align-self: flex-start;
+    margin-top: 0.3rem;
+    padding: 0.7rem 1.3rem;
+    border: 1.5px dashed var(--signal);
+    background: var(--signal-soft);
+    color: var(--signal);
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    letter-spacing: 0.22em;
+    font-variant-numeric: tabular-nums;
+    transform: rotate(-1.4deg);
+  }
+
+  .warn {
+    border-left: 3px solid var(--signal);
+    background: var(--signal-soft);
+    padding: 1rem 1.2rem;
+  }
+  .warn p { max-width: none; }
+
+  /* ——— Raqamlar: dozalash jadvalidek ——— */
+  .table-scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  caption {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--grey);
+    padding-bottom: 0.7rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.7rem 0.9rem 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: baseline;
+  }
+  th {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: var(--grey);
+  }
+  td.num {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 1.05rem;
+    color: var(--pharm);
+    white-space: nowrap;
+    width: 1%;
+    padding-right: 1.4rem;
+  }
+  td.note { color: var(--grey); font-size: 0.9rem; }
+
+  /* ——— Narx ——— */
+  .tiers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 0.3rem;
+  }
+  .tiers div {
+    background: var(--card);
+    padding: 1rem 0.8rem;
+    text-align: center;
+  }
+  .tiers .m {
+    font-family: var(--mono);
+    font-size: 1.35rem;
+    color: var(--pharm);
+    font-variant-numeric: tabular-nums;
+    display: block;
+  }
+  .tiers .u {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+
+  ul.plain { margin: 0; padding-left: 1.15rem; max-width: var(--measure); }
+  ul.plain li { margin-bottom: 0.45rem; }
+  ul.plain li::marker { color: var(--pharm); }
+
+  /* ——— Arxitektura chizmasi: faqat HTML va CSS, tashqi kutubxonasiz ——— */
+  .diagram { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .diagram .tier {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 0.9rem;
+    width: 100%;
+  }
+  .node {
+    border: 1px solid var(--line);
+    background: var(--card);
+    padding: 0.9rem 1rem;
+    text-align: center;
+  }
+  .node .kim {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 0.25rem;
+  }
+  .node .nima { font-family: var(--display); font-weight: 700; font-size: 0.98rem; }
+  .node.db {
+    background: var(--pharm);
+    border-color: var(--pharm);
+    color: #FFFFFF;
+    padding: 1.1rem 1rem;
+  }
+  .node.db .kim { color: rgba(255, 255, 255, 0.75); }
+  .link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.55rem 0;
+  }
+  .link .line { width: 1px; height: 1.1rem; background: var(--line); }
+  .link .arrow { color: var(--pharm); font-size: 0.85rem; line-height: 1; }
+  .link .label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--grey);
+    text-align: center;
+  }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding-top: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--grey);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+
+  a { color: var(--pharm); text-underline-offset: 0.2em; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="stack-lg">
+    <span class="status"><span class="dot"></span>Ishlab chiqilgan · ishga tushirishga tayyor</span>
+    <h1>Kerakli dorini qaysi dorixonada borligini bilib, borishdan oldin band qilib qo'ying.</h1>
+    <p class="lede">Uch qismli platforma: xaridor uchun Telegram bot va sayt, dorixona uchun alohida ish kabineti. Uchalasi bitta bazada ishlaydi.</p>
+  </header>
+
+  <section>
+    <p class="eyebrow">Muammo</p>
+    <div class="stack">
+      <h2>Odam dori izlab uch dorixona aylanadi. Dorixona esa mijoz kelganini bilmaydi.</h2>
+      <p>Hozir kerakli dorini topishning yagona yo'li — dorixonama-dorixona yurish yoki bittalab qo'ng'iroq qilish. Kechasi yoki shoshilinch holatda bu ayniqsa og'ir. Retsept bo'yicha kam uchraydigan dori kerak bo'lsa, odam shaharning yarmini aylanib chiqadi.</p>
+      <p>Dorixona tomonida ham yo'qotish bor: mijoz kelib «yo'q ekan» deb ketadi, dorixona esa o'sha talab borligini umuman bilmay qoladi. Kichik dorixonalarning aksariyati qoldiqni daftarda yuritadi — nima tugaganini faqat javon bo'shaganda biladi.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Yechim</p>
+    <div class="stack-lg">
+      <h2>Har bir tomon o'z joyida ishlaydi</h2>
+      <div class="grid-3">
+        <div>
+          <span class="role">Xaridor</span>
+          <h3>Telegram bot va sayt</h3>
+          <p>Dori nomini yozadi — o'zbekcha ham, ruscha ham. Eng yaqin dorixonalar masofasi bilan chiqadi, xarita nuqtasi bosilsa navigatsiya ochiladi. Qoldiq ko'rinadi va tugmani bosib bron qilib qo'yadi.</p>
+        </div>
+        <div>
+          <span class="role">Dorixona</span>
+          <h3>Ish kabineti (alohida bot)</h3>
+          <p>Mahsulot qo'shadi, kirim va chiqimni yozadi, qoldiq va tushum hisobotini ko'radi. Bron kelganda darhol xabar oladi va bir bosishda tasdiqlaydi.</p>
+        </div>
+        <div>
+          <span class="role">Platforma</span>
+          <h3>Admin paneli</h3>
+          <p>Obunani sotadi, dorixonani bazaga qo'shadi, egalik arizasini dalillari bilan tekshiradi. Botdan ham, saytdan ham — bir xil.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Qanday ishlaydi</p>
+    <div class="panel">
+      <ol class="flow">
+        <li><p><span class="who">Xaridor</span>Dori nomini yozadi va joylashuvini ulashadi.</p></li>
+        <li><p><span class="who">Platforma</span>Faqat obunasi amal qilayotgan dorixonalar orasidan qidiradi va eng yaqinidan boshlab tartiblaydi.</p></li>
+        <li><p><span class="who">Xaridor</span>Kerakli dorixonani tanlab «Bron qilish» tugmasini bosadi va sonini yozadi.</p></li>
+        <li><p><span class="who">Platforma</span>Qoldiqdan ko'p bron qilishga yo'l qo'ymaydi va olib ketish kodini beradi.</p></li>
+        <li><p><span class="who">Dorixona</span>Buyurtma kabinetiga tushadi: nima, nechta, kim. «Tayyorladim» yoki «Yo'q» tugmasi.</p></li>
+        <li><p><span class="who">Xaridor</span>Javobni Telegram'da oladi. Tayyor bo'lsa — olib ketish kodi bilan.</p></li>
+        <li><p><span class="who">Dorixona</span>Mahsulot berilganda «Berildi» bosiladi va qoldiq ombordan avtomatik ayiriladi.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Ishonch masalasi</p>
+    <div class="stack-lg">
+      <h2>Eng katta xavf — begona odam o'zini dorixona egasi deb ko'rsatishi</h2>
+      <p>Agar buni to'xtatmasak, kimdir birovning dorixonasiga ulanib, narxlarni o'zgartirishi yoki soxta buyurtmalarni qabul qilishi mumkin. Dori bilan bog'liq xizmatda bu shunchaki noqulaylik emas.</p>
+
+      <div class="proof">
+        <div>
+          <span class="layer">1-qatlam</span>
+          <h3>Telegram tasdiqlagan raqam</h3>
+          <p>Raqam tugma orqali ulashiladi — qo'lda yozib bo'lmaydi. Boshqa odamning kontaktini uzatishga ham yo'l qo'yilmaydi.</p>
+        </div>
+        <div>
+          <span class="layer">2-qatlam</span>
+          <h3>Litsenziya surati</h3>
+          <p>Dorixona rasman mavjudligini va o'sha manzilga tegishliligini ko'rsatadi.</p>
+        </div>
+        <div>
+          <span class="layer">3-qatlam</span>
+          <h3>Jonli surat, bir martalik kod bilan</h3>
+          <p>Ariza berilgan paytda bot tasodifiy kod beradi. Egasi uni qog'ozga yozib, dorixona peshtaxtasi bilan birga suratga oladi.</p>
+          <span class="code-slip">4 2 8 3 9 1</span>
+        </div>
+      </div>
+
+      <div class="warn">
+        <p><strong>Nega aynan shunday.</strong> Litsenziyaning suratini topish yoki o'g'irlash qiyin emas. Lekin kodni bot ariza berilgan lahzada yaratadi — internetdan olingan rasm ham, kechagi surat ham ish bermaydi. Ariza uchala dalil bilan birga adminga boradi va u yerda bir bosishda tasdiqlanadi yoki rad etiladi.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Arxitektura</p>
+    <div class="stack-lg">
+      <h2>Uch yuza, bitta baza</h2>
+      <p>Botlar bir-biriga to'g'ridan-to'g'ri ulanmaydi — umumiy jadvallar orqali gaplashadi. Shuning uchun bironta xizmat vaqtincha o'chib qolsa ham buyurtma yo'qolmaydi: u qayta ishga tushganda yetkaziladi.</p>
+
+      <div class="diagram">
+        <div class="tier">
+          <div class="node"><span class="kim">Xaridor</span><span class="nima">Telegram bot</span></div>
+          <div class="node"><span class="kim">Xaridor</span><span class="nima">Sayt / Mini App</span></div>
+        </div>
+
+        <div class="link">
+          <span class="line"></span>
+          <span class="arrow">▼</span>
+          <span class="label">qidiruv · bron</span>
+        </div>
+
+        <div class="node db"><span class="kim">Umumiy ma'lumotlar bazasi</span><span class="nima">PostgreSQL</span></div>
+
+        <div class="link">
+          <span class="line"></span>
+          <span class="arrow">▲ ▼</span>
+          <span class="label">buyurtma · javob · qoldiq</span>
+        </div>
+
+        <div class="tier">
+          <div class="node"><span class="kim">Dorixona</span><span class="nima">Ish kabineti</span></div>
+          <div class="node"><span class="kim">Platforma</span><span class="nima">Admin paneli</span></div>
+        </div>
+      </div>
+
+      <ul class="plain">
+        <li>Dorixona kabinetda mahsulot qo'shsa — u darhol qidiruvda va saytda ko'rinadi.</li>
+        <li>Qoldiq alohida saqlanmaydi: har bir kirim va chiqim yozib boriladi, qoldiq esa shulardan hisoblanadi. Shuning uchun hisobot bilan qoldiq hech qachon bir-biriga zid bo'lmaydi.</li>
+        <li>Qoldiqdan ko'p sotish yoki bron qilish bazaning o'zida to'xtatiladi — bir vaqtda kelgan ikki buyurtma ham qoldiqni manfiyga tushira olmaydi.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Biznes modeli</p>
+    <div class="stack-lg">
+      <h2>Dorixona obunasi</h2>
+      <p>Xaridor uchun bepul. Daromad dorixonalarning obunasidan: obuna muddati tugaganda kabinet yopiladi va dorixona qidiruvda ko'rinmay qoladi.</p>
+      <div class="tiers">
+        <div><span class="m">1</span><span class="u">oy</span></div>
+        <div><span class="m">3</span><span class="u">oy</span></div>
+        <div><span class="m">6</span><span class="u">oy</span></div>
+        <div><span class="m">9</span><span class="u">oy</span></div>
+        <div><span class="m">12</span><span class="u">oy</span></div>
+      </div>
+      <p class="quiet">Narxlar hali belgilanmagan — birinchi dorixonalar bilan suhbatdan keyin qo'yiladi. Kelajakda: bosilgan bronlar bo'yicha statistika va dorixona uchun talab tahlili (qaysi dori so'ralyapti-yu, omborda yo'q) alohida xizmat bo'lishi mumkin.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Hozirgi holat</p>
+    <div class="stack-lg">
+      <h2>Nima tayyor</h2>
+      <div class="table-scroll">
+        <table>
+          <caption>Tizimdagi joriy ma'lumot</caption>
+          <tbody>
+            <tr><td class="num">88</td><td>mahsulot nomi katalogda</td><td class="note">dori va tibbiy buyumlar: bint, spirt, aptechka, shprits, tonometr</td></tr>
+            <tr><td class="num">88</td><td>mahsulotda ruscha nomi bor</td><td class="note">ruscha yozib qidirilganda ham topiladi</td></tr>
+            <tr><td class="num">21</td><td>dorixona bazada, hammasi xarita nuqtasi bilan</td><td class="note">sinov uchun kiritilgan namuna ma'lumot</td></tr>
+            <tr><td class="num">371</td><td>mahsulot-dorixona bog'lanishi</td><td class="note">qaysi dorixonada nima bor</td></tr>
+            <tr><td class="num">13</td><td>ro'yxatdan o'tgan foydalanuvchi</td><td class="note">hammasi telefon orqali tasdiqlangan</td></tr>
+            <tr><td class="num">3</td><td>ishlayotgan xizmat</td><td class="note">bot, sayt, dorixona boti — bulutda, 24/7</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn">
+        <p><strong>Ochiq aytamiz:</strong> hozircha pul to'lagan dorixona yo'q. Katalogdagi 21 dorixona — ishlab chiqish va sinov uchun kiritilgan namuna ma'lumot. Mahsulot to'liq ishlaydi va ishga tushirishga tayyor; keyingi qadam — birinchi haqiqiy dorixonalarni ulash.</p>
+      </div>
+
+      <ul class="plain">
+        <li>Uchala xizmat ham bulutda ishlab turibdi, har 10 daqiqada holati tekshiriladi.</li>
+        <li>Interfeys o'zbek va rus tillarida; telefon raqami <span style="font-family:var(--mono)">+998</span> va <span style="font-family:var(--mono)">+7</span> uchun.</li>
+        <li>Telegram ichida sayt Mini App sifatida ochiladi — parol ham, kod ham so'ralmaydi.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Keyingi qadamlar</p>
+    <div class="stack-lg">
+      <h2>Ishga tushirish rejasi</h2>
+      <ul class="plain">
+        <li><strong>Birinchi dorixonalar.</strong> Toshkentning bitta tumanida 10–15 dorixona bilan bepul sinov — mahsulot ularning kunlik ishiga qanchalik mos kelishini ko'rish uchun.</li>
+        <li><strong>Narxni belgilash.</strong> Sinovdan keyin, dorixona qancha qo'shimcha mijoz olganidan kelib chiqib.</li>
+        <li><strong>Talab tahlili.</strong> Qidirilgan, lekin topilmagan dorilar ro'yxati — dorixona uchun «nimani olib kelish kerak» degan javob. Bu obunani ushlab turadigan asosiy qiymat bo'lishi mumkin.</li>
+        <li><strong>Kassa dasturlari bilan bog'lash.</strong> Qoldiqni qo'lda kiritish o'rniga avtomatik olish — yirikroq tarmoqlar uchun shart.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>Dori Qidiruv</span>
+    <span>Telegram: @dori_UzBot</span>
+    <span>Dorixonalar uchun: @Anvarovich_02_bot</span>
+    <span>Java · Spring Boot · PostgreSQL</span>
+    <span><a href="index.html">Saytga o'tish →</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
