@@ -7,371 +7,645 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dori Qidiruv - Dori topish endi oson</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ============================================================
+           Dori Qidiruv — "suyuq shisha" (liquid glass) uslubi.
+
+           Oddiy glassmorphism'dan farqi: shishaning chekkasida yorug'lik
+           sinadi (refraksiya halqasi), yuzasida kursor ortidan yuruvchi
+           yorqin dog' bor va qalinligi seziladi. Shuning uchun har bir
+           yuza uchta qatlamdan iborat: fon, ::before (dog'), ::after (chekka).
+           ============================================================ */
+
+        :root {
+            /* Fon: dorixona kechasi — deyarli qora, ammo yashilga moyil */
+            --bg-0: #03100D;
+            --bg-1: #061815;
+
+            --ink: #E9F3F0;
+            --ink-dim: #8FA8A1;
+            --ink-faint: #5D726C;
+
+            /* Brend ranglari — taqdimot va banner bilan bir xil oila */
+            --teal: #16C6A4;
+            --teal-deep: #0E6B5C;
+            --sea: #0A4C57;
+            --ember: #E0762F;
+
+            /* Shisha qatlamlari */
+            --glass: rgba(255, 255, 255, 0.055);
+            --glass-hi: rgba(255, 255, 255, 0.095);
+            --hairline: rgba(255, 255, 255, 0.13);
+
+            --r-xl: 32px;
+            --r-lg: 26px;
+            --r-md: 18px;
+            --r-sm: 13px;
+
+            /* Prujinali harakat — mexanik emas, jonli tuyulsin */
+            --spring: cubic-bezier(0.22, 1.15, 0.36, 1);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #0a0a1a 0%, #0d1b3e 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI Variable Display',
+                         'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-0);
             min-height: 100vh;
-            color: #fff;
+            color: var(--ink);
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
         }
 
+        /* ——— Fon: sekin suzuvchi yorug'lik dog'lari.
+               Shisha ularning ustida turgani uchun rang tovlanadi. ——— */
+        .aurora {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            background:
+                radial-gradient(1100px 700px at 50% -12%, #0F3B34 0%, transparent 62%),
+                linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 58%);
+        }
+
+        /* Dog'lar yetarlicha yorqin bo'lishi kerak: shishaning butun ma'nosi ortidagi
+           rangni sindirishda. Xira fonda u oddiy kulrang panelga aylanib qoladi. */
+        .aurora span {
+            position: absolute;
+            display: block;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.85;
+            will-change: transform;
+        }
+
+        .aurora span:nth-child(1) {
+            width: 46vw; height: 46vw; min-width: 340px; min-height: 340px;
+            left: -8vw; top: -6vw;
+            background: radial-gradient(circle, #12907A, transparent 68%);
+            animation: suzish-a 26s var(--ease) infinite alternate;
+        }
+        .aurora span:nth-child(2) {
+            width: 40vw; height: 40vw; min-width: 300px; min-height: 300px;
+            right: -6vw; top: 10vh;
+            background: radial-gradient(circle, #0D6C7A, transparent 68%);
+            animation: suzish-b 32s var(--ease) infinite alternate;
+        }
+        .aurora span:nth-child(3) {
+            width: 34vw; height: 34vw; min-width: 250px; min-height: 250px;
+            left: 32vw; bottom: -10vw;
+            background: radial-gradient(circle, #1E8A66, transparent 70%);
+            opacity: 0.55;
+            animation: suzish-c 38s var(--ease) infinite alternate;
+        }
+
+        @keyframes suzish-a { to { transform: translate3d(9vw, 7vh, 0) scale(1.14); } }
+        @keyframes suzish-b { to { transform: translate3d(-8vw, 10vh, 0) scale(1.1); } }
+        @keyframes suzish-c { to { transform: translate3d(6vw, -9vh, 0) scale(1.18); } }
+
+        /* ============================================================
+           SHISHA YUZA — barcha panel, karta va tugmalar uchun asos
+           ============================================================ */
+        .glass-card,
+        header,
+        .modal,
+        .search-box,
+        .tag,
+        .stat-item,
+        .lang-switch {
+            position: relative;
+            background:
+                linear-gradient(160deg, var(--glass-hi) 0%, var(--glass) 42%, rgba(255,255,255,0.03) 100%);
+            backdrop-filter: blur(28px) saturate(190%);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.30),      /* tepa qirrasi — yorug'lik tushgan joy */
+                inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+                inset 0 0 30px rgba(255, 255, 255, 0.035),    /* ichki nur */
+                0 18px 50px rgba(0, 0, 0, 0.5),
+                0 3px 10px rgba(0, 0, 0, 0.32);
+        }
+
+        /* Chekkadagi yorug'lik sinishi: bir piksellik gradient halqa.
+           Oddiy border bilan bunga erishib bo'lmaydi — chekka bo'ylab
+           yorqinlik o'zgarishi kerak, xuddi haqiqiy shisha qirrasi kabi. */
+        .glass-card::after,
+        header::after,
+        .modal::after,
+        .search-box::after,
+        .tag::after,
+        .stat-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(145deg,
+                rgba(255, 255, 255, 0.55) 0%,
+                rgba(255, 255, 255, 0.08) 26%,
+                rgba(255, 255, 255, 0) 52%,
+                rgba(255, 255, 255, 0.06) 74%,
+                rgba(255, 255, 255, 0.22) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Kursor ortidan yuruvchi yorqin dog' — shishaga tirik ko'rinish beradi */
+        .glass-card::before,
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 0%),
+                rgba(255, 255, 255, 0.13), transparent 45%);
+            opacity: 0;
+            transition: opacity 0.45s var(--ease);
+            pointer-events: none;
+        }
+        .glass-card:hover::before,
+        .stat-item:hover::before { opacity: 1; }
+
+        /* ============================================================
+           SARLAVHA
+           ============================================================ */
         header {
-            backdrop-filter: blur(20px);
-            background: rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem 2rem;
+            padding: 0.85rem 1.6rem;
             position: sticky;
             top: 0;
             z-index: 100;
+            border-radius: 0;
+            border-bottom: 1px solid var(--hairline);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
         }
+        header::after { display: none; }
 
         .header-content {
-            max-width: 1200px;
+            max-width: 1180px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 1rem;
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.28rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            white-space: nowrap;
         }
 
         nav {
             display: flex;
-            gap: 2rem;
+            gap: 1.4rem;
             align-items: center;
         }
 
         nav a {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--ink-dim);
             text-decoration: none;
-            transition: color 0.3s;
+            font-size: 0.94rem;
+            font-weight: 500;
+            position: relative;
+            padding: 0.3rem 0;
+            transition: color 0.3s var(--ease);
         }
-
-        nav a:hover {
-            color: #4fc3f7;
+        /* Tagidagi chiziq o'rtadan chetga o'sadi */
+        nav a::after {
+            content: '';
+            position: absolute;
+            left: 50%; right: 50%; bottom: -2px;
+            height: 1.5px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--teal), var(--teal-deep));
+            transition: left 0.35s var(--spring), right 0.35s var(--spring);
         }
+        nav a:hover { color: var(--ink); }
+        nav a:hover::after { left: 0; right: 0; }
 
         .lang-switch {
             display: flex;
-            gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.3rem;
-            border-radius: 20px;
+            gap: 0.25rem;
+            padding: 0.24rem;
+            border-radius: 999px;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.16),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.07);
         }
+        .lang-switch::after { display: none; }
 
         .lang-btn {
-            padding: 0.3rem 0.8rem;
+            padding: 0.34rem 0.86rem;
             border: none;
             background: transparent;
-            color: rgba(255, 255, 255, 0.6);
-            border-radius: 15px;
+            color: var(--ink-faint);
+            border-radius: 999px;
             cursor: pointer;
-            transition: all 0.3s;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            font-family: inherit;
+            transition: color 0.3s var(--ease), background 0.4s var(--ease), box-shadow 0.4s var(--ease);
         }
-
+        .lang-btn:hover { color: var(--ink-dim); }
         .lang-btn.active {
-            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
-            color: white;
+            color: #04211C;
+            background: linear-gradient(140deg, #3AE0BC, var(--teal));
+            box-shadow: 0 3px 14px rgba(22, 198, 164, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
         }
 
         .login-btn {
-            padding: 0.6rem 1.5rem;
+            padding: 0.6rem 1.35rem;
             border: none;
-            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
-            color: white;
-            border-radius: 25px;
+            background: linear-gradient(140deg, #3AE0BC, var(--teal) 55%, var(--teal-deep));
+            color: #04211C;
+            border-radius: 999px;
             cursor: pointer;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: 650;
+            font-size: 0.92rem;
+            font-family: inherit;
+            white-space: nowrap;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.45),
+                0 6px 20px rgba(22, 198, 164, 0.3);
+            transition: transform 0.35s var(--spring), box-shadow 0.35s var(--ease), filter 0.3s var(--ease);
         }
-
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(79, 195, 247, 0.4);
+            filter: brightness(1.06);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 12px 32px rgba(22, 198, 164, 0.42);
         }
+        .login-btn:active { transform: translateY(0) scale(0.97); }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+        /* ============================================================
+           HERO
+           ============================================================ */
+        .container { max-width: 1180px; margin: 0 auto; padding: 0 1.6rem 3rem; }
 
         .hero {
             text-align: center;
-            padding: 4rem 2rem 2rem;
+            padding: clamp(3rem, 8vw, 6rem) 1.6rem 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            line-height: 1.2;
+            font-size: clamp(2rem, 1.2rem + 3.4vw, 3.6rem);
+            font-weight: 700;
+            letter-spacing: -0.035em;
+            line-height: 1.04;
+            margin-bottom: 1.6rem;
+            text-wrap: balance;
+            background: linear-gradient(178deg, #FFFFFF 20%, #A9C7C0 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .search-box {
-            max-width: 600px;
-            margin: 2rem auto;
+            max-width: 620px;
+            margin: 0 auto;
             position: relative;
+            border-radius: 999px;
+            transition: box-shadow 0.45s var(--ease), transform 0.45s var(--spring);
+        }
+        .search-box:focus-within {
+            transform: translateY(-2px);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.34),
+                0 0 0 3px rgba(22, 198, 164, 0.22),
+                0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
         .search-input {
             width: 100%;
-            padding: 1.2rem 3.5rem 1.2rem 1.5rem;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            color: white;
-            font-size: 1rem;
+            padding: 1.15rem 3.6rem 1.15rem 1.7rem;
+            border: none;
+            background: transparent;
+            border-radius: 999px;
+            color: var(--ink);
+            font-size: 1.02rem;
+            font-family: inherit;
             outline: none;
-            transition: all 0.3s;
         }
-
-        .search-input:focus {
-            border-color: #4fc3f7;
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
+        .search-input::placeholder { color: var(--ink-faint); }
 
         .search-icon {
             position: absolute;
-            right: 1.5rem;
+            right: 1.35rem;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1.3rem;
+            font-size: 1.15rem;
+            opacity: 0.75;
+            pointer-events: none;
+            transition: opacity 0.3s var(--ease), transform 0.4s var(--spring);
+        }
+        .search-box:focus-within .search-icon {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.12);
         }
 
         .tags {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
+            gap: 0.55rem;
             justify-content: center;
+            flex-wrap: wrap;
             margin-top: 1.5rem;
         }
 
         .tag {
-            padding: 0.6rem 1.2rem;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.87rem;
+            font-weight: 500;
+            color: var(--ink-dim);
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
+            user-select: none;
+            transition: transform 0.4s var(--spring), color 0.3s var(--ease), box-shadow 0.4s var(--ease);
         }
-
         .tag:hover {
-            background: rgba(79, 195, 247, 0.2);
-            border-color: #4fc3f7;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            color: var(--ink);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.34),
+                0 12px 28px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(22, 198, 164, 0.28);
         }
+        .tag:active { transform: translateY(-1px) scale(0.97); }
 
-        .search-results {
-            margin: 2rem 0;
-            display: none;
-        }
-
-        .search-results.show {
-            display: block;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s;
-        }
-
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(79, 195, 247, 0.2);
-        }
-
+        /* ============================================================
+           BO'LIMLAR VA KARTALAR
+           ============================================================ */
         .section-title {
-            font-size: 2rem;
-            margin: 3rem 0 1.5rem;
-            text-align: center;
+            font-size: clamp(1.2rem, 1rem + 0.8vw, 1.6rem);
+            font-weight: 650;
+            letter-spacing: -0.022em;
+            margin: 3rem 0 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--hairline), transparent);
         }
 
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+            gap: 1.1rem;
         }
 
-        .dori-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: #4fc3f7;
+        .glass-card {
+            border-radius: var(--r-lg);
+            padding: 1.5rem;
+            transition: transform 0.5s var(--spring), box-shadow 0.5s var(--ease);
         }
 
-        .dori-card p {
-            color: rgba(255, 255, 255, 0.7);
-            margin: 0.3rem 0;
-            line-height: 1.6;
+        .glass-card h3 {
+            font-size: 1.08rem;
+            font-weight: 650;
+            letter-spacing: -0.015em;
+            margin-bottom: 0.85rem;
+            color: var(--ink);
         }
 
-        .dorixona-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.8rem;
-            color: #7c4dff;
+        .glass-card p {
+            font-size: 0.93rem;
+            color: var(--ink-dim);
+            line-height: 1.55;
+            margin-bottom: 0.3rem;
         }
+        .glass-card p strong { color: var(--ink); font-weight: 600; }
+        .glass-card .icon { margin-right: 0.4rem; }
 
-        .dorixona-card p {
-            color: rgba(255, 255, 255, 0.7);
-            margin: 0.5rem 0;
-            font-size: 0.95rem;
+        .dori-card, .dorixona-card { cursor: pointer; }
+
+        .dori-card:hover, .dorixona-card:hover {
+            transform: translateY(-6px);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.34),
+                inset 0 0 30px rgba(255, 255, 255, 0.05),
+                0 28px 60px rgba(0, 0, 0, 0.55),
+                0 0 0 1px rgba(22, 198, 164, 0.22);
         }
+        .dori-card:active, .dorixona-card:active { transform: translateY(-2px) scale(0.99); }
 
-        .dorixona-card .icon {
-            margin-right: 0.5rem;
+        .search-results {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+            gap: 1.1rem;
+            margin-top: 1.5rem;
         }
+        .search-results.show { display: grid; }
 
+        /* ============================================================
+           RAQAMLAR
+           ============================================================ */
         .stats {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin: 4rem 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.1rem;
+            margin-top: 3.5rem;
         }
 
         .stat-item {
+            border-radius: var(--r-lg);
+            padding: 1.6rem 1.2rem;
             text-align: center;
+            transition: transform 0.5s var(--spring);
         }
+        .stat-item:hover { transform: translateY(-4px); }
 
         .stat-number {
-            font-size: 3rem;
+            font-size: clamp(1.7rem, 1.4rem + 1.2vw, 2.4rem);
             font-weight: 700;
-            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
+            letter-spacing: -0.03em;
+            font-variant-numeric: tabular-nums;
+            background: linear-gradient(150deg, #6FF0D2, var(--teal) 55%, var(--teal-deep));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 0.3rem;
         }
 
         .stat-label {
-            color: rgba(255, 255, 255, 0.7);
-            margin-top: 0.5rem;
+            font-size: 0.83rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.02em;
         }
 
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: 4rem;
-        }
-
-        @media (max-width: 768px) {
-            .header-content {
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-
-            nav {
-                gap: 1rem;
-                font-size: 0.9rem;
-            }
-
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stat-number {
-                font-size: 2rem;
-            }
-        }
-        .dori-card {
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .dori-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(79, 195, 247, 0.2);
-        }
-
+        /* ============================================================
+           MODAL
+           ============================================================ */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(6px);
-            display: none;
+            background: rgba(2, 10, 9, 0.68);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1.5rem;
-            z-index: 300;
+            padding: 1.4rem;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s var(--ease), visibility 0.4s;
         }
-
-        .modal-overlay.show { display: flex; }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
 
         .modal {
-            background: #101a33;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 24px;
-            padding: 2rem;
-            width: 100%;
+            border-radius: var(--r-xl);
+            padding: 1.9rem;
             max-width: 520px;
-            max-height: 85vh;
+            width: 100%;
+            max-height: 86vh;
             overflow-y: auto;
+            position: relative;
+            transform: translateY(22px) scale(0.96);
+            opacity: 0;
+            transition: transform 0.5s var(--spring), opacity 0.4s var(--ease);
         }
+        .modal-overlay.show .modal { transform: translateY(0) scale(1); opacity: 1; }
 
         .modal h2 {
-            color: #7c4dff;
-            margin-bottom: 1.2rem;
-            padding-right: 2rem;
+            font-size: 1.35rem;
+            font-weight: 680;
+            letter-spacing: -0.022em;
+            margin-bottom: 1.1rem;
+            padding-right: 2.4rem;
         }
 
-        .modal p { margin-bottom: 0.6rem; }
+        .modal p {
+            font-size: 0.95rem;
+            color: var(--ink-dim);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+        .modal p strong { color: var(--ink); font-weight: 600; }
 
         .modal-close {
-            float: right;
-            background: transparent;
+            position: absolute;
+            top: 1.1rem;
+            right: 1.1rem;
+            width: 34px;
+            height: 34px;
             border: none;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1.6rem;
-            cursor: pointer;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--ink);
+            font-size: 1.4rem;
             line-height: 1;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: background 0.3s var(--ease), transform 0.4s var(--spring);
         }
-
-        .modal-close:hover { color: #fff; }
+        .modal-close:hover { background: rgba(255, 255, 255, 0.17); transform: rotate(90deg); }
 
         .modal-map-btn {
-            margin-top: 1rem;
             width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #4fc3f7;
-            background: rgba(79, 195, 247, 0.1);
-            color: #4fc3f7;
-            border-radius: 50px;
+            margin-top: 1.1rem;
+            padding: 0.85rem 1.2rem;
+            border: none;
+            border-radius: var(--r-md);
+            background: linear-gradient(140deg, #3AE0BC, var(--teal) 55%, var(--teal-deep));
+            color: #04211C;
+            font-weight: 650;
+            font-size: 0.95rem;
+            font-family: inherit;
             cursor: pointer;
-            font-weight: 600;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 6px 20px rgba(22, 198, 164, 0.28);
+            transition: transform 0.35s var(--spring), filter 0.3s var(--ease);
+        }
+        .modal-map-btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
+        .modal-map-btn:active { transform: translateY(0) scale(0.98); }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        footer {
+            text-align: center;
+            padding: 2.5rem 1.6rem 3rem;
+            color: var(--ink-faint);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: 3rem;
         }
 
-        .modal-map-btn:hover { background: rgba(79, 195, 247, 0.2); }
+        /* ============================================================
+           KIRISH ANIMATSIYASI — sahifa ochilganda navbat bilan ko'tariladi
+           ============================================================ */
+        @keyframes kotarilish {
+            from { opacity: 0; transform: translateY(26px); filter: blur(6px); }
+            to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+        }
+
+        .anim { animation: kotarilish 0.85s var(--spring) both; }
+        .anim-1 { animation-delay: 0.06s; }
+        .anim-2 { animation-delay: 0.16s; }
+        .anim-3 { animation-delay: 0.26s; }
+        .anim-4 { animation-delay: 0.36s; }
+
+        /* Aylantirilganda ko'rinadigan bo'limlar */
+        .reveal { opacity: 0; transform: translateY(30px); }
+        .reveal.in {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.75s var(--ease), transform 0.85s var(--spring);
+        }
+
+        /* ============================================================
+           MOSLASHUV
+           ============================================================ */
+        @media (max-width: 768px) {
+            header { padding: 0.7rem 1rem; }
+            .header-content { flex-wrap: wrap; gap: 0.7rem; }
+            .logo { font-size: 1.1rem; }
+            nav { gap: 0.9rem; width: 100%; justify-content: space-between; }
+            nav a { font-size: 0.88rem; }
+            .login-btn { padding: 0.5rem 1rem; font-size: 0.85rem; }
+            .container { padding: 0 1rem 2rem; }
+            .hero { padding: 2.5rem 1rem 1rem; }
+            .cards-grid, .search-results { grid-template-columns: 1fr; }
+            .modal { padding: 1.5rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            html { scroll-behavior: auto; }
+            .reveal { opacity: 1; transform: none; }
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--teal);
+            outline-offset: 3px;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
+    <!-- Fon: shisha ustida turgani uchun ranglar tovlanadi -->
+    <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+
     <header>
         <div class="header-content">
             <div class="logo">💊 Dori Qidiruv</div>
@@ -388,12 +662,12 @@
     </header>
 
     <div class="hero">
-        <h1 data-uz="Assalomu alaykum! Dori topish endi oson" data-ru="Здравствуйте! Найти лекарство теперь просто">Assalomu alaykum! Dori topish endi oson</h1>
-        <div class="search-box">
+        <h1 class="anim anim-1" data-uz="Kerakli dori qaysi dorixonada bor?" data-ru="В какой аптеке есть нужное лекарство?">Kerakli dori qaysi dorixonada bor?</h1>
+        <div class="search-box anim anim-2">
             <input type="text" class="search-input" id="searchInput" placeholder="Dori nomini kiriting..." data-placeholder-uz="Dori nomini kiriting..." data-placeholder-ru="Введите название лекарства...">
             <span class="search-icon">🔍</span>
         </div>
-        <div class="tags">
+        <div class="tags anim anim-3">
             <div class="tag" onclick="quickSearch('Paracetamol')">💊 Paracetamol</div>
             <div class="tag" onclick="quickSearch('Ibuprofen')">💊 Ibuprofen</div>
             <div class="tag" onclick="quickSearch('Amoxicillin')">💊 Amoxicillin</div>
@@ -405,43 +679,29 @@
     <div class="container">
         <div class="search-results" id="searchResults"></div>
 
-        <h2 class="section-title" data-uz="💊 Mashhur dorilar" data-ru="💊 Популярные лекарства">💊 Mashhur dorilar</h2>
-        <div class="cards-grid" id="popularMeds">
-            <div class="glass-card dori-card">
-                <h3>Paracetamol 500mg</h3>
-                <p><strong data-uz="Ishlab chiqaruvchi:" data-ru="Производитель:">Ishlab chiqaruvchi:</strong> Farmstandart</p>
-                <p><strong data-uz="Narx:" data-ru="Цена:">Narx:</strong> 8,000 so'm</p>
-                <p><strong data-uz="Tavsif:" data-ru="Описание:">Tavsif:</strong> Og'riq va isitmani kamaytiruvchi dori</p>
-            </div>
-            <div class="glass-card dori-card">
-                <h3>Ibuprofen 400mg</h3>
-                <p><strong data-uz="Ishlab chiqaruvchi:" data-ru="Производитель:">Ishlab chiqaruvchi:</strong> Jurabek Laboratoriya</p>
-                <p><strong data-uz="Narx:" data-ru="Цена:">Narx:</strong> 12,000 so'm</p>
-                <p><strong data-uz="Tavsif:" data-ru="Описание:">Tavsif:</strong> Yallig'lanishga qarshi dori</p>
-            </div>
-            <div class="glass-card dori-card">
-                <h3>Vitamin C 1000mg</h3>
-                <p><strong data-uz="Ishlab chiqaruvchi:" data-ru="Производитель:">Ishlab chiqaruvchi:</strong> Health Plus</p>
-                <p><strong data-uz="Narx:" data-ru="Цена:">Narx:</strong> 15,000 so'm</p>
-                <p><strong data-uz="Tavsif:" data-ru="Описание:">Tavsif:</strong> Immunitetni mustahkamlovchi vitamin</p>
-            </div>
-        </div>
+        <!-- Mashhur mahsulotlar bazadan olinadi. Ilgari bu yerda qo'lda yozilgan
+             uchta dori turardi — narxlari ham, ishlab chiqaruvchisi ham o'ylab
+             topilgan edi va hech qaysi dorixonaga tegishli emasdi. -->
+        <h2 class="section-title reveal" data-uz="Ko'p qidiriladigan dorilar" data-ru="Часто искомые лекарства">Ko'p qidiriladigan dorilar</h2>
+        <div class="cards-grid reveal" id="popularMeds"></div>
 
-        <h2 class="section-title" data-uz="🏥 Yaqin dorixonalar" data-ru="🏥 Ближайшие аптеки">🏥 Yaqin dorixonalar</h2>
-        <div class="cards-grid" id="nearbyPharmacies"></div>
+        <h2 class="section-title reveal" data-uz="Menga yaqin dorixonalar" data-ru="Ближайшие аптеки">Menga yaqin dorixonalar</h2>
+        <div class="cards-grid reveal" id="nearbyPharmacies"></div>
 
-        <div class="stats">
+        <!-- Raqamlar bazadan hisoblanadi: ilgari "500+", "120+" deb yozilgan edi,
+             bu esa haqiqatga to'g'ri kelmasdi. -->
+        <div class="stats reveal">
             <div class="stat-item">
-                <div class="stat-number">500+</div>
-                <div class="stat-label" data-uz="Turli xil dorilar" data-ru="Различных лекарств">Turli xil dorilar</div>
+                <div class="stat-number" id="statDrugs">—</div>
+                <div class="stat-label" data-uz="Mahsulot turi" data-ru="Наименований">Mahsulot turi</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">120+</div>
-                <div class="stat-label" data-uz="Dorixonalar tarmog'i" data-ru="Аптечная сеть">Dorixonalar tarmog'i</div>
+                <div class="stat-number" id="statPharmacies">—</div>
+                <div class="stat-label" data-uz="Ulangan dorixona" data-ru="Подключённых аптек">Ulangan dorixona</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">24/7</div>
-                <div class="stat-label" data-uz="Xizmat vaqti" data-ru="Время работы">Xizmat vaqti</div>
+                <div class="stat-label" data-uz="Qidiruv ishlaydi" data-ru="Поиск работает">Qidiruv ishlaydi</div>
             </div>
         </div>
     </div>
@@ -451,7 +711,7 @@
     </div>
 
     <footer>
-        <p data-uz="© 2024 Dori Qidiruv. Barcha huquqlar himoyalangan." data-ru="© 2024 Поиск лекарств. Все права защищены.">© 2024 Dori Qidiruv. Barcha huquqlar himoyalangan.</p>
+        <p data-uz="Dori Qidiruv — dorini topish va oldindan band qilish xizmati" data-ru="Dori Qidiruv — сервис поиска и брони лекарств">Dori Qidiruv — dorini topish va oldindan band qilish xizmati</p>
     </footer>
 
     <script>
@@ -515,7 +775,7 @@
                     : 'Не удалось определить местоположение, поэтому расстояние не показано.';
             }
             const tugma = locationError === 'denied' ? '' :
-                `<button onclick="joylashuvniQaytaSora()" style="margin-top:0.7rem;padding:0.5rem 1.1rem;border:none;border-radius:20px;background:linear-gradient(135deg,#4fc3f7,#7c4dff);color:#fff;font-weight:600;cursor:pointer;">
+                `<button onclick="joylashuvniQaytaSora()" style="margin-top:0.7rem;padding:0.5rem 1.1rem;border:none;border-radius:20px;background:linear-gradient(140deg,#3AE0BC,#16C6A4 55%,#0E6B5C);color:#04211C;font-weight:600;cursor:pointer;">
                     ${uz ? '📍 Joylashuvga ruxsat berish' : '📍 Разрешить геолокацию'}
                  </button>`;
             return `<div class="glass-card" style="border-color:rgba(79,195,247,0.35);">
@@ -821,8 +1081,10 @@
                 return;
             }
 
+            // Karta bosiladigan qilib ko'rsatilgan edi, lekin hech qanday amal bajarmasdi.
+            // Endi bosilganda dorixonalar sahifasi ochilib, o'sha dorixona ko'rsatiladi.
             container.innerHTML = locationBanner() + pharmacies.slice(0, 3).map(dorixona => `
-                <div class="glass-card dorixona-card">
+                <div class="glass-card dorixona-card" onclick="dorixonaniOch(${dorixona.id || 0})">
                     <h3>🏥 ${dorixona.nomi || dorixona.name}</h3>
                     <p><span class="icon">📍</span>${dorixona.manzil || dorixona.address || ''}</p>
                     <p><span class="icon">📞</span>${dorixona.telefon || dorixona.phone || ''}</p>
@@ -831,8 +1093,126 @@
             `).join('');
         }
 
+        /**
+         * Dorixona kartasi bosilganda: dorixonalar sahifasiga o'tib, o'sha dorixonani
+         * ochamiz. Qaysi dorixona ekani sessionStorage orqali uzatiladi — manzil satriga
+         * yozilsa, foydalanuvchi havolani ulashganda ham ishlashi kerak bo'lardi, bu esa
+         * hozircha keraksiz murakkablik.
+         */
+        function dorixonaniOch(id) {
+            if (id) sessionStorage.setItem('ochilsin', String(id));
+            location.href = 'dorixonalar.html';
+        }
+
+        /* ================================================================
+           Suyuq shisha jonlanishi
+           ================================================================ */
+
+        /**
+         * Shisha yuzasidagi yorug'lik dog'i kursor ortidan yuradi.
+         * Koordinata CSS o'zgaruvchisiga yoziladi, chizishni brauzer o'zi bajaradi —
+         * shuning uchun ro'yxat uzun bo'lsa ham sekinlashmaydi.
+         * Hodisa hujjatga bir marta ulanadi: har bir kartaga alohida ulash
+         * yangi kartalar qo'shilganda ishlamay qolardi.
+         */
+        document.addEventListener('pointermove', (e) => {
+            const yuza = e.target.closest('.glass-card, .stat-item');
+            if (!yuza) return;
+            const r = yuza.getBoundingClientRect();
+            yuza.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+            yuza.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+        }, { passive: true });
+
+        /** Aylantirilganda bo'limlar navbat bilan ochiladi. */
+        const kuzatuvchi = new IntersectionObserver((yozuvlar) => {
+            yozuvlar.forEach((y, i) => {
+                if (!y.isIntersecting) return;
+                y.target.style.transitionDelay = (i * 70) + 'ms';
+                y.target.classList.add('in');
+                kuzatuvchi.unobserve(y.target);
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => kuzatuvchi.observe(el));
+
+        /** Raqamni 0 dan qiymatga qadar sanaydi. */
+        function sanaChiq(el, qiymat) {
+            const davomiylik = 900;
+            const boshlanish = performance.now();
+            function qadam(hozir) {
+                const p = Math.min((hozir - boshlanish) / davomiylik, 1);
+                const yumshoq = 1 - Math.pow(1 - p, 3);
+                el.textContent = Math.round(qiymat * yumshoq);
+                if (p < 1) requestAnimationFrame(qadam);
+            }
+            requestAnimationFrame(qadam);
+        }
+
+        /**
+         * Sahifadagi raqamlar va "ko'p qidiriladigan dorilar" bazadan olinadi.
+         * Ma'lumot kelmasa bo'limlar yashiriladi — o'ylab topilgan raqam ko'rsatishdan
+         * ko'ra hech narsa ko'rsatmagan yaxshiroq.
+         */
+        async function haqiqiyMalumot() {
+            try {
+                const [dorilarJ, dorixonalarJ] = await Promise.all([
+                    fetch('/api/dori').then(r => r.ok ? r.json() : []),
+                    fetch('/api/dorixona').then(r => r.ok ? r.json() : []),
+                ]);
+
+                const nomlar = [...new Set(dorilarJ.map(d => d.name).filter(Boolean))];
+
+                // Ma'lumot kelmagan bo'lsa nol ko'rsatmaymiz — "0 dorixona" degan yozuv
+                // xizmat ishlamayotgandek taassurot qoldiradi. Bo'limni butunlay yashiramiz.
+                if (!nomlar.length && !dorixonalarJ.length) {
+                    document.querySelectorAll('.stats').forEach(s => s.style.display = 'none');
+                    document.getElementById('popularMeds').style.display = 'none';
+                    document.getElementById('popularMeds').previousElementSibling.style.display = 'none';
+                    return;
+                }
+                sanaChiq(document.getElementById('statDrugs'), nomlar.length);
+                sanaChiq(document.getElementById('statPharmacies'), dorixonalarJ.length);
+
+                // Eng ko'p dorixonada mavjud mahsulotlar — "mashhur"ning oqilona o'lchovi
+                const sanoq = new Map();
+                dorilarJ.forEach(d => {
+                    if (!d.name) return;
+                    const b = sanoq.get(d.name) || { nom: d.name, ruNom: d.nameRu, soni: 0, narxlar: [] };
+                    b.soni++;
+                    if (d.price) b.narxlar.push(d.price);
+                    sanoq.set(d.name, b);
+                });
+                const mashhur = [...sanoq.values()].sort((a, b) => b.soni - a.soni).slice(0, 6);
+
+                const uz = currentLang === 'uz';
+                const joy = document.getElementById('popularMeds');
+                if (!mashhur.length) {
+                    joy.style.display = 'none';
+                    joy.previousElementSibling.style.display = 'none';
+                    return;
+                }
+                joy.innerHTML = mashhur.map(m => {
+                    const eng = Math.min(...m.narxlar), katta = Math.max(...m.narxlar);
+                    const narx = eng === katta
+                        ? eng.toLocaleString()
+                        : eng.toLocaleString() + '–' + katta.toLocaleString();
+                    const nom = (!uz && m.ruNom) ? m.ruNom : m.nom;
+                    return `<div class="glass-card dori-card" onclick="quickSearch('${m.nom.replace(/'/g, "\\'")}')">
+                        <h3>💊 ${esc(nom)}</h3>
+                        <p><strong>${uz ? 'Narx' : 'Цена'}:</strong> ${narx} ${uz ? "so'm" : 'сум'}</p>
+                        <p><strong>${uz ? 'Dorixonalarda' : 'В аптеках'}:</strong> ${m.soni} ${uz ? 'ta' : 'шт.'}</p>
+                    </div>`;
+                }).join('');
+            } catch (e) {
+                const joy = document.getElementById('popularMeds');
+                joy.style.display = 'none';
+                joy.previousElementSibling.style.display = 'none';
+                document.querySelectorAll('.stats').forEach(s => s.style.display = 'none');
+            }
+        }
+
         setLang(currentLang);
         loadPharmacies();
+        haqiqiyMalumot();
     </script>
 </body>
 </html>

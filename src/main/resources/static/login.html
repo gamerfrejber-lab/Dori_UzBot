@@ -15,7 +15,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #0a0a1a 0%, #0d1b3e 100%);
+            background: #03100D;
             min-height: 100vh;
             color: #fff;
             display: flex;
@@ -44,7 +44,7 @@
         .app-name {
             font-size: 2rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
+            background: linear-gradient(140deg, #3AE0BC, #16C6A4 55%, #0E6B5C);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 3rem;
@@ -84,7 +84,7 @@
             border: 2px solid rgba(255, 255, 255, 0.1);
             background: rgba(255, 255, 255, 0.05);
             border-radius: 50px;
-            color: #4fc3f7;
+            color: #16C6A4;
             font-weight: 600;
             font-size: 0.95rem;
             outline: none;
@@ -93,12 +93,12 @@
         }
 
         .country-select:focus {
-            border-color: #4fc3f7;
-            box-shadow: 0 0 20px rgba(79, 195, 247, 0.3);
+            border-color: #16C6A4;
+            box-shadow: 0 0 20px rgba(22, 198, 164, 0.3);
         }
 
         .country-select option {
-            background: #0d1b3e;
+            background: #08211C;
             color: #fff;
         }
 
@@ -118,9 +118,9 @@
         }
 
         .phone-input:focus {
-            border-color: #4fc3f7;
+            border-color: #16C6A4;
             background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 20px rgba(79, 195, 247, 0.3);
+            box-shadow: 0 0 20px rgba(22, 198, 164, 0.3);
         }
 
         .phone-input::placeholder {
@@ -131,7 +131,7 @@
             width: 100%;
             padding: 1.2rem;
             border: none;
-            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
+            background: linear-gradient(140deg, #3AE0BC, #16C6A4 55%, #0E6B5C);
             color: white;
             border-radius: 50px;
             font-size: 1.1rem;
@@ -143,7 +143,7 @@
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(79, 195, 247, 0.4);
+            box-shadow: 0 10px 30px rgba(22, 198, 164, 0.4);
         }
 
         .submit-btn:active {
@@ -163,7 +163,7 @@
         }
 
         .back-link:hover {
-            color: #4fc3f7;
+            color: #16C6A4;
         }
 
         .error-message {
@@ -181,8 +181,8 @@
             display: flex;
             align-items: center;
             gap: 0.6rem;
-            background: rgba(79, 195, 247, 0.1);
-            border: 1px solid rgba(79, 195, 247, 0.3);
+            background: rgba(22, 198, 164, 0.1);
+            border: 1px solid rgba(22, 198, 164, 0.3);
             border-radius: 16px;
             padding: 0.9rem 1.1rem;
             margin-bottom: 1.5rem;
@@ -192,7 +192,7 @@
         }
 
         .telegram-hint a {
-            color: #4fc3f7;
+            color: #16C6A4;
             font-weight: 600;
             text-decoration: none;
         }
@@ -223,7 +223,7 @@
         }
 
         .lang-btn.active {
-            background: linear-gradient(135deg, #4fc3f7, #7c4dff);
+            background: linear-gradient(140deg, #3AE0BC, #16C6A4 55%, #0E6B5C);
             color: white;
         }
 
@@ -246,9 +246,89 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* ============================================================
+           Suyuq shisha — bosh sahifa bilan bir xil chuqurlik va fon.
+           Quyidagi qoidalar yuqoridagilarni to'ldiradi.
+           ============================================================ */
+        .aurora {
+            position: fixed; inset: 0; z-index: -1; overflow: hidden;
+            background:
+                radial-gradient(1100px 700px at 50% -12%, #0F3B34 0%, transparent 62%),
+                linear-gradient(180deg, #061815 0%, #03100D 58%);
+        }
+        .aurora span {
+            position: absolute; display: block; border-radius: 50%;
+            filter: blur(80px); opacity: 0.85; will-change: transform;
+        }
+        .aurora span:nth-child(1) {
+            width: 46vw; height: 46vw; min-width: 320px; min-height: 320px;
+            left: -10vw; top: -8vw;
+            background: radial-gradient(circle, #12907A, transparent 68%);
+            animation: suzish-a 26s cubic-bezier(0.4,0,0.2,1) infinite alternate;
+        }
+        .aurora span:nth-child(2) {
+            width: 40vw; height: 40vw; min-width: 280px; min-height: 280px;
+            right: -8vw; bottom: -6vw;
+            background: radial-gradient(circle, #0D6C7A, transparent 68%);
+            animation: suzish-b 32s cubic-bezier(0.4,0,0.2,1) infinite alternate;
+        }
+        @keyframes suzish-a { to { transform: translate3d(9vw, 7vh, 0) scale(1.14); } }
+        @keyframes suzish-b { to { transform: translate3d(-8vw, -9vh, 0) scale(1.1); } }
+
+        /* Shishaning qalinligi: tepa qirrasida yorug'lik, chekkasida sinish halqasi */
+        .glass-card {
+            position: relative;
+            background: linear-gradient(160deg,
+                rgba(255,255,255,0.095) 0%, rgba(255,255,255,0.055) 42%, rgba(255,255,255,0.03) 100%);
+            backdrop-filter: blur(28px) saturate(190%);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            border: none;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.30),
+                inset 0 -1px 0 rgba(255,255,255,0.05),
+                inset 0 0 30px rgba(255,255,255,0.035),
+                0 18px 50px rgba(0,0,0,0.5),
+                0 3px 10px rgba(0,0,0,0.32);
+        }
+        .glass-card::after {
+            content: ''; position: absolute; inset: 0;
+            border-radius: inherit; padding: 1px;
+            background: linear-gradient(145deg,
+                rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.08) 26%,
+                rgba(255,255,255,0) 52%, rgba(255,255,255,0.06) 74%, rgba(255,255,255,0.22) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Yorqin ko'kimtir-yashil fonda oq matn o'qilmaydi — to'q rang qo'yamiz */
+        .submit-btn, .lang-btn.active, .logout-btn { color: #04211C; }
+
+        .submit-btn, .logout-btn {
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 6px 20px rgba(22,198,164,0.3);
+            font-family: inherit;
+        }
+        .submit-btn:hover, .logout-btn:hover { filter: brightness(1.06); }
+
+        .country-select option { background: #08211C; color: #E9F3F0; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        :focus-visible { outline: 2px solid #16C6A4; outline-offset: 3px; border-radius: 6px; }
     </style>
 </head>
 <body>
+    <div class="aurora" aria-hidden="true"><span></span><span></span></div>
+
     <div class="login-container">
         <div class="logo">💊</div>
         <div class="app-name">Dori Qidiruv</div>
