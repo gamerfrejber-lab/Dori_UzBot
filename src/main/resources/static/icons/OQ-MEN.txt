@@ -1,0 +1,32 @@
+SHU PAPKAGA IKONKA RASMLARINI QO'YING
+======================================
+
+Siz yuborgan chiroyli 3D ikonkalarni shu papkaga PNG qilib saqlang.
+Har bir faylning nomi AYNAN quyidagicha bo'lishi kerak (kichik harflarda,
+.png kengaytmasi bilan):
+
+    pill.png        — kapsula (dori)
+    search.png      — lupa (qidiruv)
+    pin.png         — xarita nuqtasi (lokatsiya)
+    pharmacy.png    — xoch + barg (dorixona)
+    basket.png      — savat (bron)
+    user.png        — profil (odam)
+    phone.png       — telefon
+    box.png         — quti (ombor)
+    check.png       — tasdiq (belgi)
+    clock.png       — soat (kutilmoqda)
+    home.png        — uy (bosh sahifa)
+    pulse.png       — yurak-puls (salomatlik)
+    shield.png      — qalqon (ishonch)
+    doc.png         — hujjat (retsept)
+
+MUHIM:
+ - Rasm foni SHAFFOF (transparent) bo'lsin — qora fon bo'lsa, shisha
+   kartalar ustida qora quti bo'lib ko'rinadi.
+ - Kvadrat o'lchamda (masalan 512x512) bo'lsa eng yaxshi.
+ - Fayl nomi aynan yuqoridagidek — bitta harf farq qilsa ham ishlamaydi.
+
+Agar biror rasm topilmasa yoki nomi noto'g'ri bo'lsa, sayt o'sha o'rinda
+avtomatik ravishda ichki (zaxira) belgini ko'rsatadi — hech narsa buzilmaydi.
+
+Rasm qo'yilgach sahifani Ctrl+Shift+R bilan yangilang.
