@@ -3,6 +3,7 @@
 <head>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="auth-guard.js"></script>
+    <script src="stickers.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin panel - Dori Qidiruv</title>
@@ -281,7 +282,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo">💊 Dori Qidiruv</div>
+            <div class="logo"><img class="stk" data-stk="pill" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
             <nav>
                 <a href="index.html">Bosh sahifa</a>
                 <a href="dorixonalar.html">Dorixonalar</a>
@@ -310,7 +311,7 @@
         function showMessage(text, ok) {
             const el = document.getElementById('message');
             if (!el) return;
-            el.textContent = text;
+            el.innerHTML = text;
             el.className = 'message show ' + (ok ? 'ok' : 'err');
             setTimeout(function () { el.className = 'message'; }, 4000);
         }
@@ -326,28 +327,28 @@
 
         function renderDenied() {
             document.getElementById('container').innerHTML =
-                '<div class="denied"><h2>⛔ Ruxsat yo\'q</h2>' +
+                '<div class="denied"><h2>' + stk('denied') + ' Ruxsat yo\'q</h2>' +
                 '<p class="subtitle">Bu bo\'lim faqat administratorlar uchun.</p>' +
                 '<a href="index.html" class="btn" style="text-decoration:none;">Bosh sahifaga qaytish</a></div>';
         }
 
         function renderPanel() {
             document.getElementById('container').innerHTML = `
-                <h1>🔐 Admin panel</h1>
+                <h1>${stk('lock')} Admin panel</h1>
                 <p class="subtitle">Dorixonalar, dorilar va foydalanuvchilarni boshqarish</p>
 
                 <div class="stats" id="stats"></div>
 
                 <div class="tabs">
-                    <button class="tab active" onclick="openTab('pharmacies', this)">🏥 Dorixonalar</button>
-                    <button class="tab" onclick="openTab('drugs', this)">💊 Dorilar</button>
-                    <button class="tab" onclick="openTab('stock', this)">📦 Ombor / Hisobot</button>
-                    <button class="tab" onclick="openTab('claims', this)">📨 Arizalar</button>
-                    <button class="tab" onclick="openTab('users', this)">👥 Foydalanuvchilar</button>
+                    <button class="tab active" onclick="openTab('pharmacies', this)">${stk('pharmacy')} Dorixonalar</button>
+                    <button class="tab" onclick="openTab('drugs', this)">${stk('pill')} Dorilar</button>
+                    <button class="tab" onclick="openTab('stock', this)">${stk('box')} Ombor / Hisobot</button>
+                    <button class="tab" onclick="openTab('claims', this)">${stk('mail')} Arizalar</button>
+                    <button class="tab" onclick="openTab('users', this)">${stk('group')} Foydalanuvchilar</button>
                 </div>
 
                 <div class="panel active" id="tab-pharmacies">
-                    <h2>➕ Dorixona qo'shish</h2>
+                    <h2>${stk('plus')} Dorixona qo'shish</h2>
                     <div class="form-grid">
                         <input id="phName" placeholder="Nomi *">
                         <input id="phAddress" placeholder="Manzil">
@@ -361,7 +362,7 @@
                 </div>
 
                 <div class="panel" id="tab-drugs">
-                    <h2>➕ Dori qo'shish</h2>
+                    <h2>${stk('plus')} Dori qo'shish</h2>
                     <div class="form-grid">
                         <input id="drName" placeholder="Nomi *">
                         <input id="drNameRu" placeholder="Ruscha nomi">
@@ -381,7 +382,7 @@
                 </div>
 
                 <div class="panel" id="tab-stock">
-                    <h2>📦 Ombor hisobi</h2>
+                    <h2>${stk('box')} Ombor hisobi</h2>
                     <p class="subtitle">Dorixonani tanlang — qancha mahsulot kelgan, qancha sotilgan va qancha qolgani ko'rinadi.
                         Qoldiq alohida saqlanmaydi, u kirim va chiqimdan hisoblanadi.</p>
                     <div class="form-grid" style="margin-top:1rem;">
@@ -393,7 +394,7 @@
                 </div>
 
                 <div class="panel" id="tab-claims">
-                    <h2>📨 Dorixona ulash arizalari</h2>
+                    <h2>${stk('mail')} Dorixona ulash arizalari</h2>
                     <p class="subtitle">Dorixona egasi botda ariza beradi. Ikkinchi suratda —
                         dorixonaning jonli surati — bot bergan kod yozilgan qog'oz ko'rinishi kerak.
                         Kod mos kelmasa yoki hujjat o'qilmasa, rad eting.</p>
@@ -402,7 +403,7 @@
                 </div>
 
                 <div class="panel" id="tab-users">
-                    <h2>👥 Ro'yxatdan o'tgan foydalanuvchilar</h2>
+                    <h2>${stk('group')} Ro'yxatdan o'tgan foydalanuvchilar</h2>
                     <div class="list" id="userList"></div>
                 </div>`;
 
@@ -410,16 +411,46 @@
             loadPharmacies();
         }
 
+        var TAB_ORDER = ['pharmacies', 'drugs', 'stock', 'claims', 'users'];
+
         function openTab(name, button) {
             document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
             document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
-            button.classList.add('active');
+            if (!button) button = document.querySelectorAll('.tab')[TAB_ORDER.indexOf(name)];
+            if (button) button.classList.add('active');
             document.getElementById('tab-' + name).classList.add('active');
             if (name === 'users') loadUsers();
             if (name === 'drugs') loadDrugs();
             if (name === 'stock') loadStock();
             if (name === 'claims') loadClaims();
         }
+
+        // Admin tablari orasida barmoq bilan surish
+        (function () {
+            var sx = 0, sy = 0, t0 = 0, faol = false;
+            function bloklangan(el) {
+                return el.closest('input,textarea,select,button,a,label,[data-no-swipe]');
+            }
+            document.addEventListener('touchstart', function (e) {
+                if (e.touches.length !== 1 || bloklangan(e.target)) { faol = false; return; }
+                sx = e.touches[0].clientX; sy = e.touches[0].clientY; t0 = Date.now(); faol = true;
+            }, { passive: true });
+            document.addEventListener('touchend', function (e) {
+                if (!faol) return;
+                faol = false;
+                var t = e.changedTouches[0];
+                var dx = t.clientX - sx, dy = t.clientY - sy, dt = Date.now() - t0;
+                if (dt > 700 || Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 2) return;
+                var joriy = -1;
+                document.querySelectorAll('.tab').forEach(function (btn, i) {
+                    if (btn.classList.contains('active')) joriy = i;
+                });
+                if (joriy < 0) return;
+                var yangi = dx < 0 ? joriy + 1 : joriy - 1;
+                if (yangi < 0 || yangi >= TAB_ORDER.length) return;
+                openTab(TAB_ORDER[yangi]);
+            }, { passive: true });
+        })();
 
         function loadStats() {
             fetch('/api/admin/stats', { headers: authHeaders() })
@@ -441,7 +472,7 @@
                 .then(function (list) {
                     pharmacies = list;
                     document.getElementById('pharmacyList').innerHTML =
-                        '<h2 style="margin-top:1.5rem;">🏥 Barcha dorixonalar (' + list.length + ')</h2>' +
+                        '<h2 style="margin-top:1.5rem;">' + stk('pharmacy') + ' Barcha dorixonalar (' + list.length + ')</h2>' +
                         list.map(function (p) {
                             return `<div class="row">
                                 <span><span class="row-main">${esc(p.name)}</span>
@@ -482,14 +513,14 @@
             })
                 .then(function (r) {
                     if (!r.ok) throw new Error();
-                    showMessage('✅ Dorixona qo\'shildi', true);
+                    showMessage(stk('check') + ' Dorixona qo\'shildi', true);
                     ['phName', 'phAddress', 'phPhone', 'phLat', 'phLon'].forEach(function (id) {
                         document.getElementById(id).value = '';
                     });
                     loadPharmacies();
                     loadStats();
                 })
-                .catch(function () { showMessage('❌ Qo\'shib bo\'lmadi', false); });
+                .catch(function () { showMessage(stk('cancel') + ' Qo\'shib bo\'lmadi', false); });
         }
 
         function deletePharmacy(id, name) {
@@ -497,11 +528,11 @@
             fetch('/api/dorixona/' + id, { method: 'DELETE', headers: authHeaders() })
                 .then(function (r) {
                     if (!r.ok) throw new Error();
-                    showMessage('✅ O\'chirildi', true);
+                    showMessage(stk('check') + ' O\'chirildi', true);
                     loadPharmacies();
                     loadStats();
                 })
-                .catch(function () { showMessage('❌ O\'chirib bo\'lmadi', false); });
+                .catch(function () { showMessage(stk('cancel') + ' O\'chirib bo\'lmadi', false); });
         }
 
         function addDrug() {
@@ -524,14 +555,14 @@
             })
                 .then(function (r) {
                     if (!r.ok) throw new Error();
-                    showMessage('✅ Dori qo\'shildi', true);
+                    showMessage(stk('check') + ' Dori qo\'shildi', true);
                     ['drName', 'drNameRu', 'drManufacturer', 'drPrice'].forEach(function (id) {
                         document.getElementById(id).value = '';
                     });
                     loadStats();
                     if (document.getElementById('filterPharmacy').value === pharmacyId) loadDrugs();
                 })
-                .catch(function () { showMessage('❌ Qo\'shib bo\'lmadi', false); });
+                .catch(function () { showMessage(stk('cancel') + ' Qo\'shib bo\'lmadi', false); });
         }
 
         function loadDrugs() {
@@ -541,7 +572,7 @@
             fetch('/api/dorixona/' + id + '/dorilar')
                 .then(function (r) { return r.json(); })
                 .then(function (drugs) {
-                    list.innerHTML = '<h2 style="margin-top:1rem;">💊 Dorilar (' + drugs.length + ')</h2>' +
+                    list.innerHTML = '<h2 style="margin-top:1rem;">' + stk('pill') + ' Dorilar (' + drugs.length + ')</h2>' +
                         drugs.map(function (d) {
                             return `<div class="row">
                                 <span><span class="row-main">${esc(d.name)}</span>
@@ -560,9 +591,9 @@
          * degani emas — shuning uchun bunday holatda faqat mavjud/mavjud emas belgisi qoladi.
          */
         function omborHolati(d) {
-            if (!d.hisobYuritiladi) return d.available ? '🟢 mavjud' : '🔴 mavjud emas';
-            if (!d.qoldiq || d.qoldiq <= 0) return '🔴 tugagan';
-            return '📦 ' + d.qoldiq + ' ta';
+            if (!d.hisobYuritiladi) return d.available ? stk('available') + ' mavjud' : stk('unavailable') + ' mavjud emas';
+            if (!d.qoldiq || d.qoldiq <= 0) return stk('unavailable') + ' tugagan';
+            return stk('box') + ' ' + d.qoldiq + ' ta';
         }
 
         function editPrice(id, currentPrice, name) {
@@ -577,10 +608,10 @@
             })
                 .then(function (r) {
                     if (!r.ok) throw new Error();
-                    showMessage('✅ Narx yangilandi', true);
+                    showMessage(stk('check') + ' Narx yangilandi', true);
                     loadDrugs();
                 })
-                .catch(function () { showMessage('❌ Yangilab bo\'lmadi', false); });
+                .catch(function () { showMessage(stk('cancel') + ' Yangilab bo\'lmadi', false); });
         }
 
         function deleteDrug(id, name) {
@@ -588,11 +619,11 @@
             fetch('/api/dori/' + id, { method: 'DELETE', headers: authHeaders() })
                 .then(function (r) {
                     if (!r.ok) throw new Error();
-                    showMessage('✅ O\'chirildi', true);
+                    showMessage(stk('check') + ' O\'chirildi', true);
                     loadDrugs();
                     loadStats();
                 })
-                .catch(function () { showMessage('❌ O\'chirib bo\'lmadi', false); });
+                .catch(function () { showMessage(stk('cancel') + ' O\'chirib bo\'lmadi', false); });
         }
 
         function son(value) { return (value || 0).toLocaleString('ru-RU').replace(/ /g, ' '); }
@@ -611,25 +642,25 @@
                 .then(function (h) {
                     totals.innerHTML = `
                         <div class="stat"><div class="stat-value">${son(h.turlarSoni)}</div><div class="stat-label">Mahsulot turi</div></div>
-                        <div class="stat"><div class="stat-value">${son(h.jamiKelgan)}</div><div class="stat-label">📥 Kelgan</div></div>
-                        <div class="stat"><div class="stat-value">${son(h.jamiSotilgan)}</div><div class="stat-label">📤 Sotilgan</div></div>
-                        <div class="stat"><div class="stat-value">${son(h.jamiQoldiq)}</div><div class="stat-label">📊 Qoldiq</div></div>
-                        <div class="stat"><div class="stat-value">${son(Math.round(h.jamiTushum))}</div><div class="stat-label">💰 Tushum (so'm)</div></div>
-                        <div class="stat"><div class="stat-value">${son(Math.round(h.omborQiymati))}</div><div class="stat-label">🏷 Ombordagi tovar (so'm)</div></div>`;
+                        <div class="stat"><div class="stat-value">${son(h.jamiKelgan)}</div><div class="stat-label">${stk('inbox')} Kelgan</div></div>
+                        <div class="stat"><div class="stat-value">${son(h.jamiSotilgan)}</div><div class="stat-label">${stk('outbox')} Sotilgan</div></div>
+                        <div class="stat"><div class="stat-value">${son(h.jamiQoldiq)}</div><div class="stat-label">${stk('chart')} Qoldiq</div></div>
+                        <div class="stat"><div class="stat-value">${son(Math.round(h.jamiTushum))}</div><div class="stat-label">${stk('money')} Tushum (so'm)</div></div>
+                        <div class="stat"><div class="stat-value">${son(Math.round(h.omborQiymati))}</div><div class="stat-label">${stk('label')} Ombordagi tovar (so'm)</div></div>`;
 
-                    list.innerHTML = '<h2 style="margin-top:1.5rem;">📦 Mahsulotlar (' + h.mahsulotlar.length + ')</h2>' +
+                    list.innerHTML = '<h2 style="margin-top:1.5rem;">' + stk('box') + ' Mahsulotlar (' + h.mahsulotlar.length + ')</h2>' +
                         h.mahsulotlar.map(function (m) {
                             const holat = !m.hisobYuritiladi
                                 ? '<span class="row-sub">hisob yuritilmagan</span>'
-                                : (m.qoldiq <= 0 ? '🔴 tugagan' : '🟢 ' + son(m.qoldiq) + ' ta');
+                                : (m.qoldiq <= 0 ? stk('unavailable') + ' tugagan' : stk('available') + ' ' + son(m.qoldiq) + ' ta');
                             const nomi = esc(m.nomi).replace(/'/g, "\\'");
                             return `<div class="row">
                                 <span><span class="row-main">${esc(m.nomi)}</span>
-                                <span class="row-sub">📥 ${son(m.kelgan)} · 📤 ${son(m.sotilgan)} · 📊 ${son(m.qoldiq)} · 💰 ${son(Math.round(m.tushum))} so'm</span></span>
+                                <span class="row-sub">${stk('inbox')} ${son(m.kelgan)} · ${stk('outbox')} ${son(m.sotilgan)} · ${stk('chart')} ${son(m.qoldiq)} · ${stk('money')} ${son(Math.round(m.tushum))} so'm</span></span>
                                 <span>
                                     ${holat}
-                                    <button class="btn-small" onclick="omborHarakat(${m.doriId}, 'kirim', '${nomi}', ${m.qoldiq})">📥 Kirim</button>
-                                    <button class="btn-small" onclick="omborHarakat(${m.doriId}, 'chiqim', '${nomi}', ${m.qoldiq})">📤 Sotildi</button>
+                                    <button class="btn-small" onclick="omborHarakat(${m.doriId}, 'kirim', '${nomi}', ${m.qoldiq})">${stk('inbox')} Kirim</button>
+                                    <button class="btn-small" onclick="omborHarakat(${m.doriId}, 'chiqim', '${nomi}', ${m.qoldiq})">${stk('outbox')} Sotildi</button>
                                 </span>
                             </div>`;
                         }).join('');
@@ -647,7 +678,7 @@
             const input = prompt(savol, '');
             if (input === null) return;
             const soni = parseInt(input, 10);
-            if (!soni || soni <= 0) { stockMessage('❌ Son noto\'g\'ri, butun musbat raqam kiriting', false); return; }
+            if (!soni || soni <= 0) { stockMessage(stk('cancel') + ' Son noto\'g\'ri, butun musbat raqam kiriting', false); return; }
 
             fetch('/api/admin/ombor/' + turi, {
                 method: 'POST',
@@ -657,19 +688,19 @@
                 .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                 .then(function (res) {
                     if (!res.ok) {
-                        stockMessage('❌ ' + (res.data.xato || 'Yozib bo\'lmadi') + ' (qoldiq: ' + res.data.qoldiq + ')', false);
+                        stockMessage(stk('cancel') + ' ' + (res.data.xato || 'Yozib bo\'lmadi') + ' (qoldiq: ' + res.data.qoldiq + ')', false);
                         return;
                     }
-                    stockMessage('✅ ' + (turi === 'kirim' ? 'Kirim' : 'Sotuv') + ' yozildi. Yangi qoldiq: ' + res.data.qoldiq, true);
+                    stockMessage(stk('check') + ' ' + (turi === 'kirim' ? 'Kirim' : 'Sotuv') + ' yozildi. Yangi qoldiq: ' + res.data.qoldiq, true);
                     loadStock();
                 })
-                .catch(function () { stockMessage('❌ Yozib bo\'lmadi', false); });
+                .catch(function () { stockMessage(stk('cancel') + ' Yozib bo\'lmadi', false); });
         }
 
         function stockMessage(text, ok) {
             const box = document.getElementById('stockMessage');
             if (!box) return;
-            box.textContent = text;
+            box.innerHTML = text;
             box.className = 'message show ' + (ok ? 'ok' : 'err');
             setTimeout(function () { box.className = 'message'; }, 5000);
         }
@@ -685,33 +716,33 @@
                 .then(function (r) { return r.json(); })
                 .then(function (arizalar) {
                     if (!arizalar.length) {
-                        list.innerHTML = '<p class="subtitle">📨 Yangi ariza yo\'q.</p>';
+                        list.innerHTML = '<p class="subtitle">' + stk('mail') + ' Yangi ariza yo\'q.</p>';
                         return;
                     }
                     list.innerHTML = arizalar.map(function (a) {
                         return `<div class="row" style="flex-direction:column;align-items:stretch;gap:0.8rem;">
                             <div>
-                                <span class="row-main">📨 Ariza №${a.id} — ${esc(a.dorixonaNomi)}</span>
+                                <span class="row-main">${stk('mail')} Ariza №${a.id} — ${esc(a.dorixonaNomi)}</span>
                                 <span class="row-sub">
-                                    👤 ${esc(a.ism || '—')}
+                                    ${stk('user')} ${esc(a.ism || '—')}
                                     ${a.username ? ' · @' + esc(a.username) : ''}
-                                    · 🆔 ${a.telegramId}
+                                    · ${stk('id')} ${a.telegramId}
                                 </span>
-                                <span class="row-sub">☎️ ${esc(a.telefon || '—')} · 🔑 kod: <b>${esc(a.tekshiruvKodi || '—')}</b></span>
+                                <span class="row-sub">${stk('phone')} ${esc(a.telefon || '—')} · ${stk('key')} kod: <b>${esc(a.tekshiruvKodi || '—')}</b></span>
                             </div>
                             <div style="display:flex;gap:0.8rem;flex-wrap:wrap;">
                                 <figure style="margin:0;">
                                     <div id="rasm-${a.id}-litsenziya" class="row-sub">Yuklanmoqda…</div>
-                                    <figcaption class="row-sub">📄 Litsenziya</figcaption>
+                                    <figcaption class="row-sub">${stk('doc')} Litsenziya</figcaption>
                                 </figure>
                                 <figure style="margin:0;">
                                     <div id="rasm-${a.id}-jonli" class="row-sub">Yuklanmoqda…</div>
-                                    <figcaption class="row-sub">📷 Jonli surat — kod <b>${esc(a.tekshiruvKodi || '—')}</b> ko'rinishi kerak</figcaption>
+                                    <figcaption class="row-sub">${stk('camera')} Jonli surat — kod <b>${esc(a.tekshiruvKodi || '—')}</b> ko'rinishi kerak</figcaption>
                                 </figure>
                             </div>
                             <div>
-                                <button class="btn-small" onclick="arizaQarori(${a.id}, 'tasdiq')">✅ Tasdiqlash</button>
-                                <button class="btn-danger" onclick="arizaQarori(${a.id}, 'rad')">❌ Rad etish</button>
+                                <button class="btn-small" onclick="arizaQarori(${a.id}, 'tasdiq')">${stk('check')} Tasdiqlash</button>
+                                <button class="btn-danger" onclick="arizaQarori(${a.id}, 'rad')">${stk('cancel')} Rad etish</button>
                             </div>
                         </div>`;
                     }).join('');
@@ -757,12 +788,12 @@
                 .then(function (res) {
                     const box = document.getElementById('claimMessage');
                     if (!res.ok) {
-                        box.textContent = '❌ ' + (res.data.xato || 'Bajarib bo\'lmadi');
+                        box.innerHTML = stk('cancel') + ' ' + esc(res.data.xato || 'Bajarib bo\'lmadi');
                         box.className = 'message show err';
                     } else {
-                        box.textContent = res.data.ogohlantirish
-                            ? '⚠️ ' + res.data.ogohlantirish
-                            : (qaror === 'tasdiq' ? '✅ Tasdiqlandi. Egasiga bot xabar beradi.' : '❌ Rad etildi.');
+                        box.innerHTML = res.data.ogohlantirish
+                            ? stk('warning') + ' ' + esc(res.data.ogohlantirish)
+                            : (qaror === 'tasdiq' ? stk('check') + ' Tasdiqlandi. Egasiga bot xabar beradi.' : stk('cancel') + ' Rad etildi.');
                         box.className = 'message show ' + (res.data.ogohlantirish ? 'err' : 'ok');
                     }
                     setTimeout(function () { box.className = 'message'; }, 6000);
@@ -770,7 +801,7 @@
                 })
                 .catch(function () {
                     const box = document.getElementById('claimMessage');
-                    box.textContent = '❌ Serverga ulanib bo\'lmadi';
+                    box.innerHTML = stk('cancel') + ' Serverga ulanib bo\'lmadi';
                     box.className = 'message show err';
                 });
         }
@@ -784,7 +815,7 @@
                         users.map(function (u) {
                             return `<div class="row">
                                 <span><span class="row-main">${esc(u.name || 'Noma\'lum')}</span>
-                                <span class="row-sub">📞 ${esc(u.phoneNumber || '—')} · ID ${u.id} · ${u.isVerified ? '✅ tasdiqlangan' : '⏳ tasdiqlanmagan'}</span></span>
+                                <span class="row-sub">${stk('phone')} ${esc(u.phoneNumber || '—')} · ID ${u.id} · ${u.isVerified ? stk('check') + ' tasdiqlangan' : stk('waiting') + ' tasdiqlanmagan'}</span></span>
                             </div>`;
                         }).join('');
                 })

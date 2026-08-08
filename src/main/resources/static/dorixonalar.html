@@ -428,10 +428,10 @@
             }
             const tugma = locationError === 'denied' ? '' :
                 `<button onclick="joylashuvniQaytaSora()" style="margin-top:0.7rem;padding:0.5rem 1.1rem;border:none;border-radius:20px;background:linear-gradient(140deg,#3AE0BC,#16C6A4 55%,#0E6B5C);color:#04211C;font-weight:600;cursor:pointer;">
-                    ${uz ? '📍 Joylashuvga ruxsat berish' : '📍 Разрешить геолокацию'}
+                    ${stk('pin')} ${uz ? 'Joylashuvga ruxsat berish' : 'Разрешить геолокацию'}
                  </button>`;
             return `<div class="glass-card" style="border-color:rgba(79,195,247,0.35);margin-bottom:1rem;">
-                        <p style="margin:0;">📍 ${matn}</p>${tugma}
+                        <p style="margin:0;">${stk('pin')} ${matn}</p>${tugma}
                     </div>`;
         }
 
@@ -517,12 +517,12 @@
         function omborHolati(drug, uz) {
             if (!drug.hisobYuritiladi) {
                 return drug.available
-                    ? (uz ? '🟢 Mavjud' : '🟢 В наличии')
-                    : (uz ? '🔴 Mavjud emas' : '🔴 Нет в наличии');
+                    ? (stk('available') + (uz ? ' Mavjud' : ' В наличии'))
+                    : (stk('unavailable') + (uz ? ' Mavjud emas' : ' Нет в наличии'));
             }
             const qoldiq = drug.qoldiq || 0;
-            if (qoldiq <= 0) return uz ? '🔴 Tugagan' : '🔴 Закончился';
-            return (uz ? '📦 Omborda: ' : '📦 На складе: ') + '<b>' + qoldiq + '</b>' + (uz ? ' ta' : ' шт.');
+            if (qoldiq <= 0) return stk('unavailable') + (uz ? ' Tugagan' : ' Закончился');
+            return stk('box') + (uz ? ' Omborda: ' : ' На складе: ') + '<b>' + qoldiq + '</b>' + (uz ? ' ta' : ' шт.');
         }
 
         /** Dorixonalarni foydalanuvchiga eng yaqinidan boshlab tartiblaydi va masofani qo'shadi. */
@@ -543,16 +543,16 @@
 
             if (!pharmacies || pharmacies.length === 0) {
                 container.innerHTML = '<p class="subtitle">'
-                    + (currentLang === 'uz' ? 'Dorixonalar topilmadi 😔' : 'Аптеки не найдены 😔') + '</p>';
+                    + stk('sad') + ' ' + (currentLang === 'uz' ? 'Dorixonalar topilmadi' : 'Аптеки не найдены') + '</p>';
                 return;
             }
 
             // Lokatsiya berilgan bo'lsa sarlavhani "eng yaqin" deb yangilaymiz
             if (userLocation) {
                 const title = document.querySelector('.page-title');
-                if (title) title.textContent = currentLang === 'uz'
-                    ? '🏥 Menga yaqin dorixonalar'
-                    : '🏥 Ближайшие аптеки';
+                if (title) title.innerHTML = stk('pharmacy') + ' ' + (currentLang === 'uz'
+                    ? 'Menga yaqin dorixonalar'
+                    : 'Ближайшие аптеки');
             }
 
             loadedPharmacies = pharmacies;
@@ -566,20 +566,20 @@
                     <h3>${stk('pharmacy')} ${esc(pharmacy.nomi || pharmacy.name)}</h3>
                     <div class="pharmacy-info">
                         <div class="info-row">
-                            <span class="info-icon">📍</span>
+                            <span class="info-icon">${stk('pin')}</span>
                             <span class="info-text">${esc(pharmacy.manzil || pharmacy.address)}</span>
                         </div>
                         <div class="info-row">
-                            <span class="info-icon">📞</span>
+                            <span class="info-icon">${stk('phone')}</span>
                             <span class="info-text">${esc(pharmacy.telefon || pharmacy.phone)}</span>
                         </div>
                         ${pharmacy._km != null ? `<div class="info-row">
-                            <span class="info-icon">📏</span>
+                            <span class="info-icon">${stk('ruler')}</span>
                             <span class="info-text">${formatDistance(pharmacy._km)}</span>
                         </div>` : ''}
                     </div>
                     ${hasLocation ? `<button class="map-btn" onclick="showOnMap(event, ${index})">
-                        ${currentLang === 'uz' ? '📍 Xaritada ko\'rish' : '📍 Показать на карте'}
+                        ${stk('pin')} ${currentLang === 'uz' ? 'Xaritada ko\'rish' : 'Показать на карте'}
                     </button>` : ''}
                 </div>`;
             }).join('');
@@ -608,8 +608,8 @@
                 <button class="modal-close" onclick="closeModal()">&times;</button>
                 <h2>${stk('pharmacy')} ${name}</h2>
                 <div class="pharmacy-info">
-                    <div class="info-row"><span class="info-icon">📍</span><span class="info-text">${esc(pharmacy.manzil || pharmacy.address)}</span></div>
-                    <div class="info-row"><span class="info-icon">📞</span><span class="info-text">${esc(pharmacy.telefon || pharmacy.phone)}</span></div>
+                    <div class="info-row"><span class="info-icon">${stk('pin')}</span><span class="info-text">${esc(pharmacy.manzil || pharmacy.address)}</span></div>
+                    <div class="info-row"><span class="info-icon">${stk('phone')}</span><span class="info-text">${esc(pharmacy.telefon || pharmacy.phone)}</span></div>
                 </div>
                 <div class="drug-list"><p class="subtitle">${currentLang === 'uz' ? 'Dorilar yuklanmoqda...' : 'Загрузка лекарств...'}</p></div>`;
             overlay.classList.add('show');
@@ -629,7 +629,7 @@
             if (!drugs || drugs.length === 0) {
                 return `<p class="subtitle">${currentLang === 'uz' ? 'Bu dorixonada hozircha dori yo\'q' : 'В этой аптеке пока нет лекарств'}</p>`;
             }
-            const title = currentLang === 'uz' ? `💊 Dorilar (${drugs.length})` : `💊 Лекарства (${drugs.length})`;
+            const title = stk('pill') + ' ' + (currentLang === 'uz' ? `Dorilar (${drugs.length})` : `Лекарства (${drugs.length})`);
             const rows = drugs.map((drug, i) => {
                 const drugName = currentLang === 'ru' && drug.nameRu ? drug.nameRu : drug.name;
                 const price = (drug.price || 0).toLocaleString();
@@ -638,7 +638,7 @@
                     ? `<span class="drug-out">${currentLang === 'uz' ? 'Tugagan' : 'Закончился'}</span>`
                     : `<span class="drug-price">${price} ${currentLang === 'uz' ? 'so\'m' : 'сум'}</span>`;
                 const qoldiq = drug.hisobYuritiladi && (drug.qoldiq || 0) > 0
-                    ? ` · 📦 ${drug.qoldiq} ${currentLang === 'uz' ? 'ta' : 'шт.'}`
+                    ? ` · ${stk('box')} ${drug.qoldiq} ${currentLang === 'uz' ? 'ta' : 'шт.'}`
                     : '';
                 return `<div class="drug-row drug-clickable" onclick="openDrug(${i})">
                     <span><span class="drug-name">${esc(drugName)}</span>
@@ -663,15 +663,15 @@
                 <button class="back-btn" onclick="openPharmacy(${currentPharmacyIndex})">${uz ? '← Orqaga' : '← Назад'}</button>
                 <h2>${stk('pill')} ${esc(drugName)}</h2>
                 <div class="pharmacy-info">
-                    ${drug.name ? `<div class="info-row"><span class="info-icon">🔤</span><span class="info-text">${uz ? 'Nomi' : 'Название'}: ${esc(drug.name)}</span></div>` : ''}
-                    ${drug.nameRu ? `<div class="info-row"><span class="info-icon">🇷🇺</span><span class="info-text">${uz ? 'Ruscha nomi' : 'На русском'}: ${esc(drug.nameRu)}</span></div>` : ''}
-                    <div class="info-row"><span class="info-icon">🏭</span><span class="info-text">${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}: ${esc(drug.manufacturer || '—')}</span></div>
-                    <div class="info-row"><span class="info-icon">💵</span><span class="info-text">${uz ? 'Narxi' : 'Цена'}: <b>${(drug.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></span></div>
-                    <div class="info-row"><span class="info-icon">📦</span><span class="info-text">${uz ? 'Holat' : 'Статус'}: ${omborHolati(drug, uz)}</span></div>
-                    ${pharmacy ? `<div class="info-row"><span class="info-icon">🏥</span><span class="info-text">${uz ? 'Dorixona' : 'Аптека'}: ${esc(pharmacy.name || '')}</span></div>
-                    <div class="info-row"><span class="info-icon">📍</span><span class="info-text">${esc(pharmacy.address || '')}</span></div>
-                    <div class="info-row"><span class="info-icon">📞</span><span class="info-text">${esc(pharmacy.telefon || '')}</span></div>
-                    ${pharmacy._km != null ? `<div class="info-row"><span class="info-icon">📏</span><span class="info-text">${formatDistance(pharmacy._km)}</span></div>` : ''}` : ''}
+                    ${drug.name ? `<div class="info-row"><span class="info-icon">${stk('label')}</span><span class="info-text">${uz ? 'Nomi' : 'Название'}: ${esc(drug.name)}</span></div>` : ''}
+                    ${drug.nameRu ? `<div class="info-row"><span class="info-icon">${stk('ru')}</span><span class="info-text">${uz ? 'Ruscha nomi' : 'На русском'}: ${esc(drug.nameRu)}</span></div>` : ''}
+                    <div class="info-row"><span class="info-icon">${stk('factory')}</span><span class="info-text">${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}: ${esc(drug.manufacturer || '—')}</span></div>
+                    <div class="info-row"><span class="info-icon">${stk('money')}</span><span class="info-text">${uz ? 'Narxi' : 'Цена'}: <b>${(drug.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></span></div>
+                    <div class="info-row"><span class="info-icon">${stk('box')}</span><span class="info-text">${uz ? 'Holat' : 'Статус'}: ${omborHolati(drug, uz)}</span></div>
+                    ${pharmacy ? `<div class="info-row"><span class="info-icon">${stk('pharmacy')}</span><span class="info-text">${uz ? 'Dorixona' : 'Аптека'}: ${esc(pharmacy.name || '')}</span></div>
+                    <div class="info-row"><span class="info-icon">${stk('pin')}</span><span class="info-text">${esc(pharmacy.address || '')}</span></div>
+                    <div class="info-row"><span class="info-icon">${stk('phone')}</span><span class="info-text">${esc(pharmacy.telefon || '')}</span></div>
+                    ${pharmacy._km != null ? `<div class="info-row"><span class="info-icon">${stk('ruler')}</span><span class="info-text">${formatDistance(pharmacy._km)}</span></div>` : ''}` : ''}
                 </div>
                 ${bronTugmasi(drug, uz)}
                 <div id="bronNatija"></div>`;
@@ -688,7 +688,7 @@
             if (!bronQilinadi(drug)) return '';
             return `<button class="map-btn" style="background:linear-gradient(135deg,#66bb6a,#43a047);margin-top:1rem;"
                         onclick="bronBoshla(${drug.id}, '${esc(drug.name).replace(/'/g, "\\'")}')">
-                        ${uz ? '🛒 Bron qilish' : '🛒 Забронировать'}
+                        ${stk('basket')} ${uz ? 'Bron qilish' : 'Забронировать'}
                     </button>`;
         }
 
@@ -719,12 +719,12 @@
                 });
                 const data = await r.json();
                 if (!r.ok) {
-                    natija.innerHTML = `<p style="color:#ff6b6b;">❌ ${esc(data.xato || (uz ? 'Bron qilib bo\'lmadi' : 'Не удалось забронировать'))}</p>`;
+                    natija.innerHTML = `<p style="color:#ff6b6b;">${stk('cancel')} ${esc(data.xato || (uz ? 'Bron qilib bo\'lmadi' : 'Не удалось забронировать'))}</p>`;
                     return;
                 }
                 natija.innerHTML = `
                     <div style="margin-top:1rem;padding:1rem;border-radius:16px;background:rgba(102,187,106,0.15);border:1px solid #66bb6a;">
-                        <p style="margin:0 0 0.5rem;"><b>${uz ? '✅ Bron qabul qilindi!' : '✅ Бронь принята!'}</b></p>
+                        <p style="margin:0 0 0.5rem;"><b>${stk('check')} ${uz ? 'Bron qabul qilindi!' : 'Бронь принята!'}</b></p>
                         <p style="margin:0;">${uz ? 'Soni' : 'Количество'}: <b>${data.soni}</b> ${uz ? 'ta' : 'шт.'}</p>
                         <p style="margin:0;">${uz ? 'Olib ketish kodi' : 'Код получения'}: <b style="font-size:1.2rem;">${esc(data.kod)}</b></p>
                         <p style="margin:0.5rem 0 0;font-size:0.9rem;opacity:0.85;">

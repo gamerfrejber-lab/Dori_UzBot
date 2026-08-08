@@ -401,13 +401,13 @@
             profileContent.innerHTML = `
                 <div class="profile-container">
                     <div class="profile-header">
-                        <div class="avatar">👤</div>
+                        <div class="avatar">${stk('user','stk-xl')}</div>
                         <h1 class="user-name">${userName}</h1>
                         <p class="user-phone">${userPhone}</p>
                     </div>
 
                     <div class="glass-card">
-                        <h3 class="card-title">📋 <span data-uz="Shaxsiy ma'lumotlar" data-ru="Личные данные">${currentLang === 'uz' ? 'Shaxsiy ma\'lumotlar' : 'Личные данные'}</span></h3>
+                        <h3 class="card-title">${stk('clipboard')} <span data-uz="Shaxsiy ma'lumotlar" data-ru="Личные данные">${currentLang === 'uz' ? 'Shaxsiy ma\'lumotlar' : 'Личные данные'}</span></h3>
                         <div class="info-row">
                             <span class="info-label" data-uz="Ism" data-ru="Имя">${currentLang === 'uz' ? 'Ism' : 'Имя'}</span>
                             <span class="info-value">${userName}</span>
@@ -423,14 +423,14 @@
                     </div>
 
                     <div class="glass-card">
-                        <h3 class="card-title">🛒 <span>${currentLang === 'uz' ? 'Mening bronlarim' : 'Мои брони'}</span></h3>
+                        <h3 class="card-title">${stk('basket')} <span>${currentLang === 'uz' ? 'Mening bronlarim' : 'Мои брони'}</span></h3>
                         <div id="bronlarim">
                             <p style="opacity:0.7;">${currentLang === 'uz' ? 'Yuklanmoqda…' : 'Загрузка…'}</p>
                         </div>
                     </div>
 
                     <button class="logout-btn" onclick="logout()">
-                        <span data-uz="🚪 Chiqish" data-ru="🚪 Выйти">${currentLang === 'uz' ? '🚪 Chiqish' : '🚪 Выйти'}</span>
+                        ${stk('door')} <span data-uz="Chiqish" data-ru="Выйти">${currentLang === 'uz' ? 'Chiqish' : 'Выйти'}</span>
                     </button>
                 </div>
             `;
@@ -461,7 +461,7 @@
                             <span>${bronHolati(b.holat, uz)}</span>
                         </div>
                         <div style="opacity:0.8;font-size:0.92rem;margin-top:0.25rem;">
-                            🏥 ${esc(b.dorixonaNomi || '')}${b.manzil ? ' · 📍 ' + esc(b.manzil) : ''}
+                            ${stk('pharmacy')} ${esc(b.dorixonaNomi || '')}${b.manzil ? ' · ' + stk('pin') + ' ' + esc(b.manzil) : ''}
                         </div>
                         <div style="opacity:0.8;font-size:0.92rem;">
                             ${uz ? 'Soni' : 'Кол-во'}: <b>${b.soni}</b> ${uz ? 'ta' : 'шт.'}
@@ -476,10 +476,10 @@
 
         function bronHolati(holat, uz) {
             switch (holat) {
-                case 'TAYYOR': return uz ? '🟢 Tayyor' : '🟢 Готов';
-                case 'BERILDI': return uz ? '✅ Berildi' : '✅ Выдан';
-                case 'BEKOR': return uz ? '❌ Bekor qilindi' : '❌ Отменён';
-                default: return uz ? '🕐 Kutilmoqda' : '🕐 Ожидает';
+                case 'TAYYOR': return stk('available') + (uz ? ' Tayyor' : ' Готов');
+                case 'BERILDI': return stk('check') + (uz ? ' Berildi' : ' Выдан');
+                case 'BEKOR': return stk('cancel') + (uz ? ' Bekor qilindi' : ' Отменён');
+                default: return stk('clock') + (uz ? ' Kutilmoqda' : ' Ожидает');
             }
         }
 
