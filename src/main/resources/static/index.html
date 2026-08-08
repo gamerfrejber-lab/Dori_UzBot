@@ -778,10 +778,10 @@
             }
             const tugma = locationError === 'denied' ? '' :
                 `<button onclick="joylashuvniQaytaSora()" style="margin-top:0.7rem;padding:0.5rem 1.1rem;border:none;border-radius:20px;background:linear-gradient(140deg,#3AE0BC,#16C6A4 55%,#0E6B5C);color:#04211C;font-weight:600;cursor:pointer;">
-                    ${uz ? '📍 Joylashuvga ruxsat berish' : '📍 Разрешить геолокацию'}
+                    ${stk('pin')} ${uz ? 'Joylashuvga ruxsat berish' : 'Разрешить геолокацию'}
                  </button>`;
             return `<div class="glass-card" style="border-color:rgba(79,195,247,0.35);">
-                        <p style="margin:0;">📍 ${matn}</p>${tugma}
+                        <p style="margin:0;">${stk('pin')} ${matn}</p>${tugma}
                     </div>`;
         }
 
@@ -900,7 +900,7 @@
 
             if (!results || results.length === 0) {
                 resultsDiv.innerHTML = '<div class="glass-card"><p style="text-align:center;">'
-                    + (currentLang === 'uz' ? 'Hech narsa topilmadi 😔' : 'Ничего не найдено 😔') + '</p></div>';
+                    + stk('sad') + ' ' + (currentLang === 'uz' ? 'Hech narsa topilmadi' : 'Ничего не найдено') + '</p></div>';
                 resultsDiv.classList.add('show');
                 return;
             }
@@ -916,10 +916,10 @@
                     <h3>${stk('pill')} ${drugName}</h3>
                     <p><strong>${uz ? 'Ishlab chiqaruvchi:' : 'Производитель:'}</strong> ${dori.ishlab_chiqaruvchi || dori.manufacturer || '—'}</p>
                     <p><strong>${uz ? 'Narx:' : 'Цена:'}</strong> ${price} ${uz ? "so'm" : 'сум'}</p>
-                    ${ph ? `<p><strong>${uz ? 'Dorixona:' : 'Аптека:'}</strong> 🏥 ${ph.name || ''}</p>
-                    <p><strong>${uz ? 'Manzil:' : 'Адрес:'}</strong> 📍 ${ph.address || ''}</p>
-                    <p><strong>${uz ? 'Telefon:' : 'Телефон:'}</strong> ☎️ ${ph.telefon || ''}</p>` : ''}
-                    ${dori._km != null ? `<p><strong>${uz ? 'Masofa:' : 'Расстояние:'}</strong> 📏 ${formatDistance(dori._km)}</p>` : ''}
+                    ${ph ? `<p><strong>${uz ? 'Dorixona:' : 'Аптека:'}</strong> ${stk('pharmacy')} ${ph.name || ''}</p>
+                    <p><strong>${uz ? 'Manzil:' : 'Адрес:'}</strong> ${stk('pin')} ${ph.address || ''}</p>
+                    <p><strong>${uz ? 'Telefon:' : 'Телефон:'}</strong> ${stk('phone')} ${ph.telefon || ''}</p>` : ''}
+                    ${dori._km != null ? `<p><strong>${uz ? 'Masofa:' : 'Расстояние:'}</strong> ${stk('ruler')} ${formatDistance(dori._km)}</p>` : ''}
                     <p><strong>${uz ? 'Holat:' : 'Статус:'}</strong> ${omborHolati(dori, uz)}</p>
                 </div>`;
             }).join('');
@@ -940,12 +940,12 @@
         function omborHolati(dori, uz) {
             if (!dori.hisobYuritiladi) {
                 return dori.available !== false
-                    ? (uz ? '🟢 Mavjud' : '🟢 В наличии')
-                    : (uz ? '🔴 Mavjud emas' : '🔴 Нет в наличии');
+                    ? (stk('available') + (uz ? ' Mavjud' : ' В наличии'))
+                    : (stk('unavailable') + (uz ? ' Mavjud emas' : ' Нет в наличии'));
             }
             const qoldiq = dori.qoldiq || 0;
-            if (qoldiq <= 0) return uz ? '🔴 Tugagan' : '🔴 Закончился';
-            return (uz ? '📦 Omborda: ' : '📦 На складе: ') + '<b>' + qoldiq + '</b>' + (uz ? ' ta' : ' шт.');
+            if (qoldiq <= 0) return stk('unavailable') + (uz ? ' Tugagan' : ' Закончился');
+            return stk('box') + (uz ? ' Omborda: ' : ' На складе: ') + '<b>' + qoldiq + '</b>' + (uz ? ' ta' : ' шт.');
         }
 
         /** Qidiruv natijasi bosilganda dori haqida to'liq ma'lumotni ko'rsatadi. */
@@ -959,17 +959,17 @@
             document.getElementById('modalBox').innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
                 <h2>${stk('pill')} ${esc(drugName)}</h2>
-                ${dori.name ? `<p><strong>${uz ? 'Nomi' : 'Название'}:</strong> ${esc(dori.name)}</p>` : ''}
-                ${dori.nameRu ? `<p><strong>${uz ? 'Ruscha nomi' : 'На русском'}:</strong> ${esc(dori.nameRu)}</p>` : ''}
-                <p><strong>${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}:</strong> ${esc(dori.manufacturer || '—')}</p>
-                <p><strong>${uz ? 'Narxi' : 'Цена'}:</strong> <b>${(dori.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>
+                ${dori.name ? `<p><strong>${uz ? 'Nomi' : 'Название'}:</strong> ${stk('label')} ${esc(dori.name)}</p>` : ''}
+                ${dori.nameRu ? `<p><strong>${uz ? 'Ruscha nomi' : 'На русском'}:</strong> ${stk('ru')} ${esc(dori.nameRu)}</p>` : ''}
+                <p><strong>${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}:</strong> ${stk('factory')} ${esc(dori.manufacturer || '—')}</p>
+                <p><strong>${uz ? 'Narxi' : 'Цена'}:</strong> ${stk('money')} <b>${(dori.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>
                 <p><strong>${uz ? 'Holat' : 'Статус'}:</strong> ${omborHolati(dori, uz)}</p>
-                ${ph ? `<p><strong>${uz ? 'Dorixona' : 'Аптека'}:</strong> 🏥 ${esc(ph.name || '')}</p>
-                <p><strong>${uz ? 'Manzil' : 'Адрес'}:</strong> 📍 ${esc(ph.address || '')}</p>
-                <p><strong>${uz ? 'Telefon' : 'Телефон'}:</strong> ☎️ ${esc(ph.telefon || '')}</p>
-                ${dori._km != null ? `<p><strong>${uz ? 'Masofa' : 'Расстояние'}:</strong> 📏 ${formatDistance(dori._km)}</p>` : ''}
+                ${ph ? `<p><strong>${uz ? 'Dorixona' : 'Аптека'}:</strong> ${stk('pharmacy')} ${esc(ph.name || '')}</p>
+                <p><strong>${uz ? 'Manzil' : 'Адрес'}:</strong> ${stk('pin')} ${esc(ph.address || '')}</p>
+                <p><strong>${uz ? 'Telefon' : 'Телефон'}:</strong> ${stk('phone')} ${esc(ph.telefon || '')}</p>
+                ${dori._km != null ? `<p><strong>${uz ? 'Masofa' : 'Расстояние'}:</strong> ${stk('ruler')} ${formatDistance(dori._km)}</p>` : ''}
                 ${ph.latitude && ph.longitude ? `<button class="modal-map-btn" onclick="window.open('https://yandex.com/maps/?pt=${ph.longitude},${ph.latitude}&z=17&l=map','_blank')">
-                    ${uz ? '📍 Xaritada ko\'rish' : '📍 Показать на карте'}</button>` : ''}` : ''}
+                    ${stk('pin')} ${uz ? 'Xaritada ko\'rish' : 'Показать на карте'}</button>` : ''}` : ''}
                 ${bronTugmasi(dori, uz)}
                 <div id="bronNatija"></div>`;
             document.getElementById('modalOverlay').classList.add('show');
@@ -986,7 +986,7 @@
             if (!bronQilinadi(dori)) return '';
             return `<button class="modal-map-btn" style="background:linear-gradient(135deg,#66bb6a,#43a047);"
                         onclick="bronBoshla(${dori.id}, '${esc(dori.name).replace(/'/g, "\\'")}')">
-                        ${uz ? '🛒 Bron qilish' : '🛒 Забронировать'}
+                        ${stk('basket')} ${uz ? 'Bron qilish' : 'Забронировать'}
                     </button>`;
         }
 
@@ -1017,12 +1017,12 @@
                 });
                 const data = await r.json();
                 if (!r.ok) {
-                    natija.innerHTML = `<p style="color:#ff6b6b;">❌ ${esc(data.xato || (uz ? 'Bron qilib bo\'lmadi' : 'Не удалось забронировать'))}</p>`;
+                    natija.innerHTML = `<p style="color:#ff6b6b;">${stk('cancel')} ${esc(data.xato || (uz ? 'Bron qilib bo\'lmadi' : 'Не удалось забронировать'))}</p>`;
                     return;
                 }
                 natija.innerHTML = `
                     <div style="margin-top:1rem;padding:1rem;border-radius:16px;background:rgba(102,187,106,0.15);border:1px solid #66bb6a;">
-                        <p style="margin:0 0 0.5rem;"><b>${uz ? '✅ Bron qabul qilindi!' : '✅ Бронь принята!'}</b></p>
+                        <p style="margin:0 0 0.5rem;"><b>${stk('check')} ${uz ? 'Bron qabul qilindi!' : 'Бронь принята!'}</b></p>
                         <p style="margin:0;">${uz ? 'Soni' : 'Количество'}: <b>${data.soni}</b> ${uz ? 'ta' : 'шт.'}</p>
                         <p style="margin:0;">${uz ? 'Olib ketish kodi' : 'Код получения'}: <b style="font-size:1.2rem;">${esc(data.kod)}</b></p>
                         <p style="margin:0.5rem 0 0;font-size:0.9rem;opacity:0.85;">
@@ -1088,9 +1088,9 @@
             container.innerHTML = locationBanner() + pharmacies.slice(0, 3).map(dorixona => `
                 <div class="glass-card dorixona-card" onclick="dorixonaniOch(${dorixona.id || 0})">
                     <h3>${stk('pharmacy')} ${dorixona.nomi || dorixona.name}</h3>
-                    <p><span class="icon">📍</span>${dorixona.manzil || dorixona.address || ''}</p>
-                    <p><span class="icon">📞</span>${dorixona.telefon || dorixona.phone || ''}</p>
-                    ${dorixona._km != null ? `<p><span class="icon">📏</span>${formatDistance(dorixona._km)}</p>` : ''}
+                    <p><span class="icon">${stk('pin')}</span>${dorixona.manzil || dorixona.address || ''}</p>
+                    <p><span class="icon">${stk('phone')}</span>${dorixona.telefon || dorixona.phone || ''}</p>
+                    ${dorixona._km != null ? `<p><span class="icon">${stk('ruler')}</span>${formatDistance(dorixona._km)}</p>` : ''}
                 </div>
             `).join('');
         }

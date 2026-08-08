@@ -5,6 +5,7 @@ Siz yuborgan chiroyli 3D ikonkalarni shu papkaga PNG qilib saqlang.
 Har bir faylning nomi AYNAN quyidagicha bo'lishi kerak (kichik harflarda,
 .png kengaytmasi bilan):
 
+ASOSIY 14 TA IKONKA (allaqachon mavjud):
     pill.png        — kapsula (dori)
     search.png      — lupa (qidiruv)
     pin.png         — xarita nuqtasi (lokatsiya)
@@ -20,13 +21,38 @@ Har bir faylning nomi AYNAN quyidagicha bo'lishi kerak (kichik harflarda,
     shield.png      — qalqon (ishonch)
     doc.png         — hujjat (retsept)
 
+QO'SHIMCHA IKONKALAR (PNG qo'yilsa avtomatik ishlatiladi):
+    ruler.png       — lineyka (masofa)
+    available.png   — yashil doira (mavjud)
+    unavailable.png — qizil doira (mavjud emas)
+    cancel.png      — xato (bekor)
+    factory.png     — zavod (ishlab chiqaruvchi)
+    money.png       — pul (narx)
+    label.png       — yorliq (nom)
+    pushpin.png     — igna
+    clipboard.png   — bufer
+    door.png        — eshik (chiqish)
+    star.png        — yulduz
+    sad.png         — xafa yuz (topilmadi)
+    ru.png          — Rossiya bayrog'i
+    lock.png        — qulf (xavfsizlik)
+    waiting.png     — qumsoat (kutish)
+    key.png         — kalit
+    mail.png        — konvert (xabar)
+    inbox.png       — kirish (yuklab olish)
+    outbox.png      — chiqish (yuklash)
+    chart.png       — diagram (statistika)
+    camera.png      — kamera (surat)
+    id.png          — ID karta
+    denied.png      — taqiqlangan
+    group.png       — guruh (foydalanuvchilar)
+    warning.png     — ogohlantirish
+    plus.png        — qo'shish
+
 MUHIM:
- - Rasm foni SHAFFOF (transparent) bo'lsin — qora fon bo'lsa, shisha
-   kartalar ustida qora quti bo'lib ko'rinadi.
+ - Rasm foni SHAFFOF (transparent) bo'lsin.
  - Kvadrat o'lchamda (masalan 512x512) bo'lsa eng yaxshi.
  - Fayl nomi aynan yuqoridagidek — bitta harf farq qilsa ham ishlamaydi.
-
-Agar biror rasm topilmasa yoki nomi noto'g'ri bo'lsa, sayt o'sha o'rinda
-avtomatik ravishda ichki (zaxira) belgini ko'rsatadi — hech narsa buzilmaydi.
+ - PNG topilmasa sayt avtomatik SVG zaxirani ko'rsatadi — buzilmaydi.
 
 Rasm qo'yilgach sahifani Ctrl+Shift+R bilan yangilang.
