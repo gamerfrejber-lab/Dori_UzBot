@@ -3,6 +3,7 @@
 <head>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="auth-guard.js"></script>
+    <script src="stickers.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dori Qidiruv - Dori topish endi oson</title>
@@ -648,7 +649,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo">💊 Dori Qidiruv</div>
+            <div class="logo"><svg class="stk"><use href="#stk-pill"></use></svg> Dori Qidiruv</div>
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
@@ -665,14 +666,14 @@
         <h1 class="anim anim-1" data-uz="Kerakli dori qaysi dorixonada bor?" data-ru="В какой аптеке есть нужное лекарство?">Kerakli dori qaysi dorixonada bor?</h1>
         <div class="search-box anim anim-2">
             <input type="text" class="search-input" id="searchInput" placeholder="Dori nomini kiriting..." data-placeholder-uz="Dori nomini kiriting..." data-placeholder-ru="Введите название лекарства...">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><svg class="stk"><use href="#stk-search"></use></svg></span>
         </div>
         <div class="tags anim anim-3">
-            <div class="tag" onclick="quickSearch('Paracetamol')">💊 Paracetamol</div>
-            <div class="tag" onclick="quickSearch('Ibuprofen')">💊 Ibuprofen</div>
-            <div class="tag" onclick="quickSearch('Amoxicillin')">💊 Amoxicillin</div>
-            <div class="tag" onclick="quickSearch('Aspirin')">💊 Aspirin</div>
-            <div class="tag" onclick="quickSearch('Vitamin C')">💊 Vitamin C</div>
+            <div class="tag" onclick="quickSearch('Paracetamol')"><svg class="stk"><use href="#stk-pill"></use></svg> Paracetamol</div>
+            <div class="tag" onclick="quickSearch('Ibuprofen')"><svg class="stk"><use href="#stk-pill"></use></svg> Ibuprofen</div>
+            <div class="tag" onclick="quickSearch('Amoxicillin')"><svg class="stk"><use href="#stk-pill"></use></svg> Amoxicillin</div>
+            <div class="tag" onclick="quickSearch('Aspirin')"><svg class="stk"><use href="#stk-pill"></use></svg> Aspirin</div>
+            <div class="tag" onclick="quickSearch('Vitamin C')"><svg class="stk"><use href="#stk-pill"></use></svg> Vitamin C</div>
         </div>
     </div>
 
@@ -682,10 +683,10 @@
         <!-- Mashhur mahsulotlar bazadan olinadi. Ilgari bu yerda qo'lda yozilgan
              uchta dori turardi — narxlari ham, ishlab chiqaruvchisi ham o'ylab
              topilgan edi va hech qaysi dorixonaga tegishli emasdi. -->
-        <h2 class="section-title reveal" data-uz="Ko'p qidiriladigan dorilar" data-ru="Часто искомые лекарства">Ko'p qidiriladigan dorilar</h2>
+        <h2 class="section-title reveal"><svg class="stk"><use href="#stk-pill"></use></svg> <span data-uz="Ko'p qidiriladigan dorilar" data-ru="Часто искомые лекарства">Ko'p qidiriladigan dorilar</span></h2>
         <div class="cards-grid reveal" id="popularMeds"></div>
 
-        <h2 class="section-title reveal" data-uz="Menga yaqin dorixonalar" data-ru="Ближайшие аптеки">Menga yaqin dorixonalar</h2>
+        <h2 class="section-title reveal"><svg class="stk"><use href="#stk-pin"></use></svg> <span data-uz="Menga yaqin dorixonalar" data-ru="Ближайшие аптеки">Menga yaqin dorixonalar</span></h2>
         <div class="cards-grid reveal" id="nearbyPharmacies"></div>
 
         <!-- Raqamlar bazadan hisoblanadi: ilgari "500+", "120+" deb yozilgan edi,
@@ -911,7 +912,7 @@
                 const price = (dori.narx || dori.price || 0).toLocaleString();
                 return `
                 <div class="glass-card dori-card" onclick="openSearchDrug(${i})">
-                    <h3>💊 ${drugName}</h3>
+                    <h3>${stk('pill')} ${drugName}</h3>
                     <p><strong>${uz ? 'Ishlab chiqaruvchi:' : 'Производитель:'}</strong> ${dori.ishlab_chiqaruvchi || dori.manufacturer || '—'}</p>
                     <p><strong>${uz ? 'Narx:' : 'Цена:'}</strong> ${price} ${uz ? "so'm" : 'сум'}</p>
                     ${ph ? `<p><strong>${uz ? 'Dorixona:' : 'Аптека:'}</strong> 🏥 ${ph.name || ''}</p>
@@ -956,7 +957,7 @@
 
             document.getElementById('modalBox').innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
-                <h2>💊 ${esc(drugName)}</h2>
+                <h2>${stk('pill')} ${esc(drugName)}</h2>
                 ${dori.name ? `<p><strong>${uz ? 'Nomi' : 'Название'}:</strong> ${esc(dori.name)}</p>` : ''}
                 ${dori.nameRu ? `<p><strong>${uz ? 'Ruscha nomi' : 'На русском'}:</strong> ${esc(dori.nameRu)}</p>` : ''}
                 <p><strong>${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}:</strong> ${esc(dori.manufacturer || '—')}</p>
@@ -1085,7 +1086,7 @@
             // Endi bosilganda dorixonalar sahifasi ochilib, o'sha dorixona ko'rsatiladi.
             container.innerHTML = locationBanner() + pharmacies.slice(0, 3).map(dorixona => `
                 <div class="glass-card dorixona-card" onclick="dorixonaniOch(${dorixona.id || 0})">
-                    <h3>🏥 ${dorixona.nomi || dorixona.name}</h3>
+                    <h3>${stk('pharmacy')} ${dorixona.nomi || dorixona.name}</h3>
                     <p><span class="icon">📍</span>${dorixona.manzil || dorixona.address || ''}</p>
                     <p><span class="icon">📞</span>${dorixona.telefon || dorixona.phone || ''}</p>
                     ${dorixona._km != null ? `<p><span class="icon">📏</span>${formatDistance(dorixona._km)}</p>` : ''}
@@ -1197,7 +1198,7 @@
                         : eng.toLocaleString() + '–' + katta.toLocaleString();
                     const nom = (!uz && m.ruNom) ? m.ruNom : m.nom;
                     return `<div class="glass-card dori-card" onclick="quickSearch('${m.nom.replace(/'/g, "\\'")}')">
-                        <h3>💊 ${esc(nom)}</h3>
+                        <h3>${stk('pill')} ${esc(nom)}</h3>
                         <p><strong>${uz ? 'Narx' : 'Цена'}:</strong> ${narx} ${uz ? "so'm" : 'сум'}</p>
                         <p><strong>${uz ? 'Dorixonalarda' : 'В аптеках'}:</strong> ${m.soni} ${uz ? 'ta' : 'шт.'}</p>
                     </div>`;

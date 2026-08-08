@@ -3,6 +3,7 @@
 <head>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="auth-guard.js"></script>
+    <script src="stickers.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dorixonalar - Dori Qidiruv</title>
@@ -338,7 +339,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo">💊 Dori Qidiruv</div>
+            <div class="logo"><svg class="stk"><use href="#stk-pill"></use></svg> Dori Qidiruv</div>
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
@@ -561,7 +562,7 @@
                 const hasLocation = pharmacy.latitude && pharmacy.longitude;
                 return `
                 <div class="glass-card pharmacy-card" onclick="openPharmacy(${index})">
-                    <h3>🏥 ${esc(pharmacy.nomi || pharmacy.name)}</h3>
+                    <h3>${stk('pharmacy')} ${esc(pharmacy.nomi || pharmacy.name)}</h3>
                     <div class="pharmacy-info">
                         <div class="info-row">
                             <span class="info-icon">📍</span>
@@ -604,7 +605,7 @@
 
             box.innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
-                <h2>🏥 ${name}</h2>
+                <h2>${stk('pharmacy')} ${name}</h2>
                 <div class="pharmacy-info">
                     <div class="info-row"><span class="info-icon">📍</span><span class="info-text">${esc(pharmacy.manzil || pharmacy.address)}</span></div>
                     <div class="info-row"><span class="info-icon">📞</span><span class="info-text">${esc(pharmacy.telefon || pharmacy.phone)}</span></div>
@@ -659,7 +660,7 @@
             box.innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
                 <button class="back-btn" onclick="openPharmacy(${currentPharmacyIndex})">${uz ? '← Orqaga' : '← Назад'}</button>
-                <h2>💊 ${esc(drugName)}</h2>
+                <h2>${stk('pill')} ${esc(drugName)}</h2>
                 <div class="pharmacy-info">
                     ${drug.name ? `<div class="info-row"><span class="info-icon">🔤</span><span class="info-text">${uz ? 'Nomi' : 'Название'}: ${esc(drug.name)}</span></div>` : ''}
                     ${drug.nameRu ? `<div class="info-row"><span class="info-icon">🇷🇺</span><span class="info-text">${uz ? 'Ruscha nomi' : 'На русском'}: ${esc(drug.nameRu)}</span></div>` : ''}

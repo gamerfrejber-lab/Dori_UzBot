@@ -3,6 +3,7 @@
 <head>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="auth-guard.js"></script>
+    <script src="stickers.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil - Dori Qidiruv</title>
@@ -334,7 +335,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo">💊 Dori Qidiruv</div>
+            <div class="logo"><svg class="stk"><use href="#stk-pill"></use></svg> Dori Qidiruv</div>
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
@@ -455,7 +456,7 @@
                 box.innerHTML = bronlar.map(b => `
                     <div style="padding:0.9rem 0;border-bottom:1px solid rgba(255,255,255,0.08);">
                         <div style="display:flex;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;">
-                            <b>💊 ${esc(b.doriNomi)}</b>
+                            <b>${stk('pill')} ${esc(b.doriNomi)}</b>
                             <span>${bronHolati(b.holat, uz)}</span>
                         </div>
                         <div style="opacity:0.8;font-size:0.92rem;margin-top:0.25rem;">
