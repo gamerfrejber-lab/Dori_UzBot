@@ -4,6 +4,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="auth-guard.js"></script>
     <script src="stickers.js"></script>
+    <script src="swipe.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dori Qidiruv - Dori topish endi oson</title>
@@ -649,7 +650,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo"><svg class="stk"><use href="#stk-pill"></use></svg> Dori Qidiruv</div>
+            <div class="logo"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
@@ -666,14 +667,14 @@
         <h1 class="anim anim-1" data-uz="Kerakli dori qaysi dorixonada bor?" data-ru="В какой аптеке есть нужное лекарство?">Kerakli dori qaysi dorixonada bor?</h1>
         <div class="search-box anim anim-2">
             <input type="text" class="search-input" id="searchInput" placeholder="Dori nomini kiriting..." data-placeholder-uz="Dori nomini kiriting..." data-placeholder-ru="Введите название лекарства...">
-            <span class="search-icon"><svg class="stk"><use href="#stk-search"></use></svg></span>
+            <span class="search-icon"><img class="stk" data-stk="search" alt="" src="icons/search.png" onerror="stkFallback(this)"></span>
         </div>
         <div class="tags anim anim-3">
-            <div class="tag" onclick="quickSearch('Paracetamol')"><svg class="stk"><use href="#stk-pill"></use></svg> Paracetamol</div>
-            <div class="tag" onclick="quickSearch('Ibuprofen')"><svg class="stk"><use href="#stk-pill"></use></svg> Ibuprofen</div>
-            <div class="tag" onclick="quickSearch('Amoxicillin')"><svg class="stk"><use href="#stk-pill"></use></svg> Amoxicillin</div>
-            <div class="tag" onclick="quickSearch('Aspirin')"><svg class="stk"><use href="#stk-pill"></use></svg> Aspirin</div>
-            <div class="tag" onclick="quickSearch('Vitamin C')"><svg class="stk"><use href="#stk-pill"></use></svg> Vitamin C</div>
+            <div class="tag" onclick="quickSearch('Paracetamol')"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Paracetamol</div>
+            <div class="tag" onclick="quickSearch('Ibuprofen')"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Ibuprofen</div>
+            <div class="tag" onclick="quickSearch('Amoxicillin')"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Amoxicillin</div>
+            <div class="tag" onclick="quickSearch('Aspirin')"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Aspirin</div>
+            <div class="tag" onclick="quickSearch('Vitamin C')"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Vitamin C</div>
         </div>
     </div>
 
@@ -683,10 +684,10 @@
         <!-- Mashhur mahsulotlar bazadan olinadi. Ilgari bu yerda qo'lda yozilgan
              uchta dori turardi — narxlari ham, ishlab chiqaruvchisi ham o'ylab
              topilgan edi va hech qaysi dorixonaga tegishli emasdi. -->
-        <h2 class="section-title reveal"><svg class="stk"><use href="#stk-pill"></use></svg> <span data-uz="Ko'p qidiriladigan dorilar" data-ru="Часто искомые лекарства">Ko'p qidiriladigan dorilar</span></h2>
+        <h2 class="section-title reveal"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> <span data-uz="Ko'p qidiriladigan dorilar" data-ru="Часто искомые лекарства">Ko'p qidiriladigan dorilar</span></h2>
         <div class="cards-grid reveal" id="popularMeds"></div>
 
-        <h2 class="section-title reveal"><svg class="stk"><use href="#stk-pin"></use></svg> <span data-uz="Menga yaqin dorixonalar" data-ru="Ближайшие аптеки">Menga yaqin dorixonalar</span></h2>
+        <h2 class="section-title reveal"><img class="stk" data-stk="pin" alt="" src="icons/pin.png" onerror="stkFallback(this)"> <span data-uz="Menga yaqin dorixonalar" data-ru="Ближайшие аптеки">Menga yaqin dorixonalar</span></h2>
         <div class="cards-grid reveal" id="nearbyPharmacies"></div>
 
         <!-- Raqamlar bazadan hisoblanadi: ilgari "500+", "120+" deb yozilgan edi,

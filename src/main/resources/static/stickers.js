@@ -126,8 +126,10 @@
 </svg>`;
 
   // Stikerlar har sahifada bir xil o'lchamda bo'lishi uchun asosiy CSS ham shu yerdan
-  // joylanadi — sahifalarga alohida yozish shart emas.
-  var CSS = '.stk{width:1.35em;height:1.35em;display:inline-block;vertical-align:-0.28em;flex:none}'
+  // joylanadi — sahifalarga alohida yozish shart emas. img va svg bir xil o'lchamda.
+  var CSS = '.stk{width:1.35em;height:1.35em;display:inline-block;vertical-align:-0.28em;flex:none;'
+          + 'object-fit:contain;overflow:visible}'
+          + 'img.stk{filter:drop-shadow(0 2px 6px rgba(0,0,0,0.35))}'
           + '.stk-lg{width:2.3rem;height:2.3rem;vertical-align:middle}'
           + '.stk-xl{width:3.2rem;height:3.2rem;vertical-align:middle}';
 
@@ -146,8 +148,36 @@
   if (document.body) inject();
   else document.addEventListener('DOMContentLoaded', inject);
 
-  // Matn ichida ishlatish uchun: stk('pill') -> '<svg class="stk">...</svg>'
+  /*
+   * Stikerlar ikki manbadan keladi:
+   *  1) icons/<nom>.png  — foydalanuvchi qo'ygan chiroyli 3D rasmlar (asosiy);
+   *  2) ichki SVG sprite — rasm topilmasa avtomatik ishga tushadigan zaxira.
+   * Shunday qilib PNG'lar hali qo'yilmagan bo'lsa ham sayt buzilmaydi, PNG qo'yilgach
+   * o'zi chiroyli rasmga o'tadi.
+   */
+
+  // Zaxira: sprite'dan SVG element yasaydi (rasm yuklanmaganda ishlatiladi).
+  window.stkSvg = function (nom, klass) {
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'stk ' + (klass || ''));
+    svg.setAttribute('aria-hidden', 'true');
+    var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', '#stk-' + nom);
+    svg.appendChild(use);
+    return svg;
+  };
+
+  // <img> yuklanmasa — o'zini SVG zaxira bilan almashtiradi (o'lcham/uslubni saqlab).
+  window.stkFallback = function (img) {
+    img.onerror = null;
+    var svg = window.stkSvg(img.getAttribute('data-stk'), img.className.replace('stk', '').trim());
+    if (img.getAttribute('style')) svg.setAttribute('style', img.getAttribute('style'));
+    img.replaceWith(svg);
+  };
+
+  // Matn ichida ishlatish uchun: stk('pill') -> '<img ... onerror=zaxira>'
   window.stk = function (nom, klass) {
-    return '<svg class="stk ' + (klass || '') + '" aria-hidden="true"><use href="#stk-' + nom + '"></use></svg>';
+    return '<img class="stk ' + (klass || '') + '" data-stk="' + nom + '" alt="" '
+         + 'src="icons/' + nom + '.png" onerror="stkFallback(this)">';
   };
 })();
