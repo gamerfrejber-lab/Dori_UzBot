@@ -465,11 +465,20 @@
   </symbol>
 </svg>`;
 
-  var CSS = '.stk{width:1.35em;height:1.35em;display:inline-block;vertical-align:-0.28em;flex:none;'
-          + 'object-fit:contain;overflow:visible}'
-          + 'img.stk{filter:drop-shadow(0 2px 6px rgba(0,0,0,0.35))}'
-          + '.stk-lg{width:2.3rem;height:2.3rem;vertical-align:middle}'
-          + '.stk-xl{width:3.2rem;height:3.2rem;vertical-align:middle}';
+  var CSS = '@keyframes stk-glow{0%,100%{filter:drop-shadow(0 0 6px rgba(56,189,248,0.45)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))}50%{filter:drop-shadow(0 0 14px rgba(56,189,248,0.7)) drop-shadow(0 0 28px rgba(59,130,246,0.3)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))}}'
+          + '.stk{width:1.75em;height:1.75em;display:inline-block;vertical-align:-0.3em;flex:none;'
+          + 'object-fit:contain;overflow:visible;transition:transform .3s cubic-bezier(.22,1.15,.36,1)}'
+          + 'img.stk{filter:drop-shadow(0 0 8px rgba(56,189,248,0.5)) drop-shadow(0 0 20px rgba(59,130,246,0.25)) drop-shadow(0 2px 4px rgba(0,0,0,0.35));'
+          + 'animation:stk-glow 3s ease-in-out infinite}'
+          + '.stk:hover{transform:scale(1.15)}'
+          + '.stk-sm{width:1.3em;height:1.3em;vertical-align:-0.2em;animation:none!important}'
+          + '.stk-lg{width:2.8rem;height:2.8rem;vertical-align:middle}'
+          + '.stk-xl{width:4rem;height:4rem;vertical-align:middle}'
+          + '.stk-xxl{width:5.5rem;height:5.5rem;vertical-align:middle}'
+          + '.stk-hero{width:clamp(3.5rem,10vw,6rem);height:clamp(3.5rem,10vw,6rem);vertical-align:middle}'
+          + '.stk-title{width:2.4rem;height:2.4rem;vertical-align:-0.45rem}'
+          + '.stk-card{width:2.6rem;height:2.6rem;vertical-align:middle;margin-right:0.5rem}'
+          + '.stk-nav{width:1.6rem;height:1.6rem;vertical-align:-0.25em}';
 
   function inject() {
     if (document.getElementById('stk-sprite')) return;

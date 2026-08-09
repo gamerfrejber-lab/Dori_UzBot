@@ -340,7 +340,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
+            <div class="logo"><img class="stk stk-lg" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
@@ -550,7 +550,7 @@
             // Lokatsiya berilgan bo'lsa sarlavhani "eng yaqin" deb yangilaymiz
             if (userLocation) {
                 const title = document.querySelector('.page-title');
-                if (title) title.innerHTML = stk('pharmacy') + ' ' + (currentLang === 'uz'
+                if (title) title.innerHTML = stk('pharmacy','stk-title') + ' ' + (currentLang === 'uz'
                     ? 'Menga yaqin dorixonalar'
                     : 'Ближайшие аптеки');
             }
@@ -563,7 +563,7 @@
                 const hasLocation = pharmacy.latitude && pharmacy.longitude;
                 return `
                 <div class="glass-card pharmacy-card" onclick="openPharmacy(${index})">
-                    <h3>${stk('pharmacy')} ${esc(pharmacy.nomi || pharmacy.name)}</h3>
+                    <h3>${stk('pharmacy','stk-card')} ${esc(pharmacy.nomi || pharmacy.name)}</h3>
                     <div class="pharmacy-info">
                         <div class="info-row">
                             <span class="info-icon">${stk('pin')}</span>
@@ -606,7 +606,7 @@
 
             box.innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
-                <h2>${stk('pharmacy')} ${name}</h2>
+                <h2>${stk('pharmacy','stk-lg')} ${name}</h2>
                 <div class="pharmacy-info">
                     <div class="info-row"><span class="info-icon">${stk('pin')}</span><span class="info-text">${esc(pharmacy.manzil || pharmacy.address)}</span></div>
                     <div class="info-row"><span class="info-icon">${stk('phone')}</span><span class="info-text">${esc(pharmacy.telefon || pharmacy.phone)}</span></div>
@@ -661,7 +661,7 @@
             box.innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
                 <button class="back-btn" onclick="openPharmacy(${currentPharmacyIndex})">${uz ? '← Orqaga' : '← Назад'}</button>
-                <h2>${stk('pill')} ${esc(drugName)}</h2>
+                <h2>${stk('pill','stk-lg')} ${esc(drugName)}</h2>
                 <div class="pharmacy-info">
                     ${drug.name ? `<div class="info-row"><span class="info-icon">${stk('label')}</span><span class="info-text">${uz ? 'Nomi' : 'Название'}: ${esc(drug.name)}</span></div>` : ''}
                     ${drug.nameRu ? `<div class="info-row"><span class="info-icon">${stk('ru')}</span><span class="info-text">${uz ? 'Ruscha nomi' : 'На русском'}: ${esc(drug.nameRu)}</span></div>` : ''}

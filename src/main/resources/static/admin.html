@@ -282,7 +282,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo"><img class="stk" data-stk="pill" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
+            <div class="logo"><img class="stk stk-lg" data-stk="pill" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
             <nav>
                 <a href="index.html">Bosh sahifa</a>
                 <a href="dorixonalar.html">Dorixonalar</a>
@@ -334,21 +334,21 @@
 
         function renderPanel() {
             document.getElementById('container').innerHTML = `
-                <h1>${stk('lock')} Admin panel</h1>
+                <h1>${stk('lock','stk-lg')} Admin panel</h1>
                 <p class="subtitle">Dorixonalar, dorilar va foydalanuvchilarni boshqarish</p>
 
                 <div class="stats" id="stats"></div>
 
                 <div class="tabs">
-                    <button class="tab active" onclick="openTab('pharmacies', this)">${stk('pharmacy')} Dorixonalar</button>
-                    <button class="tab" onclick="openTab('drugs', this)">${stk('pill')} Dorilar</button>
-                    <button class="tab" onclick="openTab('stock', this)">${stk('box')} Ombor / Hisobot</button>
-                    <button class="tab" onclick="openTab('claims', this)">${stk('mail')} Arizalar</button>
-                    <button class="tab" onclick="openTab('users', this)">${stk('group')} Foydalanuvchilar</button>
+                    <button class="tab active" onclick="openTab('pharmacies', this)">${stk('pharmacy','stk-nav')} Dorixonalar</button>
+                    <button class="tab" onclick="openTab('drugs', this)">${stk('pill','stk-nav')} Dorilar</button>
+                    <button class="tab" onclick="openTab('stock', this)">${stk('box','stk-nav')} Ombor / Hisobot</button>
+                    <button class="tab" onclick="openTab('claims', this)">${stk('mail','stk-nav')} Arizalar</button>
+                    <button class="tab" onclick="openTab('users', this)">${stk('group','stk-nav')} Foydalanuvchilar</button>
                 </div>
 
                 <div class="panel active" id="tab-pharmacies">
-                    <h2>${stk('plus')} Dorixona qo'shish</h2>
+                    <h2>${stk('plus','stk-card')} Dorixona qo'shish</h2>
                     <div class="form-grid">
                         <input id="phName" placeholder="Nomi *">
                         <input id="phAddress" placeholder="Manzil">
@@ -362,7 +362,7 @@
                 </div>
 
                 <div class="panel" id="tab-drugs">
-                    <h2>${stk('plus')} Dori qo'shish</h2>
+                    <h2>${stk('plus','stk-card')} Dori qo'shish</h2>
                     <div class="form-grid">
                         <input id="drName" placeholder="Nomi *">
                         <input id="drNameRu" placeholder="Ruscha nomi">
@@ -382,7 +382,7 @@
                 </div>
 
                 <div class="panel" id="tab-stock">
-                    <h2>${stk('box')} Ombor hisobi</h2>
+                    <h2>${stk('box','stk-card')} Ombor hisobi</h2>
                     <p class="subtitle">Dorixonani tanlang — qancha mahsulot kelgan, qancha sotilgan va qancha qolgani ko'rinadi.
                         Qoldiq alohida saqlanmaydi, u kirim va chiqimdan hisoblanadi.</p>
                     <div class="form-grid" style="margin-top:1rem;">
@@ -394,7 +394,7 @@
                 </div>
 
                 <div class="panel" id="tab-claims">
-                    <h2>${stk('mail')} Dorixona ulash arizalari</h2>
+                    <h2>${stk('mail','stk-card')} Dorixona ulash arizalari</h2>
                     <p class="subtitle">Dorixona egasi botda ariza beradi. Ikkinchi suratda —
                         dorixonaning jonli surati — bot bergan kod yozilgan qog'oz ko'rinishi kerak.
                         Kod mos kelmasa yoki hujjat o'qilmasa, rad eting.</p>
@@ -403,7 +403,7 @@
                 </div>
 
                 <div class="panel" id="tab-users">
-                    <h2>${stk('group')} Ro'yxatdan o'tgan foydalanuvchilar</h2>
+                    <h2>${stk('group','stk-card')} Ro'yxatdan o'tgan foydalanuvchilar</h2>
                     <div class="list" id="userList"></div>
                 </div>`;
 

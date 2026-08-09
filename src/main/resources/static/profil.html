@@ -336,7 +336,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
+            <div class="logo"><img class="stk stk-lg" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
@@ -407,7 +407,7 @@
                     </div>
 
                     <div class="glass-card">
-                        <h3 class="card-title">${stk('clipboard')} <span data-uz="Shaxsiy ma'lumotlar" data-ru="Личные данные">${currentLang === 'uz' ? 'Shaxsiy ma\'lumotlar' : 'Личные данные'}</span></h3>
+                        <h3 class="card-title">${stk('clipboard','stk-card')} <span data-uz="Shaxsiy ma'lumotlar" data-ru="Личные данные">${currentLang === 'uz' ? 'Shaxsiy ma\'lumotlar' : 'Личные данные'}</span></h3>
                         <div class="info-row">
                             <span class="info-label" data-uz="Ism" data-ru="Имя">${currentLang === 'uz' ? 'Ism' : 'Имя'}</span>
                             <span class="info-value">${userName}</span>
@@ -423,7 +423,7 @@
                     </div>
 
                     <div class="glass-card">
-                        <h3 class="card-title">${stk('basket')} <span>${currentLang === 'uz' ? 'Mening bronlarim' : 'Мои брони'}</span></h3>
+                        <h3 class="card-title">${stk('basket','stk-card')} <span>${currentLang === 'uz' ? 'Mening bronlarim' : 'Мои брони'}</span></h3>
                         <div id="bronlarim">
                             <p style="opacity:0.7;">${currentLang === 'uz' ? 'Yuklanmoqda…' : 'Загрузка…'}</p>
                         </div>

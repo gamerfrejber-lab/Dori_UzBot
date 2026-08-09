@@ -650,7 +650,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
+            <div class="logo"><img class="stk stk-lg" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
@@ -667,7 +667,7 @@
         <h1 class="anim anim-1" data-uz="Kerakli dori qaysi dorixonada bor?" data-ru="В какой аптеке есть нужное лекарство?">Kerakli dori qaysi dorixonada bor?</h1>
         <div class="search-box anim anim-2">
             <input type="text" class="search-input" id="searchInput" placeholder="Dori nomini kiriting..." data-placeholder-uz="Dori nomini kiriting..." data-placeholder-ru="Введите название лекарства...">
-            <span class="search-icon"><img class="stk" data-stk="search" alt="" src="icons/search.png" onerror="stkFallback(this)"></span>
+            <span class="search-icon"><img class="stk stk-lg" data-stk="search" alt="" src="icons/search.png" onerror="stkFallback(this)"></span>
         </div>
         <div class="tags anim anim-3">
             <div class="tag" onclick="quickSearch('Paracetamol')"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Paracetamol</div>
@@ -684,10 +684,10 @@
         <!-- Mashhur mahsulotlar bazadan olinadi. Ilgari bu yerda qo'lda yozilgan
              uchta dori turardi — narxlari ham, ishlab chiqaruvchisi ham o'ylab
              topilgan edi va hech qaysi dorixonaga tegishli emasdi. -->
-        <h2 class="section-title reveal"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> <span data-uz="Ko'p qidiriladigan dorilar" data-ru="Часто искомые лекарства">Ko'p qidiriladigan dorilar</span></h2>
+        <h2 class="section-title reveal"><img class="stk stk-title" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> <span data-uz="Ko'p qidiriladigan dorilar" data-ru="Часто искомые лекарства">Ko'p qidiriladigan dorilar</span></h2>
         <div class="cards-grid reveal" id="popularMeds"></div>
 
-        <h2 class="section-title reveal"><img class="stk" data-stk="pin" alt="" src="icons/pin.png" onerror="stkFallback(this)"> <span data-uz="Menga yaqin dorixonalar" data-ru="Ближайшие аптеки">Menga yaqin dorixonalar</span></h2>
+        <h2 class="section-title reveal"><img class="stk stk-title" data-stk="pin" alt="" src="icons/pin.png" onerror="stkFallback(this)"> <span data-uz="Menga yaqin dorixonalar" data-ru="Ближайшие аптеки">Menga yaqin dorixonalar</span></h2>
         <div class="cards-grid reveal" id="nearbyPharmacies"></div>
 
         <!-- Raqamlar bazadan hisoblanadi: ilgari "500+", "120+" deb yozilgan edi,
@@ -913,7 +913,7 @@
                 const price = (dori.narx || dori.price || 0).toLocaleString();
                 return `
                 <div class="glass-card dori-card" onclick="openSearchDrug(${i})">
-                    <h3>${stk('pill')} ${drugName}</h3>
+                    <h3>${stk('pill','stk-card')} ${drugName}</h3>
                     <p><strong>${uz ? 'Ishlab chiqaruvchi:' : 'Производитель:'}</strong> ${dori.ishlab_chiqaruvchi || dori.manufacturer || '—'}</p>
                     <p><strong>${uz ? 'Narx:' : 'Цена:'}</strong> ${price} ${uz ? "so'm" : 'сум'}</p>
                     ${ph ? `<p><strong>${uz ? 'Dorixona:' : 'Аптека:'}</strong> ${stk('pharmacy')} ${ph.name || ''}</p>
@@ -958,7 +958,7 @@
 
             document.getElementById('modalBox').innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
-                <h2>${stk('pill')} ${esc(drugName)}</h2>
+                <h2>${stk('pill','stk-lg')} ${esc(drugName)}</h2>
                 ${dori.name ? `<p><strong>${uz ? 'Nomi' : 'Название'}:</strong> ${stk('label')} ${esc(dori.name)}</p>` : ''}
                 ${dori.nameRu ? `<p><strong>${uz ? 'Ruscha nomi' : 'На русском'}:</strong> ${stk('ru')} ${esc(dori.nameRu)}</p>` : ''}
                 <p><strong>${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}:</strong> ${stk('factory')} ${esc(dori.manufacturer || '—')}</p>
@@ -1087,7 +1087,7 @@
             // Endi bosilganda dorixonalar sahifasi ochilib, o'sha dorixona ko'rsatiladi.
             container.innerHTML = locationBanner() + pharmacies.slice(0, 3).map(dorixona => `
                 <div class="glass-card dorixona-card" onclick="dorixonaniOch(${dorixona.id || 0})">
-                    <h3>${stk('pharmacy')} ${dorixona.nomi || dorixona.name}</h3>
+                    <h3>${stk('pharmacy','stk-card')} ${dorixona.nomi || dorixona.name}</h3>
                     <p><span class="icon">${stk('pin')}</span>${dorixona.manzil || dorixona.address || ''}</p>
                     <p><span class="icon">${stk('phone')}</span>${dorixona.telefon || dorixona.phone || ''}</p>
                     ${dorixona._km != null ? `<p><span class="icon">${stk('ruler')}</span>${formatDistance(dorixona._km)}</p>` : ''}
@@ -1199,7 +1199,7 @@
                         : eng.toLocaleString() + '–' + katta.toLocaleString();
                     const nom = (!uz && m.ruNom) ? m.ruNom : m.nom;
                     return `<div class="glass-card dori-card" onclick="quickSearch('${m.nom.replace(/'/g, "\\'")}')">
-                        <h3>${stk('pill')} ${esc(nom)}</h3>
+                        <h3>${stk('pill','stk-card')} ${esc(nom)}</h3>
                         <p><strong>${uz ? 'Narx' : 'Цена'}:</strong> ${narx} ${uz ? "so'm" : 'сум'}</p>
                         <p><strong>${uz ? 'Dorixonalarda' : 'В аптеках'}:</strong> ${m.soni} ${uz ? 'ta' : 'шт.'}</p>
                     </div>`;
