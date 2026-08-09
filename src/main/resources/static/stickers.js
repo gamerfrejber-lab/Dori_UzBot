@@ -465,20 +465,19 @@
   </symbol>
 </svg>`;
 
-  var CSS = '@keyframes stk-glow{0%,100%{filter:drop-shadow(0 0 8px rgba(56,189,248,0.5)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))}50%{filter:drop-shadow(0 0 18px rgba(56,189,248,0.75)) drop-shadow(0 0 36px rgba(59,130,246,0.35)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))}}'
-          + '.stk{width:2.2em;height:2.2em;display:inline-block;vertical-align:-0.45em;flex:none;'
-          + 'object-fit:contain;overflow:visible;transition:transform .3s cubic-bezier(.22,1.15,.36,1)}'
-          + 'img.stk{clip-path:inset(0 0 13% 0);filter:drop-shadow(0 0 10px rgba(56,189,248,0.55)) drop-shadow(0 0 24px rgba(59,130,246,0.3)) drop-shadow(0 2px 4px rgba(0,0,0,0.35));'
+  var CSS = '@keyframes stk-glow{0%,100%{filter:drop-shadow(0 0 6px rgba(56,189,248,0.45)) drop-shadow(0 2px 3px rgba(0,0,0,0.25))}50%{filter:drop-shadow(0 0 14px rgba(56,189,248,0.6)) drop-shadow(0 0 28px rgba(59,130,246,0.25)) drop-shadow(0 2px 3px rgba(0,0,0,0.25))}}'
+          + '.stk{width:2.5em;height:2.5em;display:inline-block;vertical-align:-0.5em;flex:none;'
+          + 'object-fit:contain;overflow:visible}'
+          + 'img.stk{filter:drop-shadow(0 0 8px rgba(56,189,248,0.4)) drop-shadow(0 2px 3px rgba(0,0,0,0.2));'
           + 'animation:stk-glow 3s ease-in-out infinite}'
-          + '.stk:hover{transform:scale(1.18)}'
-          + '.stk-sm{width:1.5em;height:1.5em;vertical-align:-0.25em}'
-          + '.stk-lg{width:3.5rem;height:3.5rem;vertical-align:middle}'
-          + '.stk-xl{width:5rem;height:5rem;vertical-align:middle}'
-          + '.stk-xxl{width:6.5rem;height:6.5rem;vertical-align:middle}'
-          + '.stk-hero{width:clamp(4rem,12vw,7rem);height:clamp(4rem,12vw,7rem);vertical-align:middle}'
-          + '.stk-title{width:3rem;height:3rem;vertical-align:-0.55rem}'
-          + '.stk-card{width:3.2rem;height:3.2rem;vertical-align:middle;margin-right:0.6rem}'
-          + '.stk-nav{width:2rem;height:2rem;vertical-align:-0.35em}';
+          + '.stk-sm{width:1.6em;height:1.6em;vertical-align:-0.3em}'
+          + '.stk-lg{width:4rem;height:4rem;vertical-align:middle}'
+          + '.stk-xl{width:5.5rem;height:5.5rem;vertical-align:middle}'
+          + '.stk-xxl{width:7rem;height:7rem;vertical-align:middle}'
+          + '.stk-hero{width:clamp(4.5rem,12vw,7.5rem);height:clamp(4.5rem,12vw,7.5rem);vertical-align:middle}'
+          + '.stk-title{width:3.2rem;height:3.2rem;vertical-align:-0.55rem}'
+          + '.stk-card{width:3.5rem;height:3.5rem;vertical-align:middle;margin-right:0.6rem}'
+          + '.stk-nav{width:2.2rem;height:2.2rem;vertical-align:-0.35em}';
 
   function inject() {
     if (document.getElementById('stk-sprite')) return;
