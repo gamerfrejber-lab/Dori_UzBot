@@ -524,4 +524,18 @@
     return '<img class="stk ' + (klass || '') + '" data-stk="' + nom + '" alt="" '
          + 'src="icons/' + nom + '.png" onerror="stkFallback(this)">';
   };
+
+  function initStickyHeader() {
+    var hdr = document.querySelector('header');
+    if (!hdr) return;
+    var last = 0;
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY || window.pageYOffset;
+      if (y > 10 && last <= 10) hdr.classList.add('scrolled');
+      else if (y <= 10 && last > 10) hdr.classList.remove('scrolled');
+      last = y;
+    }, { passive: true });
+  }
+  if (document.body) initStickyHeader();
+  else document.addEventListener('DOMContentLoaded', initStickyHeader);
 })();
