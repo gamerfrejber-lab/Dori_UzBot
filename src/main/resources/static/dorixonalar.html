@@ -361,7 +361,7 @@
                     <button type="button" class="lang-btn active" data-lang="uz" onclick="setLang('uz')">UZ</button>
                     <button type="button" class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
                 </div>
-                <a href="profil.html" class="profile-btn" id="profileBtn" data-uz="Profil" data-ru="Профиль">Kirish</a>
+                <a href="profil.html" class="profile-btn" id="profileBtn" data-uz="Profil" data-ru="Профиль"><img class="stk stk-nav" data-stk="user" alt="" src="icons/user.png" onerror="stkFallback(this)"> Kirish</a>
             </nav>
         </div>
     </header>
@@ -487,8 +487,9 @@
         // Bu sahifaga faqat token bilan kirilgani uchun profil tugmasi doim profilga olib boradi.
         const profileBtn = document.getElementById('profileBtn');
         profileBtn.href = 'profil.html';
-        profileBtn.textContent = localStorage.getItem('userName')
-            || (currentLang === 'uz' ? 'Profil' : 'Профиль');
+        var _uIcon = '<img class="stk stk-nav" data-stk="user" alt="" src="icons/user.png" onerror="stkFallback(this)"> ';
+        profileBtn.innerHTML = _uIcon + (localStorage.getItem('userName')
+            || (currentLang === 'uz' ? 'Profil' : 'Профиль'));
 
         async function loadPharmacies() {
             userLocation = await requestLocation();

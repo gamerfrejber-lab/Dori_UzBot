@@ -671,7 +671,7 @@
                     <button type="button" class="lang-btn active" data-lang="uz" onclick="setLang('uz')">UZ</button>
                     <button type="button" class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
                 </div>
-                <button class="login-btn" id="profileBtn" onclick="location.href='profil.html'">Profil</button>
+                <button class="login-btn" id="profileBtn" onclick="location.href='profil.html'"><img class="stk stk-nav" data-stk="user" alt="" src="icons/user.png" onerror="stkFallback(this)"> Profil</button>
             </nav>
         </div>
     </header>
@@ -844,8 +844,9 @@
         // Bu sahifaga faqat token bilan kirilgani uchun tugma doim profilga olib boradi.
         const profileBtn = document.getElementById('profileBtn');
         if (profileBtn) {
-            profileBtn.textContent = localStorage.getItem('userName')
-                || (currentLang === 'uz' ? 'Profil' : 'Профиль');
+            var _uIcon = '<img class="stk stk-nav" data-stk="user" alt="" src="icons/user.png" onerror="stkFallback(this)"> ';
+            profileBtn.innerHTML = _uIcon + (localStorage.getItem('userName')
+                || (currentLang === 'uz' ? 'Profil' : 'Профиль'));
         }
 
         const searchInput = document.getElementById('searchInput');
