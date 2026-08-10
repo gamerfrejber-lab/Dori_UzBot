@@ -35,7 +35,7 @@ public class BronService {
 
     /** Bron yaratadi va olib ketish kodini qaytaradi. */
     @Transactional
-    public Map<String, Object> bronQil(User mijoz, Long doriId, int soni) {
+    public Map<String, Object> bronQil(User mijoz, Long doriId, int soni, String tur) {
         if (soni <= 0) throw new IllegalArgumentException("Son musbat bo'lishi kerak");
 
         Dori dori = doriRepository.findById(doriId)
@@ -60,6 +60,7 @@ public class BronService {
         bron.setMijozIsmi(mijoz.getName());
         bron.setMijozTelefon(mijoz.getPhoneNumber());
         bron.setSoni(soni);
+        bron.setTur(tur != null ? tur : "dona");
         bron.setKod(kodYarat());
         bron.setHolat(Bron.YANGI);
         // Dorixona egasiga hali aytilmagan; mijozga aytish kerak bo'lgan o'zgarish ham yo'q.
@@ -74,8 +75,10 @@ public class BronService {
         javob.put("id", bron.getId());
         javob.put("kod", bron.getKod());
         javob.put("soni", soni);
+        javob.put("tur", bron.getTur());
         javob.put("doriNomi", dori.getName());
-        javob.put("narx", dori.getPrice());
+        javob.put("narx", "pachka".equals(tur) && dori.getPachkaNarx() != null && dori.getPachkaNarx() > 0
+                ? dori.getPachkaNarx() : dori.getPrice());
         javob.put("dorixonaNomi", dorixona == null ? null : dorixona.getName());
         javob.put("manzil", dorixona == null ? null : dorixona.getAddress());
         javob.put("telefon", dorixona == null ? null : dorixona.getTelefon());

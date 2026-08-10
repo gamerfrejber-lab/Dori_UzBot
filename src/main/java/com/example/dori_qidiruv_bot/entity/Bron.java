@@ -53,6 +53,9 @@ public class Bron {
     @Column(name = "soni", nullable = false)
     private Integer soni;
 
+    @Column(name = "tur", length = 10)
+    private String tur;
+
     /** Mijoz dorixonada aytadigan olib ketish kodi. */
     @Column(name = "kod", length = 10)
     private String kod;

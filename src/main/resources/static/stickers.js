@@ -465,11 +465,19 @@
   </symbol>
 </svg>`;
 
-  var CSS = '.stk{width:1.35em;height:1.35em;display:inline-block;vertical-align:-0.28em;flex:none;'
+  var CSS = '@keyframes stk-glow{0%,100%{filter:drop-shadow(0 0 6px rgba(56,189,248,0.45)) drop-shadow(0 2px 3px rgba(0,0,0,0.25))}50%{filter:drop-shadow(0 0 14px rgba(56,189,248,0.6)) drop-shadow(0 0 28px rgba(59,130,246,0.25)) drop-shadow(0 2px 3px rgba(0,0,0,0.25))}}'
+          + '.stk{width:2.5em;height:2.5em;display:inline-block;vertical-align:-0.5em;flex:none;'
           + 'object-fit:contain;overflow:visible}'
-          + 'img.stk{filter:drop-shadow(0 2px 6px rgba(0,0,0,0.35))}'
-          + '.stk-lg{width:2.3rem;height:2.3rem;vertical-align:middle}'
-          + '.stk-xl{width:3.2rem;height:3.2rem;vertical-align:middle}';
+          + 'img.stk{filter:drop-shadow(0 0 8px rgba(56,189,248,0.4)) drop-shadow(0 2px 3px rgba(0,0,0,0.2));'
+          + 'animation:stk-glow 3s ease-in-out infinite}'
+          + '.stk-sm{width:1.6em;height:1.6em;vertical-align:-0.3em}'
+          + '.stk-lg{width:4rem;height:4rem;vertical-align:middle}'
+          + '.stk-xl{width:5.5rem;height:5.5rem;vertical-align:middle}'
+          + '.stk-xxl{width:7rem;height:7rem;vertical-align:middle}'
+          + '.stk-hero{width:clamp(4.5rem,12vw,7.5rem);height:clamp(4.5rem,12vw,7.5rem);vertical-align:middle}'
+          + '.stk-title{width:3.2rem;height:3.2rem;vertical-align:-0.55rem}'
+          + '.stk-card{width:3.5rem;height:3.5rem;vertical-align:middle;margin-right:0.6rem}'
+          + '.stk-nav{width:2.2rem;height:2.2rem;vertical-align:-0.35em}';
 
   function inject() {
     if (document.getElementById('stk-sprite')) return;
@@ -515,4 +523,18 @@
     return '<img class="stk ' + (klass || '') + '" data-stk="' + nom + '" alt="" '
          + 'src="icons/' + nom + '.png" onerror="stkFallback(this)">';
   };
+
+  function initStickyHeader() {
+    var hdr = document.querySelector('header');
+    if (!hdr) return;
+    var last = 0;
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY || window.pageYOffset;
+      if (y > 10 && last <= 10) hdr.classList.add('scrolled');
+      else if (y <= 10 && last > 10) hdr.classList.remove('scrolled');
+      last = y;
+    }, { passive: true });
+  }
+  if (document.body) initStickyHeader();
+  else document.addEventListener('DOMContentLoaded', initStickyHeader);
 })();

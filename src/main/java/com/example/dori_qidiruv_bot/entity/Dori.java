@@ -33,6 +33,9 @@ public class Dori {
     @Column(name = "narx")
     private Double price;
 
+    @Column(name = "pachka_narx")
+    private Double pachkaNarx;
+
     @Column(name = "mavjud")
     private Boolean available;
 

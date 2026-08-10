@@ -187,6 +187,19 @@
             border-radius: 0;
             border-bottom: 1px solid var(--hairline);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+            transition: background 0.4s var(--ease), box-shadow 0.4s var(--ease),
+                        padding 0.3s var(--ease), backdrop-filter 0.4s var(--ease);
+        }
+        header.scrolled {
+            background: rgba(3, 16, 13, 0.92);
+            backdrop-filter: blur(40px) saturate(220%);
+            -webkit-backdrop-filter: blur(40px) saturate(220%);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6),
+                        0 1px 0 rgba(22, 198, 164, 0.25),
+                        0 6px 20px rgba(22, 198, 164, 0.08);
+            border-bottom: 1px solid rgba(22, 198, 164, 0.35);
+            padding-top: 0.6rem;
+            padding-bottom: 0.6rem;
         }
         header::after { display: none; }
 
@@ -650,7 +663,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
+            <div class="logo"><img class="stk stk-lg" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
@@ -667,7 +680,7 @@
         <h1 class="anim anim-1" data-uz="Kerakli dori qaysi dorixonada bor?" data-ru="В какой аптеке есть нужное лекарство?">Kerakli dori qaysi dorixonada bor?</h1>
         <div class="search-box anim anim-2">
             <input type="text" class="search-input" id="searchInput" placeholder="Dori nomini kiriting..." data-placeholder-uz="Dori nomini kiriting..." data-placeholder-ru="Введите название лекарства...">
-            <span class="search-icon"><img class="stk" data-stk="search" alt="" src="icons/search.png" onerror="stkFallback(this)"></span>
+            <span class="search-icon"><img class="stk stk-lg" data-stk="search" alt="" src="icons/search.png" onerror="stkFallback(this)"></span>
         </div>
         <div class="tags anim anim-3">
             <div class="tag" onclick="quickSearch('Paracetamol')"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Paracetamol</div>
@@ -684,10 +697,10 @@
         <!-- Mashhur mahsulotlar bazadan olinadi. Ilgari bu yerda qo'lda yozilgan
              uchta dori turardi — narxlari ham, ishlab chiqaruvchisi ham o'ylab
              topilgan edi va hech qaysi dorixonaga tegishli emasdi. -->
-        <h2 class="section-title reveal"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> <span data-uz="Ko'p qidiriladigan dorilar" data-ru="Часто искомые лекарства">Ko'p qidiriladigan dorilar</span></h2>
+        <h2 class="section-title reveal"><img class="stk stk-title" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> <span data-uz="Ko'p qidiriladigan dorilar" data-ru="Часто искомые лекарства">Ko'p qidiriladigan dorilar</span></h2>
         <div class="cards-grid reveal" id="popularMeds"></div>
 
-        <h2 class="section-title reveal"><img class="stk" data-stk="pin" alt="" src="icons/pin.png" onerror="stkFallback(this)"> <span data-uz="Menga yaqin dorixonalar" data-ru="Ближайшие аптеки">Menga yaqin dorixonalar</span></h2>
+        <h2 class="section-title reveal"><img class="stk stk-title" data-stk="pin" alt="" src="icons/pin.png" onerror="stkFallback(this)"> <span data-uz="Menga yaqin dorixonalar" data-ru="Ближайшие аптеки">Menga yaqin dorixonalar</span></h2>
         <div class="cards-grid reveal" id="nearbyPharmacies"></div>
 
         <!-- Raqamlar bazadan hisoblanadi: ilgari "500+", "120+" deb yozilgan edi,
@@ -911,11 +924,12 @@
                 const ph = dori.dorixona;
                 const drugName = (currentLang === 'ru' && (dori.nomi_ru || dori.nameRu)) || dori.nomi || dori.name;
                 const price = (dori.narx || dori.price || 0).toLocaleString();
+                const pachka = dori.pachkaNarx || dori.pachka_narx || 0;
                 return `
                 <div class="glass-card dori-card" onclick="openSearchDrug(${i})">
-                    <h3>${stk('pill')} ${drugName}</h3>
+                    <h3>${stk('pill','stk-card')} ${drugName}</h3>
                     <p><strong>${uz ? 'Ishlab chiqaruvchi:' : 'Производитель:'}</strong> ${dori.ishlab_chiqaruvchi || dori.manufacturer || '—'}</p>
-                    <p><strong>${uz ? 'Narx:' : 'Цена:'}</strong> ${price} ${uz ? "so'm" : 'сум'}</p>
+                    <p><strong>${uz ? 'Dona narxi:' : 'За шт.:'}</strong> ${price} ${uz ? "so'm" : 'сум'}${pachka > 0 ? ` | <strong>${uz ? 'Pachka:' : 'Уп.:'}</strong> ${pachka.toLocaleString()} ${uz ? "so'm" : 'сум'}` : ''}</p>
                     ${ph ? `<p><strong>${uz ? 'Dorixona:' : 'Аптека:'}</strong> ${stk('pharmacy')} ${ph.name || ''}</p>
                     <p><strong>${uz ? 'Manzil:' : 'Адрес:'}</strong> ${stk('pin')} ${ph.address || ''}</p>
                     <p><strong>${uz ? 'Telefon:' : 'Телефон:'}</strong> ${stk('phone')} ${ph.telefon || ''}</p>` : ''}
@@ -958,11 +972,12 @@
 
             document.getElementById('modalBox').innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
-                <h2>${stk('pill')} ${esc(drugName)}</h2>
+                <h2>${stk('pill','stk-lg')} ${esc(drugName)}</h2>
                 ${dori.name ? `<p><strong>${uz ? 'Nomi' : 'Название'}:</strong> ${stk('label')} ${esc(dori.name)}</p>` : ''}
                 ${dori.nameRu ? `<p><strong>${uz ? 'Ruscha nomi' : 'На русском'}:</strong> ${stk('ru')} ${esc(dori.nameRu)}</p>` : ''}
                 <p><strong>${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}:</strong> ${stk('factory')} ${esc(dori.manufacturer || '—')}</p>
-                <p><strong>${uz ? 'Narxi' : 'Цена'}:</strong> ${stk('money')} <b>${(dori.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>
+                <p><strong>${uz ? 'Dona narxi' : 'За шт.'}:</strong> ${stk('money')} <b>${(dori.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>
+                ${(dori.pachkaNarx || 0) > 0 ? `<p><strong>${uz ? 'Pachka narxi' : 'За упаковку'}:</strong> ${stk('box')} <b>${dori.pachkaNarx.toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>` : ''}
                 <p><strong>${uz ? 'Holat' : 'Статус'}:</strong> ${omborHolati(dori, uz)}</p>
                 ${ph ? `<p><strong>${uz ? 'Dorixona' : 'Аптека'}:</strong> ${stk('pharmacy')} ${esc(ph.name || '')}</p>
                 <p><strong>${uz ? 'Manzil' : 'Адрес'}:</strong> ${stk('pin')} ${esc(ph.address || '')}</p>
@@ -984,8 +999,21 @@
 
         function bronTugmasi(dori, uz) {
             if (!bronQilinadi(dori)) return '';
+            const hasPachka = (dori.pachkaNarx || 0) > 0;
+            if (hasPachka) {
+                return `<div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+                    <button class="modal-map-btn" style="flex:1;background:linear-gradient(135deg,#66bb6a,#43a047);"
+                        onclick="bronBoshla(${dori.id}, '${esc(dori.name).replace(/'/g, "\\'")}', 'dona')">
+                        ${stk('pill')} ${uz ? 'Dona bron' : 'Штучно'}
+                    </button>
+                    <button class="modal-map-btn" style="flex:1;background:linear-gradient(135deg,#42a5f5,#1e88e5);"
+                        onclick="bronBoshla(${dori.id}, '${esc(dori.name).replace(/'/g, "\\'")}', 'pachka')">
+                        ${stk('box')} ${uz ? 'Pachka bron' : 'Упаковкой'}
+                    </button>
+                </div>`;
+            }
             return `<button class="modal-map-btn" style="background:linear-gradient(135deg,#66bb6a,#43a047);"
-                        onclick="bronBoshla(${dori.id}, '${esc(dori.name).replace(/'/g, "\\'")}')">
+                        onclick="bronBoshla(${dori.id}, '${esc(dori.name).replace(/'/g, "\\'")}', 'dona')">
                         ${stk('basket')} ${uz ? 'Bron qilish' : 'Забронировать'}
                     </button>`;
         }
@@ -994,10 +1022,12 @@
          * Bron qiladi. Bron bot bilan umumiy jadvalga yoziladi, shuning uchun dorixona
          * egasiga xabar Telegram orqali boradi va javobi ham Telegram'ga qaytadi.
          */
-        async function bronBoshla(doriId, nomi) {
+        async function bronBoshla(doriId, nomi, tur) {
+            tur = tur || 'dona';
             const uz = currentLang === 'uz';
+            const birlik = tur === 'pachka' ? (uz ? 'pachka' : 'упак.') : (uz ? 'ta' : 'шт.');
             const natija = document.getElementById('bronNatija');
-            const kiritilgan = prompt(uz ? `«${nomi}» — nechta kerak?` : `«${nomi}» — сколько нужно?`, '1');
+            const kiritilgan = prompt(uz ? `«${nomi}» — nechta ${birlik} kerak?` : `«${nomi}» — сколько ${birlik} нужно?`, '1');
             if (kiritilgan === null) return;
             const soni = parseInt(kiritilgan, 10);
             if (!soni || soni <= 0) {
@@ -1013,17 +1043,18 @@
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + (localStorage.getItem('token') || '')
                     },
-                    body: JSON.stringify({ doriId: doriId, soni: soni })
+                    body: JSON.stringify({ doriId: doriId, soni: soni, tur: tur })
                 });
                 const data = await r.json();
                 if (!r.ok) {
                     natija.innerHTML = `<p style="color:#ff6b6b;">${stk('cancel')} ${esc(data.xato || (uz ? 'Bron qilib bo\'lmadi' : 'Не удалось забронировать'))}</p>`;
                     return;
                 }
+                const turNomi = (data.tur === 'pachka') ? (uz ? 'pachka' : 'упак.') : (uz ? 'ta' : 'шт.');
                 natija.innerHTML = `
                     <div style="margin-top:1rem;padding:1rem;border-radius:16px;background:rgba(102,187,106,0.15);border:1px solid #66bb6a;">
                         <p style="margin:0 0 0.5rem;"><b>${stk('check')} ${uz ? 'Bron qabul qilindi!' : 'Бронь принята!'}</b></p>
-                        <p style="margin:0;">${uz ? 'Soni' : 'Количество'}: <b>${data.soni}</b> ${uz ? 'ta' : 'шт.'}</p>
+                        <p style="margin:0;">${uz ? 'Soni' : 'Количество'}: <b>${data.soni}</b> ${turNomi}</p>
                         <p style="margin:0;">${uz ? 'Olib ketish kodi' : 'Код получения'}: <b style="font-size:1.2rem;">${esc(data.kod)}</b></p>
                         <p style="margin:0.5rem 0 0;font-size:0.9rem;opacity:0.85;">
                             ${uz ? 'Dorixona tasdiqlaganda Telegram\'da xabar olasiz.'
@@ -1087,7 +1118,7 @@
             // Endi bosilganda dorixonalar sahifasi ochilib, o'sha dorixona ko'rsatiladi.
             container.innerHTML = locationBanner() + pharmacies.slice(0, 3).map(dorixona => `
                 <div class="glass-card dorixona-card" onclick="dorixonaniOch(${dorixona.id || 0})">
-                    <h3>${stk('pharmacy')} ${dorixona.nomi || dorixona.name}</h3>
+                    <h3>${stk('pharmacy','stk-card')} ${dorixona.nomi || dorixona.name}</h3>
                     <p><span class="icon">${stk('pin')}</span>${dorixona.manzil || dorixona.address || ''}</p>
                     <p><span class="icon">${stk('phone')}</span>${dorixona.telefon || dorixona.phone || ''}</p>
                     ${dorixona._km != null ? `<p><span class="icon">${stk('ruler')}</span>${formatDistance(dorixona._km)}</p>` : ''}
@@ -1199,7 +1230,7 @@
                         : eng.toLocaleString() + '–' + katta.toLocaleString();
                     const nom = (!uz && m.ruNom) ? m.ruNom : m.nom;
                     return `<div class="glass-card dori-card" onclick="quickSearch('${m.nom.replace(/'/g, "\\'")}')">
-                        <h3>${stk('pill')} ${esc(nom)}</h3>
+                        <h3>${stk('pill','stk-card')} ${esc(nom)}</h3>
                         <p><strong>${uz ? 'Narx' : 'Цена'}:</strong> ${narx} ${uz ? "so'm" : 'сум'}</p>
                         <p><strong>${uz ? 'Dorixonalarda' : 'В аптеках'}:</strong> ${m.soni} ${uz ? 'ta' : 'шт.'}</p>
                     </div>`;
