@@ -477,7 +477,8 @@
           + '.stk-hero{width:clamp(4.5rem,12vw,7.5rem);height:clamp(4.5rem,12vw,7.5rem);vertical-align:middle}'
           + '.stk-title{width:3.2rem;height:3.2rem;vertical-align:-0.55rem}'
           + '.stk-card{width:3.5rem;height:3.5rem;vertical-align:middle;margin-right:0.6rem}'
-          + '.stk-nav{width:2.2rem;height:2.2rem;vertical-align:-0.35em}';
+          + '.stk-nav{width:2.2rem;height:2.2rem;vertical-align:-0.35em}'
+          + '.stk-search{width:2.4rem;height:2.4rem;vertical-align:middle}';
 
   function inject() {
     if (document.getElementById('stk-sprite')) return;
