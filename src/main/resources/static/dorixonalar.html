@@ -119,6 +119,19 @@
             position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid var(--hairline);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+            transition: background 0.4s var(--ease), box-shadow 0.4s var(--ease),
+                        padding 0.3s var(--ease), backdrop-filter 0.4s var(--ease);
+        }
+        header.scrolled {
+            background: rgba(3, 16, 13, 0.92);
+            backdrop-filter: blur(40px) saturate(220%);
+            -webkit-backdrop-filter: blur(40px) saturate(220%);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6),
+                        0 1px 0 rgba(22, 198, 164, 0.25),
+                        0 6px 20px rgba(22, 198, 164, 0.08);
+            border-bottom: 1px solid rgba(22, 198, 164, 0.35);
+            padding-top: 0.6rem;
+            padding-bottom: 0.6rem;
         }
         .header-content {
             max-width: 1180px; margin: 0 auto;
@@ -340,7 +353,7 @@
 
     <header>
         <div class="header-content">
-            <div class="logo"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
+            <div class="logo"><img class="stk stk-lg" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Dori Qidiruv</div>
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
@@ -550,7 +563,7 @@
             // Lokatsiya berilgan bo'lsa sarlavhani "eng yaqin" deb yangilaymiz
             if (userLocation) {
                 const title = document.querySelector('.page-title');
-                if (title) title.innerHTML = stk('pharmacy') + ' ' + (currentLang === 'uz'
+                if (title) title.innerHTML = stk('pharmacy','stk-title') + ' ' + (currentLang === 'uz'
                     ? 'Menga yaqin dorixonalar'
                     : 'Ближайшие аптеки');
             }
@@ -563,7 +576,7 @@
                 const hasLocation = pharmacy.latitude && pharmacy.longitude;
                 return `
                 <div class="glass-card pharmacy-card" onclick="openPharmacy(${index})">
-                    <h3>${stk('pharmacy')} ${esc(pharmacy.nomi || pharmacy.name)}</h3>
+                    <h3>${stk('pharmacy','stk-card')} ${esc(pharmacy.nomi || pharmacy.name)}</h3>
                     <div class="pharmacy-info">
                         <div class="info-row">
                             <span class="info-icon">${stk('pin')}</span>
@@ -606,7 +619,7 @@
 
             box.innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
-                <h2>${stk('pharmacy')} ${name}</h2>
+                <h2>${stk('pharmacy','stk-lg')} ${name}</h2>
                 <div class="pharmacy-info">
                     <div class="info-row"><span class="info-icon">${stk('pin')}</span><span class="info-text">${esc(pharmacy.manzil || pharmacy.address)}</span></div>
                     <div class="info-row"><span class="info-icon">${stk('phone')}</span><span class="info-text">${esc(pharmacy.telefon || pharmacy.phone)}</span></div>
@@ -661,7 +674,7 @@
             box.innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
                 <button class="back-btn" onclick="openPharmacy(${currentPharmacyIndex})">${uz ? '← Orqaga' : '← Назад'}</button>
-                <h2>${stk('pill')} ${esc(drugName)}</h2>
+                <h2>${stk('pill','stk-lg')} ${esc(drugName)}</h2>
                 <div class="pharmacy-info">
                     ${drug.name ? `<div class="info-row"><span class="info-icon">${stk('label')}</span><span class="info-text">${uz ? 'Nomi' : 'Название'}: ${esc(drug.name)}</span></div>` : ''}
                     ${drug.nameRu ? `<div class="info-row"><span class="info-icon">${stk('ru')}</span><span class="info-text">${uz ? 'Ruscha nomi' : 'На русском'}: ${esc(drug.nameRu)}</span></div>` : ''}
