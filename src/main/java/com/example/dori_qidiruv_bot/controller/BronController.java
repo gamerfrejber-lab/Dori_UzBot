@@ -26,7 +26,7 @@ public class BronController {
     private final BronService bronService;
 
     /** Bron so'rovi tanasi. */
-    public record BronRequest(Long doriId, int soni) { }
+    public record BronRequest(Long doriId, int soni, String turi) { }
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> bronQil(@AuthenticationPrincipal User mijoz,
@@ -35,7 +35,7 @@ public class BronController {
             return ResponseEntity.status(401).body(Map.of("xato", "Avval tizimga kiring"));
         }
         try {
-            return ResponseEntity.ok(bronService.bronQil(mijoz, so_rov.doriId(), so_rov.soni()));
+            return ResponseEntity.ok(bronService.bronQil(mijoz, so_rov.doriId(), so_rov.soni(), so_rov.turi()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("xato", e.getMessage()));
         } catch (IllegalStateException e) {

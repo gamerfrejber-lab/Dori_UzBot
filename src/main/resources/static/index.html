@@ -924,12 +924,18 @@
             resultsDiv.innerHTML = locationBanner() + results.map((dori, i) => {
                 const ph = dori.dorixona;
                 const drugName = (currentLang === 'ru' && (dori.nomi_ru || dori.nameRu)) || dori.nomi || dori.name;
-                const price = (dori.narx || dori.price || 0).toLocaleString();
+                const pDona = dori.priceDona || dori.narxDona;
+                const pPachka = dori.pricePachka || dori.narxPachka;
+                const pOld = (dori.narx || dori.price || 0).toLocaleString();
+                let narxStr = '';
+                if (pDona) narxStr += `${stk('pill')} ${uz ? 'Dona' : 'Шт'}: ${pDona.toLocaleString()} `;
+                if (pPachka) narxStr += `${stk('box')} ${uz ? 'Pachka' : 'Уп'}: ${pPachka.toLocaleString()} `;
+                if (!pDona && !pPachka) narxStr = pOld;
                 return `
                 <div class="glass-card dori-card" onclick="openSearchDrug(${i})">
                     <h3>${stk('pill','stk-card')} ${drugName}</h3>
                     <p><strong>${uz ? 'Ishlab chiqaruvchi:' : 'Производитель:'}</strong> ${dori.ishlab_chiqaruvchi || dori.manufacturer || '—'}</p>
-                    <p><strong>${uz ? 'Narx:' : 'Цена:'}</strong> ${price} ${uz ? "so'm" : 'сум'}</p>
+                    <p><strong>${uz ? 'Narx:' : 'Цена:'}</strong> ${narxStr} ${uz ? "so'm" : 'сум'}</p>
                     ${ph ? `<p><strong>${uz ? 'Dorixona:' : 'Аптека:'}</strong> ${stk('pharmacy')} ${ph.name || ''}</p>
                     <p><strong>${uz ? 'Manzil:' : 'Адрес:'}</strong> ${stk('pin')} ${ph.address || ''}</p>
                     <p><strong>${uz ? 'Telefon:' : 'Телефон:'}</strong> ${stk('phone')} ${ph.telefon || ''}</p>` : ''}
@@ -976,7 +982,10 @@
                 ${dori.name ? `<p><strong>${uz ? 'Nomi' : 'Название'}:</strong> ${stk('label')} ${esc(dori.name)}</p>` : ''}
                 ${dori.nameRu ? `<p><strong>${uz ? 'Ruscha nomi' : 'На русском'}:</strong> ${stk('ru')} ${esc(dori.nameRu)}</p>` : ''}
                 <p><strong>${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}:</strong> ${stk('factory')} ${esc(dori.manufacturer || '—')}</p>
-                <p><strong>${uz ? 'Narxi' : 'Цена'}:</strong> ${stk('money')} <b>${(dori.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>
+                <p><strong>${uz ? 'Narxi' : 'Цена'}:</strong></p>
+                ${dori.priceDona ? `<p style="margin-left:1rem;">${stk('pill')} ${uz ? 'Dona' : 'Штука'}: <b>${dori.priceDona.toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>` : ''}
+                ${dori.pricePachka ? `<p style="margin-left:1rem;">${stk('box')} ${uz ? 'Pachka' : 'Упаковка'}: <b>${dori.pricePachka.toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>` : ''}
+                ${!dori.priceDona && !dori.pricePachka ? `<p style="margin-left:1rem;">${stk('money')} <b>${(dori.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>` : ''}
                 <p><strong>${uz ? 'Holat' : 'Статус'}:</strong> ${omborHolati(dori, uz)}</p>
                 ${ph ? `<p><strong>${uz ? 'Dorixona' : 'Аптека'}:</strong> ${stk('pharmacy')} ${esc(ph.name || '')}</p>
                 <p><strong>${uz ? 'Manzil' : 'Адрес'}:</strong> ${stk('pin')} ${esc(ph.address || '')}</p>
@@ -999,25 +1008,59 @@
         function bronTugmasi(dori, uz) {
             if (!bronQilinadi(dori)) return '';
             return `<button class="modal-map-btn" style="background:linear-gradient(135deg,#66bb6a,#43a047);"
-                        onclick="bronBoshla(${dori.id}, '${esc(dori.name).replace(/'/g, "\\'")}')">
+                        onclick="bronTuriTanla(${dori.id}, '${esc(dori.name).replace(/'/g, "\\'")}')">
                         ${stk('basket')} ${uz ? 'Bron qilish' : 'Забронировать'}
                     </button>`;
         }
 
-        /**
-         * Bron qiladi. Bron bot bilan umumiy jadvalga yoziladi, shuning uchun dorixona
-         * egasiga xabar Telegram orqali boradi va javobi ham Telegram'ga qaytadi.
-         */
-        async function bronBoshla(doriId, nomi) {
+        function bronTuriTanla(doriId, nomi) {
             const uz = currentLang === 'uz';
             const natija = document.getElementById('bronNatija');
-            const kiritilgan = prompt(uz ? `«${nomi}» — nechta kerak?` : `«${nomi}» — сколько нужно?`, '1');
-            if (kiritilgan === null) return;
-            const soni = parseInt(kiritilgan, 10);
+            natija.innerHTML = `
+                <div style="margin-top:1rem;padding:1rem;border-radius:16px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);">
+                    <p style="margin:0 0 0.8rem;"><b>${uz ? 'Qanday olasiz?' : 'Как берёте?'}</b></p>
+                    <div style="display:flex;gap:0.8rem;flex-wrap:wrap;">
+                        <button class="modal-map-btn" style="background:linear-gradient(135deg,#42a5f5,#1e88e5);flex:1;min-width:120px;"
+                            onclick="bronSonKirit(${doriId}, '${esc(nomi).replace(/'/g, "\\'")}', 'DONA')">
+                            ${stk('pill')} ${uz ? 'Dona' : 'Штука'}
+                        </button>
+                        <button class="modal-map-btn" style="background:linear-gradient(135deg,#ab47bc,#8e24aa);flex:1;min-width:120px;"
+                            onclick="bronSonKirit(${doriId}, '${esc(nomi).replace(/'/g, "\\'")}', 'PACHKA')">
+                            ${stk('box')} ${uz ? 'Pachka' : 'Упаковка'}
+                        </button>
+                    </div>
+                </div>`;
+        }
+
+        function bronSonKirit(doriId, nomi, turi) {
+            const uz = currentLang === 'uz';
+            const natija = document.getElementById('bronNatija');
+            const turiNomi = turi === 'DONA' ? (uz ? 'dona' : 'штук') : (uz ? 'pachka' : 'упаковок');
+            natija.innerHTML = `
+                <div style="margin-top:1rem;padding:1rem;border-radius:16px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);">
+                    <p style="margin:0 0 0.8rem;"><b>${uz ? 'Nechta' : 'Сколько'} ${turiNomi}?</b></p>
+                    <div style="display:flex;gap:0.8rem;align-items:center;">
+                        <input type="number" id="bronSoniInput" min="1" value="1" style="
+                            width:80px;padding:0.6rem 0.8rem;border-radius:12px;border:1px solid rgba(56,189,248,0.3);
+                            background:rgba(0,0,0,0.3);color:var(--ink);font-size:1.1rem;text-align:center;font-family:inherit;">
+                        <button class="modal-map-btn" style="background:linear-gradient(135deg,#66bb6a,#43a047);flex:1;"
+                            onclick="bronYubor(${doriId}, '${esc(nomi).replace(/'/g, "\\'")}', '${turi}')">
+                            ${stk('check')} ${uz ? 'Tasdiqlash' : 'Подтвердить'}
+                        </button>
+                    </div>
+                </div>`;
+            setTimeout(function() { document.getElementById('bronSoniInput').focus(); }, 100);
+        }
+
+        async function bronYubor(doriId, nomi, turi) {
+            const uz = currentLang === 'uz';
+            const natija = document.getElementById('bronNatija');
+            const soni = parseInt(document.getElementById('bronSoniInput').value, 10);
             if (!soni || soni <= 0) {
                 natija.innerHTML = `<p style="color:#ff6b6b;">${uz ? 'Son noto\'g\'ri.' : 'Неверное количество.'}</p>`;
                 return;
             }
+            const turiNomi = turi === 'DONA' ? (uz ? 'dona' : 'шт.') : (uz ? 'pachka' : 'уп.');
 
             natija.innerHTML = `<p>${uz ? 'Yuborilmoqda…' : 'Отправка…'}</p>`;
             try {
@@ -1027,7 +1070,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + (localStorage.getItem('token') || '')
                     },
-                    body: JSON.stringify({ doriId: doriId, soni: soni })
+                    body: JSON.stringify({ doriId: doriId, soni: soni, turi: turi })
                 });
                 const data = await r.json();
                 if (!r.ok) {
@@ -1037,7 +1080,9 @@
                 natija.innerHTML = `
                     <div style="margin-top:1rem;padding:1rem;border-radius:16px;background:rgba(102,187,106,0.15);border:1px solid #66bb6a;">
                         <p style="margin:0 0 0.5rem;"><b>${stk('check')} ${uz ? 'Bron qabul qilindi!' : 'Бронь принята!'}</b></p>
-                        <p style="margin:0;">${uz ? 'Soni' : 'Количество'}: <b>${data.soni}</b> ${uz ? 'ta' : 'шт.'}</p>
+                        <p style="margin:0;">${uz ? 'Turi' : 'Тип'}: <b>${turiNomi}</b></p>
+                        <p style="margin:0;">${uz ? 'Soni' : 'Количество'}: <b>${data.soni}</b></p>
+                        ${data.narx ? `<p style="margin:0;">${uz ? 'Narxi' : 'Цена'}: <b>${data.narx.toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>` : ''}
                         <p style="margin:0;">${uz ? 'Olib ketish kodi' : 'Код получения'}: <b style="font-size:1.2rem;">${esc(data.kod)}</b></p>
                         <p style="margin:0.5rem 0 0;font-size:0.9rem;opacity:0.85;">
                             ${uz ? 'Dorixona tasdiqlaganda Telegram\'da xabar olasiz.'
@@ -1192,9 +1237,11 @@
                 const sanoq = new Map();
                 dorilarJ.forEach(d => {
                     if (!d.name) return;
-                    const b = sanoq.get(d.name) || { nom: d.name, ruNom: d.nameRu, soni: 0, narxlar: [] };
+                    const b = sanoq.get(d.name) || { nom: d.name, ruNom: d.nameRu, soni: 0, narxlar: [], donaNarxlar: [], pachkaNarxlar: [] };
                     b.soni++;
                     if (d.price) b.narxlar.push(d.price);
+                    if (d.priceDona) b.donaNarxlar.push(d.priceDona);
+                    if (d.pricePachka) b.pachkaNarxlar.push(d.pricePachka);
                     sanoq.set(d.name, b);
                 });
                 const mashhur = [...sanoq.values()].sort((a, b) => b.soni - a.soni).slice(0, 6);
@@ -1207,14 +1254,24 @@
                     return;
                 }
                 joy.innerHTML = mashhur.map(m => {
-                    const eng = Math.min(...m.narxlar), katta = Math.max(...m.narxlar);
-                    const narx = eng === katta
-                        ? eng.toLocaleString()
-                        : eng.toLocaleString() + '–' + katta.toLocaleString();
+                    let narxStr = '';
+                    if (m.donaNarxlar.length) {
+                        const eng = Math.min(...m.donaNarxlar), katta = Math.max(...m.donaNarxlar);
+                        narxStr += (uz ? 'Dona: ' : 'Шт: ') + (eng === katta ? eng.toLocaleString() : eng.toLocaleString() + '–' + katta.toLocaleString());
+                    }
+                    if (m.pachkaNarxlar.length) {
+                        if (narxStr) narxStr += ' · ';
+                        const eng = Math.min(...m.pachkaNarxlar), katta = Math.max(...m.pachkaNarxlar);
+                        narxStr += (uz ? 'Pachka: ' : 'Уп: ') + (eng === katta ? eng.toLocaleString() : eng.toLocaleString() + '–' + katta.toLocaleString());
+                    }
+                    if (!narxStr && m.narxlar.length) {
+                        const eng = Math.min(...m.narxlar), katta = Math.max(...m.narxlar);
+                        narxStr = eng === katta ? eng.toLocaleString() : eng.toLocaleString() + '–' + katta.toLocaleString();
+                    }
                     const nom = (!uz && m.ruNom) ? m.ruNom : m.nom;
                     return `<div class="glass-card dori-card" onclick="quickSearch('${m.nom.replace(/'/g, "\\'")}')">
                         <h3>${stk('pill','stk-card')} ${esc(nom)}</h3>
-                        <p><strong>${uz ? 'Narx' : 'Цена'}:</strong> ${narx} ${uz ? "so'm" : 'сум'}</p>
+                        <p><strong>${uz ? 'Narx' : 'Цена'}:</strong> ${narxStr} ${uz ? "so'm" : 'сум'}</p>
                         <p><strong>${uz ? 'Dorixonalarda' : 'В аптеках'}:</strong> ${m.soni} ${uz ? 'ta' : 'шт.'}</p>
                     </div>`;
                 }).join('');

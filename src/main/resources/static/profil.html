@@ -477,7 +477,8 @@
                             ${stk('pharmacy')} ${esc(b.dorixonaNomi || '')}${b.manzil ? ' · ' + stk('pin') + ' ' + esc(b.manzil) : ''}
                         </div>
                         <div style="opacity:0.8;font-size:0.92rem;">
-                            ${uz ? 'Soni' : 'Кол-во'}: <b>${b.soni}</b> ${uz ? 'ta' : 'шт.'}
+                            ${b.turi ? (b.turi === 'PACHKA' ? (uz ? 'Pachka' : 'Уп.') : (uz ? 'Dona' : 'Шт.')) + ': ' : ''}
+                            ${uz ? 'Soni' : 'Кол-во'}: <b>${b.soni}</b>
                             · ${uz ? 'Kod' : 'Код'}: <b>${esc(b.kod || '—')}</b>
                         </div>
                     </div>`).join('');

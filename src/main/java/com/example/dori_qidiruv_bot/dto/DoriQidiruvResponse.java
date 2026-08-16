@@ -15,6 +15,8 @@ public class DoriQidiruvResponse {
     private String nameRu;
     private String manufacturer;
     private Double price;
+    private Double priceDona;
+    private Double pricePachka;
     private Boolean available;
     private Dorixona dorixona;
 

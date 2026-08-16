@@ -19,6 +19,7 @@ public interface BronRepository extends JpaRepository<Bron, Long> {
         Integer getSoni();
         String getKod();
         String getHolat();
+        String getTuri();
         Double getNarx();
         java.time.LocalDateTime getSana();
     }
@@ -31,6 +32,7 @@ public interface BronRepository extends JpaRepository<Bron, Long> {
                    p.manzil AS manzil,
                    p.telefon AS telefon,
                    b.soni AS soni,
+                   b.turi AS turi,
                    b.kod AS kod,
                    b.holat AS holat,
                    b.sana AS sana

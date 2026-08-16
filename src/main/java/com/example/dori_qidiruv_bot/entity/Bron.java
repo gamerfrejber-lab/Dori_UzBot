@@ -31,6 +31,9 @@ public class Bron {
     public static final String BERILDI = "BERILDI";
     public static final String BEKOR = "BEKOR";
 
+    public static final String DONA = "DONA";
+    public static final String PACHKA = "PACHKA";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -52,6 +55,10 @@ public class Bron {
 
     @Column(name = "soni", nullable = false)
     private Integer soni;
+
+    /** Buyurtma turi: DONA yoki PACHKA. */
+    @Column(name = "turi", length = 10)
+    private String turi;
 
     /** Mijoz dorixonada aytadigan olib ketish kodi. */
     @Column(name = "kod", length = 10)
