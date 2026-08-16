@@ -366,6 +366,7 @@
                         <input id="phName" placeholder="Nomi *">
                         <input id="phAddress" placeholder="Manzil">
                         <input id="phPhone" placeholder="Telefon">
+                        <input id="phKarta" placeholder="Karta raqami (8600 1234 5678 9012)">
                         <input id="phLat" placeholder="Kenglik (41.3451)">
                         <input id="phLon" placeholder="Uzunlik (69.2861)">
                     </div>
@@ -517,6 +518,7 @@
                 name: name,
                 address: document.getElementById('phAddress').value.trim(),
                 telefon: document.getElementById('phPhone').value.trim(),
+                kartaRaqami: document.getElementById('phKarta').value.trim() || null,
                 latitude: parseFloat(document.getElementById('phLat').value) || null,
                 longitude: parseFloat(document.getElementById('phLon').value) || null
             };
@@ -528,7 +530,7 @@
                 .then(function (r) {
                     if (!r.ok) throw new Error();
                     showMessage(stk('check') + ' Dorixona qo\'shildi', true);
-                    ['phName', 'phAddress', 'phPhone', 'phLat', 'phLon'].forEach(function (id) {
+                    ['phName', 'phAddress', 'phPhone', 'phKarta', 'phLat', 'phLon'].forEach(function (id) {
                         document.getElementById(id).value = '';
                     });
                     loadPharmacies();

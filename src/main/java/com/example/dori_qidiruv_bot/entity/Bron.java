@@ -27,9 +27,12 @@ import java.time.LocalDateTime;
 public class Bron {
 
     public static final String YANGI = "YANGI";
+    public static final String TOLOV_KUTILMOQDA = "TOLOV_KUTILMOQDA";
+    public static final String TOLANGAN = "TOLANGAN";
     public static final String TAYYOR = "TAYYOR";
     public static final String BERILDI = "BERILDI";
     public static final String BEKOR = "BEKOR";
+    public static final String MUDDATI_OTGAN = "MUDDATI_OTGAN";
 
     public static final String DONA = "DONA";
     public static final String PACHKA = "PACHKA";
@@ -77,4 +80,16 @@ public class Bron {
 
     @Column(name = "sana")
     private LocalDateTime sana;
+
+    @Column(name = "tolov_summasi")
+    private Double tolovSummasi;
+
+    @Column(name = "tolov_holati", length = 30)
+    private String tolovHolati;
+
+    @Column(name = "tolov_cheki", columnDefinition = "bytea")
+    private byte[] tolovCheki;
+
+    @Column(name = "olib_ketish_muddati")
+    private LocalDateTime olibKetishMuddati;
 }

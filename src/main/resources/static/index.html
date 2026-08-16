@@ -1077,18 +1077,20 @@
                     natija.innerHTML = `<p style="color:#ff6b6b;">${stk('cancel')} ${esc(data.xato || (uz ? 'Bron qilib bo\'lmadi' : 'Не удалось забронировать'))}</p>`;
                     return;
                 }
+                localStorage.setItem('bronTolov_' + data.id, JSON.stringify(data));
                 natija.innerHTML = `
                     <div style="margin-top:1rem;padding:1rem;border-radius:16px;background:rgba(102,187,106,0.15);border:1px solid #66bb6a;">
-                        <p style="margin:0 0 0.5rem;"><b>${stk('check')} ${uz ? 'Bron qabul qilindi!' : 'Бронь принята!'}</b></p>
-                        <p style="margin:0;">${uz ? 'Turi' : 'Тип'}: <b>${turiNomi}</b></p>
-                        <p style="margin:0;">${uz ? 'Soni' : 'Количество'}: <b>${data.soni}</b></p>
-                        ${data.narx ? `<p style="margin:0;">${uz ? 'Narxi' : 'Цена'}: <b>${data.narx.toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>` : ''}
-                        <p style="margin:0;">${uz ? 'Olib ketish kodi' : 'Код получения'}: <b style="font-size:1.2rem;">${esc(data.kod)}</b></p>
+                        <p style="margin:0 0 0.5rem;"><b>${stk('check')} ${uz ? 'Bron yaratildi!' : 'Бронь создана!'}</b></p>
+                        <p style="margin:0;">${uz ? 'To\'lov summasi (30%)' : 'Сумма оплаты (30%)'}: <b>${(data.tolovSummasi || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>
                         <p style="margin:0.5rem 0 0;font-size:0.9rem;opacity:0.85;">
-                            ${uz ? 'Dorixona tasdiqlaganda Telegram\'da xabar olasiz.'
-                                 : 'Когда аптека подтвердит, вы получите сообщение в Telegram.'}
+                            ${uz ? 'Bronni tasdiqlash uchun 30% oldindan to\'lov qiling.'
+                                 : 'Для подтверждения брони оплатите 30% предоплату.'}
                         </p>
-                    </div>`;
+                    </div>
+                    <button class="modal-map-btn" style="background:linear-gradient(135deg,#66bb6a,#43a047);margin-top:0.8rem;width:100%;"
+                        onclick="location.href='tolov.html?id=${data.id}'">
+                        ${stk('basket')} ${uz ? 'To\'lovga o\'tish' : 'Перейти к оплате'}
+                    </button>`;
             } catch (e) {
                 natija.innerHTML = `<p style="color:#ff6b6b;">${uz ? 'Serverga ulanib bo\'lmadi.' : 'Не удалось подключиться к серверу.'}</p>`;
             }

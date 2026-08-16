@@ -481,6 +481,16 @@
                             ${uz ? 'Soni' : 'Кол-во'}: <b>${b.soni}</b>
                             · ${uz ? 'Kod' : 'Код'}: <b>${esc(b.kod || '—')}</b>
                         </div>
+                        ${b.tolovSummasi ? `<div style="opacity:0.8;font-size:0.92rem;">
+                            ${uz ? 'To\'lov (30%)' : 'Оплата (30%)'}: <b>${b.tolovSummasi.toLocaleString()} ${uz ? "so'm" : 'сум'}</b>
+                            ${b.tolovHolati === 'KUTILMOQDA' ? ' · <a href="tolov.html?id=' + b.id + '" style="color:#38BDF8;">' + (uz ? 'To\'lov qilish' : 'Оплатить') + '</a>' : ''}
+                            ${b.tolovHolati === 'TEKSHIRILMOQDA' ? ' · <span style="color:#FFA726;">' + (uz ? 'Tekshirilmoqda' : 'Проверяется') + '</span>' : ''}
+                            ${b.tolovHolati === 'TASDIQLANGAN' ? ' · <span style="color:#66bb6a;">' + (uz ? 'Tasdiqlangan' : 'Подтверждён') + '</span>' : ''}
+                            ${b.tolovHolati === 'QAYTARILMAYDI' ? ' · <span style="color:#ef5350;">' + (uz ? 'Qaytarilmaydi' : 'Не возвращается') + '</span>' : ''}
+                        </div>` : ''}
+                        ${b.holat === 'MUDDATI_OTGAN' ? `<div style="color:#ef5350;font-size:0.88rem;margin-top:0.2rem;">
+                            ${uz ? '5 kun ichida olib ketilmadi — bron bekor, to\'lov qaytarilmaydi' : 'Не забрали за 5 дней — бронь отменена, оплата не возвращается'}
+                        </div>` : ''}
                     </div>`).join('');
             } catch (e) {
                 box.innerHTML = `<p style="opacity:0.7;">${uz
@@ -490,9 +500,12 @@
 
         function bronHolati(holat, uz) {
             switch (holat) {
+                case 'TOLOV_KUTILMOQDA': return stk('clock') + (uz ? ' To\'lov kutilmoqda' : ' Ожидает оплаты');
+                case 'TOLANGAN': return stk('check') + (uz ? ' To\'langan' : ' Оплачен');
                 case 'TAYYOR': return stk('available') + (uz ? ' Tayyor' : ' Готов');
                 case 'BERILDI': return stk('check') + (uz ? ' Berildi' : ' Выдан');
                 case 'BEKOR': return stk('cancel') + (uz ? ' Bekor qilindi' : ' Отменён');
+                case 'MUDDATI_OTGAN': return stk('cancel') + (uz ? ' Muddati o\'tgan' : ' Срок истёк');
                 default: return stk('clock') + (uz ? ' Kutilmoqda' : ' Ожидает');
             }
         }

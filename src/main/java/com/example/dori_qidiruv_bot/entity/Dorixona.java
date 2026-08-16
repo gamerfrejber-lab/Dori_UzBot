@@ -34,4 +34,7 @@ public class Dorixona {
 
     @Column(name = "longitude")
     private Double longitude;
+
+    @Column(name = "karta_raqami")
+    private String kartaRaqami;
 }

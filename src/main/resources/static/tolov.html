@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="stickers.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To'lov — Dori Qidiruv</title>
+    <style>
+        :root {
+            --bg-0: #03100D;
+            --bg-1: #061815;
+            --ink: #E9F3F0;
+            --ink-dim: #8FA8A1;
+            --ink-faint: #5D726C;
+            --teal: #16C6A4;
+            --teal-deep: #0E6B5C;
+            --glass: rgba(255, 255, 255, 0.055);
+            --glass-hi: rgba(255, 255, 255, 0.095);
+            --hairline: rgba(255, 255, 255, 0.13);
+            --r-lg: 26px;
+            --r-md: 18px;
+            --spring: cubic-bezier(0.22, 1.15, 0.36, 1);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(160deg, var(--bg-0) 0%, var(--bg-1) 40%, #0A2E28 100%);
+            color: var(--ink);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--glass-hi);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--hairline);
+            border-radius: var(--r-lg);
+            padding: 1.8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            text-align: center;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.95rem;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--ink-dim); }
+        .info-value { font-weight: 600; text-align: right; }
+
+        .karta-box {
+            background: linear-gradient(135deg, #1a3a5c 0%, #0d2440 100%);
+            border-radius: var(--r-md);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: center;
+            border: 1px solid rgba(56,189,248,0.3);
+        }
+        .karta-label { font-size: 0.85rem; color: var(--ink-dim); margin-bottom: 0.5rem; }
+        .karta-raqam {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #38BDF8;
+            font-family: 'Courier New', monospace;
+        }
+        .karta-nusxa {
+            margin-top: 0.6rem;
+            font-size: 0.82rem;
+            color: var(--ink-faint);
+            cursor: pointer;
+        }
+        .karta-nusxa:hover { color: var(--teal); }
+
+        .summa-box {
+            background: linear-gradient(135deg, rgba(22,198,164,0.15), rgba(22,198,164,0.05));
+            border: 1px solid rgba(22,198,164,0.3);
+            border-radius: var(--r-md);
+            padding: 1.2rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .summa-label { font-size: 0.9rem; color: var(--ink-dim); }
+        .summa-son {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--teal);
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(56,189,248,0.3);
+            border-radius: var(--r-md);
+            padding: 2rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s var(--ease);
+            position: relative;
+        }
+        .upload-area:hover {
+            border-color: var(--teal);
+            background: rgba(22,198,164,0.05);
+        }
+        .upload-area.has-file {
+            border-color: #66bb6a;
+            background: rgba(102,187,106,0.1);
+        }
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .upload-text { color: var(--ink-dim); font-size: 0.95rem; }
+        .upload-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 12px;
+            margin-top: 0.8rem;
+            display: none;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 999px;
+            font-size: 1.05rem;
+            font-weight: 650;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.35s var(--spring);
+            margin-top: 1rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #66bb6a, #43a047);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(102,187,106,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(102,187,106,0.42);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-back {
+            background: var(--glass);
+            color: var(--ink);
+            border: 1px solid var(--hairline);
+            margin-top: 0.8rem;
+        }
+
+        .shart-box {
+            background: rgba(224, 118, 47, 0.1);
+            border: 1px solid rgba(224, 118, 47, 0.3);
+            border-radius: var(--r-md);
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.88rem;
+            color: var(--ink-dim);
+            line-height: 1.5;
+        }
+        .shart-box b { color: #E0762F; }
+
+        .natija {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .muddat-box {
+            background: rgba(239, 83, 80, 0.1);
+            border: 1px solid rgba(239, 83, 80, 0.3);
+            border-radius: var(--r-md);
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .muddat-box .kun { font-size: 1.4rem; font-weight: 700; color: #ef5350; }
+
+        @media (max-width: 480px) {
+            body { padding: 1rem 0.7rem; }
+            .card { padding: 1.2rem; }
+            .karta-raqam { font-size: 1.3rem; }
+            .summa-son { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="yuklanmoqda" style="text-align:center;padding:3rem;">
+            <p style="opacity:0.7;">Yuklanmoqda…</p>
+        </div>
+        <div id="tolovSahifa" style="display:none;"></div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const bronId = params.get('id');
+        const currentLang = localStorage.getItem('lang') || 'uz';
+
+        if (!bronId) {
+            document.getElementById('yuklanmoqda').innerHTML =
+                '<p style="color:#ff6b6b;">Bron topilmadi. Bosh sahifaga qayting.</p>' +
+                '<button class="btn btn-back" onclick="location.href=\'index.html\'">Bosh sahifa</button>';
+        } else {
+            yukla();
+        }
+
+        async function yukla() {
+            const uz = currentLang === 'uz';
+            try {
+                const bronData = JSON.parse(localStorage.getItem('bronTolov_' + bronId));
+                if (!bronData) throw new Error('no data');
+
+                const sahifa = document.getElementById('tolovSahifa');
+                const jami = bronData.jami || 0;
+                const tolov = bronData.tolovSummasi || 0;
+                const kartaRaqami = bronData.kartaRaqami || '';
+                const turiNomi = bronData.turi === 'PACHKA' ? (uz ? 'Pachka' : 'Упаковка') : (uz ? 'Dona' : 'Штука');
+
+                sahifa.innerHTML = `
+                    <h1>${stk('basket','stk-lg')} ${uz ? 'To\'lov' : 'Оплата'}</h1>
+
+                    <div class="card">
+                        <div class="info-row">
+                            <span class="info-label">${stk('pill')} ${uz ? 'Dori' : 'Лекарство'}</span>
+                            <span class="info-value">${esc(bronData.doriNomi)}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">${uz ? 'Turi' : 'Тип'}</span>
+                            <span class="info-value">${turiNomi}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">${uz ? 'Soni' : 'Количество'}</span>
+                            <span class="info-value">${bronData.soni}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">${uz ? 'Jami narx' : 'Общая цена'}</span>
+                            <span class="info-value">${jami.toLocaleString()} ${uz ? "so'm" : 'сум'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">${stk('pharmacy')} ${uz ? 'Dorixona' : 'Аптека'}</span>
+                            <span class="info-value">${esc(bronData.dorixonaNomi || '')}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">${stk('pin')} ${uz ? 'Manzil' : 'Адрес'}</span>
+                            <span class="info-value">${esc(bronData.manzil || '')}</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="summa-box">
+                            <div class="summa-label">${uz ? 'To\'lov summasi (30%)' : 'Сумма оплаты (30%)'}</div>
+                            <div class="summa-son">${tolov.toLocaleString()} ${uz ? "so'm" : 'сум'}</div>
+                        </div>
+
+                        ${kartaRaqami ? `
+                        <div class="karta-box">
+                            <div class="karta-label">${uz ? 'Dorixona karta raqami' : 'Номер карты аптеки'}</div>
+                            <div class="karta-raqam" id="kartaRaqam">${formatKarta(kartaRaqami)}</div>
+                            <div class="karta-nusxa" onclick="nusxaOl()">${stk('doc')} ${uz ? 'Nusxa olish' : 'Скопировать'}</div>
+                        </div>` : `
+                        <div class="shart-box">
+                            <b>${uz ? 'Diqqat!' : 'Внимание!'}</b> ${uz ? 'Dorixona karta raqami kiritilmagan. Dorixonaga murojaat qiling.' : 'Номер карты аптеки не указан.'}
+                        </div>`}
+
+                        <div class="shart-box">
+                            <b>${uz ? 'Shartlar:' : 'Условия:'}</b><br>
+                            • ${uz ? 'Yuqoridagi karta raqamiga <b>' + tolov.toLocaleString() + " so'm</b> o'tkazing" : 'Переведите <b>' + tolov.toLocaleString() + ' сум</b> на указанную карту'}<br>
+                            • ${uz ? 'To\'lov chekining rasmini yuklang' : 'Загрузите скриншот чека'}<br>
+                            • ${uz ? 'Dorini <b>5 kun</b> ichida olib keting' : 'Заберите лекарство в течение <b>5 дней</b>'}<br>
+                            • ${uz ? '<b>5 kun</b> ichida olib ketilmasa — bron bekor, to\'lov qaytarilmaydi' : 'Если не заберёте за <b>5 дней</b> — бронь отменяется, оплата не возвращается'}
+                        </div>
+
+                        <div class="muddat-box">
+                            <div style="color:var(--ink-dim);font-size:0.9rem;">${stk('clock')} ${uz ? 'Olib ketish muddati' : 'Срок получения'}</div>
+                            <div class="kun">5 ${uz ? 'kun' : 'дней'}</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <p style="margin-bottom:1rem;font-weight:600;">${stk('doc')} ${uz ? 'To\'lov chekini yuklang' : 'Загрузите чек оплаты'}</p>
+                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('chekInput').click()">
+                            <input type="file" id="chekInput" accept="image/*" onchange="chekTanlandi(this)">
+                            <div class="upload-text" id="uploadText">
+                                ${stk('doc','stk-lg')}<br>
+                                ${uz ? 'Chek rasmini tanlang yoki tortib tashlang' : 'Выберите скриншот чека'}
+                            </div>
+                            <img class="upload-preview" id="chekPreview">
+                        </div>
+
+                        <button class="btn btn-primary" id="yuborBtn" disabled onclick="chekYubor()">
+                            ${stk('check')} ${uz ? 'Chekni yuborish' : 'Отправить чек'}
+                        </button>
+                    </div>
+
+                    <div id="natija" class="natija"></div>
+
+                    <button class="btn btn-back" onclick="location.href='index.html'">
+                        ${uz ? '← Bosh sahifa' : '← Главная'}
+                    </button>
+                `;
+
+                document.getElementById('yuklanmoqda').style.display = 'none';
+                sahifa.style.display = 'block';
+            } catch (e) {
+                document.getElementById('yuklanmoqda').innerHTML =
+                    '<p style="color:#ff6b6b;">To\'lov ma\'lumotlari topilmadi.</p>' +
+                    '<button class="btn btn-back" onclick="location.href=\'index.html\'">Bosh sahifa</button>';
+            }
+        }
+
+        function formatKarta(raqam) {
+            const clean = raqam.replace(/\D/g, '');
+            return clean.replace(/(.{4})/g, '$1 ').trim();
+        }
+
+        function nusxaOl() {
+            const raqam = document.getElementById('kartaRaqam').textContent.replace(/\s/g, '');
+            navigator.clipboard.writeText(raqam).then(() => {
+                const el = document.querySelector('.karta-nusxa');
+                el.textContent = currentLang === 'uz' ? '✓ Nusxa olindi!' : '✓ Скопировано!';
+                setTimeout(() => { el.innerHTML = stk('doc') + ' ' + (currentLang === 'uz' ? 'Nusxa olish' : 'Скопировать'); }, 2000);
+            });
+        }
+
+        let selectedFile = null;
+
+        function chekTanlandi(input) {
+            if (!input.files || !input.files[0]) return;
+            selectedFile = input.files[0];
+
+            if (selectedFile.size > 5 * 1024 * 1024) {
+                alert(currentLang === 'uz' ? 'Fayl 5 MB dan katta' : 'Файл больше 5 МБ');
+                selectedFile = null;
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('chekPreview');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                document.getElementById('uploadText').style.display = 'none';
+                document.getElementById('uploadArea').classList.add('has-file');
+                document.getElementById('yuborBtn').disabled = false;
+            };
+            reader.readAsDataURL(selectedFile);
+        }
+
+        async function chekYubor() {
+            if (!selectedFile) return;
+            const uz = currentLang === 'uz';
+            const btn = document.getElementById('yuborBtn');
+            const natija = document.getElementById('natija');
+
+            btn.disabled = true;
+            btn.textContent = uz ? 'Yuborilmoqda…' : 'Отправка…';
+
+            try {
+                const formData = new FormData();
+                formData.append('chek', selectedFile);
+
+                const r = await fetch('/api/bron/' + bronId + '/chek', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + (localStorage.getItem('token') || '')
+                    },
+                    body: formData
+                });
+                const data = await r.json();
+
+                if (!r.ok) {
+                    natija.innerHTML = `<p style="color:#ff6b6b;">${stk('cancel')} ${esc(data.xato || (uz ? 'Yuborib bo\'lmadi' : 'Ошибка'))}</p>`;
+                    btn.disabled = false;
+                    btn.innerHTML = stk('check') + ' ' + (uz ? 'Chekni yuborish' : 'Отправить чек');
+                    return;
+                }
+
+                localStorage.removeItem('bronTolov_' + bronId);
+
+                natija.innerHTML = `
+                    <div class="card" style="background:rgba(102,187,106,0.15);border-color:#66bb6a;">
+                        <p style="font-size:1.2rem;font-weight:700;margin-bottom:0.8rem;">
+                            ${stk('check','stk-lg')} ${uz ? 'Chek yuborildi!' : 'Чек отправлен!'}
+                        </p>
+                        <p style="color:var(--ink-dim);">
+                            ${uz ? 'Dorixona to\'lovni tekshirgandan keyin Telegram orqali xabar olasiz. Dorini 5 kun ichida olib keting.'
+                                 : 'После проверки оплаты аптекой вы получите уведомление в Telegram. Заберите лекарство в течение 5 дней.'}
+                        </p>
+                    </div>`;
+                btn.style.display = 'none';
+                document.querySelector('.upload-area').style.display = 'none';
+            } catch (e) {
+                natija.innerHTML = `<p style="color:#ff6b6b;">${uz ? 'Serverga ulanib bo\'lmadi.' : 'Не удалось подключиться к серверу.'}</p>`;
+                btn.disabled = false;
+                btn.innerHTML = stk('check') + ' ' + (uz ? 'Chekni yuborish' : 'Отправить чек');
+            }
+        }
+
+        function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    </script>
+</body>
+</html>
