@@ -60,13 +60,21 @@ public class BronService {
         bron.setMijozIsmi(mijoz.getName());
         bron.setMijozTelefon(mijoz.getPhoneNumber());
         bron.setSoni(soni);
-        bron.setTur(tur != null ? tur : "dona");
+        bron.setTur(tur != null ? tur : Bron.DONA);
         bron.setKod(kodYarat());
-        bron.setHolat(Bron.YANGI);
-        // Dorixona egasiga hali aytilmagan; mijozga aytish kerak bo'lgan o'zgarish ham yo'q.
-        bron.setEgagaXabar(false);
+        bron.setHolat(Bron.TOLOV_KUTILMOQDA);
+        bron.setEgagaXabar(true);
         bron.setMijozgaXabar(true);
         bron.setSana(LocalDateTime.now());
+
+        Double narx = Bron.PACHKA.equals(bron.getTur()) ? dori.getPachkaNarx() : dori.getPrice();
+        if (narx == null) narx = dori.getPrice();
+        double jami = (narx != null ? narx : 0) * soni;
+        double tolovSummasi = Math.ceil(jami * 0.3);
+        bron.setTolovSummasi(tolovSummasi);
+        bron.setTolovHolati("KUTILMOQDA");
+        bron.setOlibKetishMuddati(LocalDateTime.now().plusDays(5));
+
         bronRepository.save(bron);
 
         Dorixona dorixona = dorixonaRepository.findById(dori.getDorixonaId()).orElse(null);
@@ -77,11 +85,13 @@ public class BronService {
         javob.put("soni", soni);
         javob.put("tur", bron.getTur());
         javob.put("doriNomi", dori.getName());
-        javob.put("narx", "pachka".equals(tur) && dori.getPachkaNarx() != null && dori.getPachkaNarx() > 0
-                ? dori.getPachkaNarx() : dori.getPrice());
+        javob.put("narx", narx);
+        javob.put("jami", jami);
+        javob.put("tolovSummasi", tolovSummasi);
         javob.put("dorixonaNomi", dorixona == null ? null : dorixona.getName());
         javob.put("manzil", dorixona == null ? null : dorixona.getAddress());
         javob.put("telefon", dorixona == null ? null : dorixona.getTelefon());
+        javob.put("kartaRaqami", dorixona == null ? null : dorixona.getKartaRaqami());
         return javob;
     }
 
@@ -97,12 +107,60 @@ public class BronService {
                     m.put("manzil", q.getManzil());
                     m.put("telefon", q.getTelefon());
                     m.put("soni", q.getSoni());
+                    m.put("tur", q.getTur());
                     m.put("kod", q.getKod());
                     m.put("holat", q.getHolat());
+                    m.put("tolovSummasi", q.getTolovSummasi());
+                    m.put("tolovHolati", q.getTolovHolati());
+                    m.put("olibKetishMuddati", q.getOlibKetishMuddati() == null ? null : q.getOlibKetishMuddati().toString());
                     m.put("sana", q.getSana() == null ? null : q.getSana().toString());
                     return m;
                 })
                 .toList();
+    }
+
+    @Transactional
+    public Map<String, Object> chekYuklash(User mijoz, Long bronId, byte[] chekRasmi) {
+        Bron bron = bronRepository.findById(bronId)
+                .orElseThrow(() -> new IllegalArgumentException("Bron topilmadi"));
+
+        if (!bron.getMijozTelegramId().equals(mijoz.getId())) {
+            throw new IllegalArgumentException("Bu bron sizga tegishli emas");
+        }
+        if (!"KUTILMOQDA".equals(bron.getTolovHolati())) {
+            throw new IllegalStateException("Bu bron uchun to'lov allaqachon amalga oshgan yoki bekor qilingan");
+        }
+
+        bron.setTolovCheki(chekRasmi);
+        bron.setTolovHolati("TEKSHIRILMOQDA");
+        bron.setHolat(Bron.YANGI);
+        bron.setEgagaXabar(false);
+        bronRepository.save(bron);
+
+        Map<String, Object> javob = new LinkedHashMap<>();
+        javob.put("id", bron.getId());
+        javob.put("holat", "TEKSHIRILMOQDA");
+        javob.put("xabar", "To'lov cheki yuklandi. Dorixona tekshirib tasdiqlagandan keyin bron faollashadi.");
+        return javob;
+    }
+
+    @Transactional
+    public int muddatiOtganlarniBekorQil() {
+        List<Bron> otganlar = bronRepository.muddatiOtganlar(LocalDateTime.now());
+        for (Bron bron : otganlar) {
+            bron.setHolat(Bron.MUDDATI_OTGAN);
+            bron.setTolovHolati("QAYTARILMAYDI");
+            bron.setEgagaXabar(false);
+            bron.setMijozgaXabar(false);
+        }
+        bronRepository.saveAll(otganlar);
+        return otganlar.size();
+    }
+
+    public byte[] chekOlish(Long bronId) {
+        Bron bron = bronRepository.findById(bronId)
+                .orElseThrow(() -> new IllegalArgumentException("Bron topilmadi"));
+        return bron.getTolovCheki();
     }
 
     private String kodYarat() {
