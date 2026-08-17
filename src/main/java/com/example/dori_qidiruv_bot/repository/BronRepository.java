@@ -19,7 +19,11 @@ public interface BronRepository extends JpaRepository<Bron, Long> {
         Integer getSoni();
         String getKod();
         String getHolat();
+        String getTur();
         Double getNarx();
+        Double getTolovSummasi();
+        String getTolovHolati();
+        java.time.LocalDateTime getOlibKetishMuddati();
         java.time.LocalDateTime getSana();
     }
 
@@ -31,8 +35,12 @@ public interface BronRepository extends JpaRepository<Bron, Long> {
                    p.manzil AS manzil,
                    p.telefon AS telefon,
                    b.soni AS soni,
+                   b.tur AS tur,
                    b.kod AS kod,
                    b.holat AS holat,
+                   b.tolov_summasi AS tolovSummasi,
+                   b.tolov_holati AS tolovHolati,
+                   b.olib_ketish_muddati AS olibKetishMuddati,
                    b.sana AS sana
             FROM bron b
             JOIN dori d ON d.id = b.dori_id
@@ -42,4 +50,7 @@ public interface BronRepository extends JpaRepository<Bron, Long> {
             LIMIT 50
             """, nativeQuery = true)
     List<Qator> mijozniki(@Param("mijozId") Long mijozId);
+
+    @Query("SELECT b FROM Bron b WHERE b.olibKetishMuddati < :hozir AND b.holat NOT IN ('BERILDI', 'BEKOR', 'MUDDATI_OTGAN')")
+    List<Bron> muddatiOtganlar(@Param("hozir") java.time.LocalDateTime hozir);
 }

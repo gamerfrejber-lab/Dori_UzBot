@@ -366,6 +366,7 @@
                         <input id="phName" placeholder="Nomi *">
                         <input id="phAddress" placeholder="Manzil">
                         <input id="phPhone" placeholder="Telefon">
+                        <input id="phKarta" placeholder="Karta raqami (8600 1234 5678 9012)">
                         <input id="phLat" placeholder="Kenglik (41.3451)">
                         <input id="phLon" placeholder="Uzunlik (69.2861)">
                     </div>
@@ -380,7 +381,9 @@
                         <input id="drName" placeholder="Nomi *">
                         <input id="drNameRu" placeholder="Ruscha nomi">
                         <input id="drManufacturer" placeholder="Ishlab chiqaruvchi">
-                        <input id="drPrice" placeholder="Narxi (so'm) *" type="number">
+                        <input id="drPriceDona" placeholder="Dona narxi (so'm)" type="number">
+                        <input id="drPricePachka" placeholder="Pachka narxi (so'm)" type="number">
+                        <input id="drPachkadagiDona" placeholder="Pachkadagi dona soni (masalan 10)" type="number">
                         <select id="drPharmacy"></select>
                         <select id="drAvailable">
                             <option value="true">🟢 Mavjud</option>
@@ -516,6 +519,7 @@
                 name: name,
                 address: document.getElementById('phAddress').value.trim(),
                 telefon: document.getElementById('phPhone').value.trim(),
+                kartaRaqami: document.getElementById('phKarta').value.trim() || null,
                 latitude: parseFloat(document.getElementById('phLat').value) || null,
                 longitude: parseFloat(document.getElementById('phLon').value) || null
             };
@@ -527,7 +531,7 @@
                 .then(function (r) {
                     if (!r.ok) throw new Error();
                     showMessage(stk('check') + ' Dorixona qo\'shildi', true);
-                    ['phName', 'phAddress', 'phPhone', 'phLat', 'phLon'].forEach(function (id) {
+                    ['phName', 'phAddress', 'phPhone', 'phKarta', 'phLat', 'phLon'].forEach(function (id) {
                         document.getElementById(id).value = '';
                     });
                     loadPharmacies();
@@ -550,14 +554,20 @@
 
         function addDrug() {
             const name = document.getElementById('drName').value.trim();
-            const price = parseFloat(document.getElementById('drPrice').value);
+            const priceDona = parseFloat(document.getElementById('drPriceDona').value) || null;
+            const pricePachka = parseFloat(document.getElementById('drPricePachka').value) || null;
             const pharmacyId = document.getElementById('drPharmacy').value;
-            if (!name || !price || !pharmacyId) { showMessage('Nomi, narxi va dorixonani to\'ldiring', false); return; }
+            if (!name || !pharmacyId) { showMessage('Nomi va dorixonani to\'ldiring', false); return; }
+            if (!priceDona && !pricePachka) { showMessage('Kamida bitta narx kiriting (dona yoki pachka)', false); return; }
+            const pachkadagiDona = parseInt(document.getElementById('drPachkadagiDona').value, 10) || null;
             const body = {
                 name: name,
                 nameRu: document.getElementById('drNameRu').value.trim() || null,
                 manufacturer: document.getElementById('drManufacturer').value.trim(),
-                price: price,
+                price: priceDona || pricePachka,
+                priceDona: priceDona,
+                pricePachka: pricePachka,
+                pachkadagiDona: pachkadagiDona,
                 available: document.getElementById('drAvailable').value === 'true',
                 dorixonaId: parseInt(pharmacyId, 10)
             };
@@ -569,7 +579,7 @@
                 .then(function (r) {
                     if (!r.ok) throw new Error();
                     showMessage(stk('check') + ' Dori qo\'shildi', true);
-                    ['drName', 'drNameRu', 'drManufacturer', 'drPrice'].forEach(function (id) {
+                    ['drName', 'drNameRu', 'drManufacturer', 'drPriceDona', 'drPricePachka', 'drPachkadagiDona'].forEach(function (id) {
                         document.getElementById(id).value = '';
                     });
                     loadStats();
@@ -589,9 +599,9 @@
                         drugs.map(function (d) {
                             return `<div class="row">
                                 <span><span class="row-main">${esc(d.name)}</span>
-                                <span class="row-sub">${esc(d.nameRu || '')} · ${esc(d.manufacturer || '')} · ${(d.price || 0).toLocaleString()} so'm · ${omborHolati(d)}</span></span>
+                                <span class="row-sub">${esc(d.nameRu || '')} · ${esc(d.manufacturer || '')} · ${d.priceDona ? 'Dona: ' + d.priceDona.toLocaleString() : ''} ${d.pricePachka ? 'Pachka: ' + d.pricePachka.toLocaleString() : ''} ${!d.priceDona && !d.pricePachka ? (d.price || 0).toLocaleString() + " so'm" : "so'm"} ${d.pachkadagiDona ? '· 1 pachka = ' + d.pachkadagiDona + ' dona' : ''} · ${omborHolati(d)}</span></span>
                                 <span>
-                                    <button class="btn-small" onclick="editPrice(${d.id}, ${d.price}, '${esc(d.name).replace(/'/g, "\\'")}')">Narx</button>
+                                    <button class="btn-small" onclick="editPrice(${d.id}, ${d.priceDona || 0}, ${d.pricePachka || 0}, '${esc(d.name).replace(/'/g, "\\'")}')">Narx</button>
                                     <button class="btn-danger" onclick="deleteDrug(${d.id}, '${esc(d.name).replace(/'/g, "\\'")}')">O'chirish</button>
                                 </span>
                             </div>`;
@@ -609,15 +619,18 @@
             return stk('box') + ' ' + d.qoldiq + ' ta';
         }
 
-        function editPrice(id, currentPrice, name) {
-            const input = prompt('«' + name + '» uchun yangi narx (so\'m):', currentPrice);
-            if (input === null) return;
-            const price = parseFloat(input);
-            if (!price || price < 0) { showMessage('Narx noto\'g\'ri', false); return; }
+        function editPrice(id, currentDona, currentPachka, name) {
+            const inputDona = prompt('«' + name + '» — dona narxi (so\'m):', currentDona || '');
+            if (inputDona === null) return;
+            const inputPachka = prompt('«' + name + '» — pachka narxi (so\'m):', currentPachka || '');
+            if (inputPachka === null) return;
+            const priceDona = parseFloat(inputDona) || null;
+            const pricePachka = parseFloat(inputPachka) || null;
+            if (!priceDona && !pricePachka) { showMessage('Kamida bitta narx kiriting', false); return; }
             fetch('/api/dori/' + id, {
                 method: 'PUT',
                 headers: authHeaders({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify({ price: price })
+                body: JSON.stringify({ price: priceDona || pricePachka, priceDona: priceDona, pricePachka: pricePachka })
             })
                 .then(function (r) {
                     if (!r.ok) throw new Error();
