@@ -37,6 +37,7 @@ public class DoriService {
                             dori.getPrice(),
                             dori.getPriceDona(),
                             dori.getPricePachka(),
+                            dori.getPachkadagiDona(),
                             dori.getAvailable(),
                             dorixona,
                             ombor[0],

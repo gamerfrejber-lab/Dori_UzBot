@@ -63,7 +63,7 @@ public class BronService {
         bron.setTuri(turi != null ? turi : Bron.DONA);
         bron.setKod(kodYarat());
         bron.setHolat(Bron.TOLOV_KUTILMOQDA);
-        bron.setEgagaXabar(false);
+        bron.setEgagaXabar(true);
         bron.setMijozgaXabar(true);
         bron.setSana(LocalDateTime.now());
 
@@ -88,6 +88,7 @@ public class BronService {
         javob.put("narx", narx);
         javob.put("jami", jami);
         javob.put("tolovSummasi", tolovSummasi);
+        javob.put("pachkadagiDona", dori.getPachkadagiDona());
         javob.put("dorixonaNomi", dorixona == null ? null : dorixona.getName());
         javob.put("manzil", dorixona == null ? null : dorixona.getAddress());
         javob.put("telefon", dorixona == null ? null : dorixona.getTelefon());

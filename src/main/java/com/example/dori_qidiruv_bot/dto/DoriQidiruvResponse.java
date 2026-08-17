@@ -17,6 +17,7 @@ public class DoriQidiruvResponse {
     private Double price;
     private Double priceDona;
     private Double pricePachka;
+    private Integer pachkadagiDona;
     private Boolean available;
     private Dorixona dorixona;
 

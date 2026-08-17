@@ -383,6 +383,7 @@
                         <input id="drManufacturer" placeholder="Ishlab chiqaruvchi">
                         <input id="drPriceDona" placeholder="Dona narxi (so'm)" type="number">
                         <input id="drPricePachka" placeholder="Pachka narxi (so'm)" type="number">
+                        <input id="drPachkadagiDona" placeholder="Pachkadagi dona soni (masalan 10)" type="number">
                         <select id="drPharmacy"></select>
                         <select id="drAvailable">
                             <option value="true">🟢 Mavjud</option>
@@ -558,6 +559,7 @@
             const pharmacyId = document.getElementById('drPharmacy').value;
             if (!name || !pharmacyId) { showMessage('Nomi va dorixonani to\'ldiring', false); return; }
             if (!priceDona && !pricePachka) { showMessage('Kamida bitta narx kiriting (dona yoki pachka)', false); return; }
+            const pachkadagiDona = parseInt(document.getElementById('drPachkadagiDona').value, 10) || null;
             const body = {
                 name: name,
                 nameRu: document.getElementById('drNameRu').value.trim() || null,
@@ -565,6 +567,7 @@
                 price: priceDona || pricePachka,
                 priceDona: priceDona,
                 pricePachka: pricePachka,
+                pachkadagiDona: pachkadagiDona,
                 available: document.getElementById('drAvailable').value === 'true',
                 dorixonaId: parseInt(pharmacyId, 10)
             };
@@ -576,7 +579,7 @@
                 .then(function (r) {
                     if (!r.ok) throw new Error();
                     showMessage(stk('check') + ' Dori qo\'shildi', true);
-                    ['drName', 'drNameRu', 'drManufacturer', 'drPriceDona', 'drPricePachka'].forEach(function (id) {
+                    ['drName', 'drNameRu', 'drManufacturer', 'drPriceDona', 'drPricePachka', 'drPachkadagiDona'].forEach(function (id) {
                         document.getElementById(id).value = '';
                     });
                     loadStats();
@@ -596,7 +599,7 @@
                         drugs.map(function (d) {
                             return `<div class="row">
                                 <span><span class="row-main">${esc(d.name)}</span>
-                                <span class="row-sub">${esc(d.nameRu || '')} · ${esc(d.manufacturer || '')} · ${d.priceDona ? 'Dona: ' + d.priceDona.toLocaleString() : ''} ${d.pricePachka ? 'Pachka: ' + d.pricePachka.toLocaleString() : ''} ${!d.priceDona && !d.pricePachka ? (d.price || 0).toLocaleString() + " so'm" : "so'm"} · ${omborHolati(d)}</span></span>
+                                <span class="row-sub">${esc(d.nameRu || '')} · ${esc(d.manufacturer || '')} · ${d.priceDona ? 'Dona: ' + d.priceDona.toLocaleString() : ''} ${d.pricePachka ? 'Pachka: ' + d.pricePachka.toLocaleString() : ''} ${!d.priceDona && !d.pricePachka ? (d.price || 0).toLocaleString() + " so'm" : "so'm"} ${d.pachkadagiDona ? '· 1 pachka = ' + d.pachkadagiDona + ' dona' : ''} · ${omborHolati(d)}</span></span>
                                 <span>
                                     <button class="btn-small" onclick="editPrice(${d.id}, ${d.priceDona || 0}, ${d.pricePachka || 0}, '${esc(d.name).replace(/'/g, "\\'")}')">Narx</button>
                                     <button class="btn-danger" onclick="deleteDrug(${d.id}, '${esc(d.name).replace(/'/g, "\\'")}')">O'chirish</button>
