@@ -1,6 +1,7 @@
 package com.example.dori_qidiruv_bot.repository;
 
 import com.example.dori_qidiruv_bot.entity.DoriKatalog;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,9 @@ public interface DoriKatalogRepository extends JpaRepository<DoriKatalog, Long> 
             + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :q, '%')) "
             + "ORDER BY k.nomi ASC")
     List<DoriKatalog> qidirish(@Param("q") String q, Pageable pageable);
+
+    /** Katalogni sahifalab qidirish (jami soni bilan) — "Katalog" bo'limida ko'rish uchun. */
+    @Query("SELECT k FROM DoriKatalog k WHERE LOWER(k.nomi) LIKE LOWER(CONCAT('%', :q, '%')) "
+            + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :q, '%'))")
+    Page<DoriKatalog> royxatQidirish(@Param("q") String q, Pageable pageable);
 }

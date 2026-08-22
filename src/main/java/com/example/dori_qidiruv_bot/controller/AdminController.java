@@ -1,6 +1,7 @@
 package com.example.dori_qidiruv_bot.controller;
 
 import com.example.dori_qidiruv_bot.entity.User;
+import com.example.dori_qidiruv_bot.repository.DoriKatalogRepository;
 import com.example.dori_qidiruv_bot.repository.DoriRepository;
 import com.example.dori_qidiruv_bot.repository.DorixonaRepository;
 import com.example.dori_qidiruv_bot.repository.SoovRepository;
@@ -29,6 +30,7 @@ public class AdminController {
     private final UserRepository userRepository;
     private final DorixonaRepository dorixonaRepository;
     private final DoriRepository doriRepository;
+    private final DoriKatalogRepository katalogRepository;
     private final OmborService omborService;
     private final SoovRepository soovRepository;
 
@@ -50,13 +52,14 @@ public class AdminController {
         return ResponseEntity.ok(userRepository.findAll());
     }
 
-    /** Umumiy statistika: foydalanuvchi, dorixona va dori soni. */
+    /** Umumiy statistika: foydalanuvchi, dorixona, dori va katalog soni. */
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> stats() {
         return ResponseEntity.ok(Map.of(
                 "users", userRepository.count(),
                 "pharmacies", dorixonaRepository.count(),
-                "drugs", doriRepository.count()
+                "drugs", doriRepository.count(),
+                "katalog", katalogRepository.count()
         ));
     }
 
