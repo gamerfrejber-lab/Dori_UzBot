@@ -351,33 +351,35 @@
            YORUG' (OQ) MAVZU
            ============================================================ */
         :root {
-            --bg-0: #EAF1EE; --bg-1: #F5FAF8;
-            --ink: #12211D; --ink-dim: #4A5D57; --ink-faint: #8A9A94;
-            --teal-deep: #0E9E86;
-            --glass: rgba(255,255,255,0.86); --glass-hi: rgba(255,255,255,0.96); --hairline: rgba(0,0,0,0.10);
+            --bg-0: #E9F0FA; --bg-1: #F6F9FD;
+            --ink: #0F172A; --ink-dim: #5B6B82; --ink-faint: #94A3B8;
+            --teal: #2563EB; --teal-deep: #1D4ED8; --sea: #06B6D4; --ember: #F97316;
+            --glass: #FFFFFF; --glass-hi: #FFFFFF; --hairline: rgba(15,23,42,0.08);
         }
         .aurora {
             background:
-                radial-gradient(1100px 700px at 50% -12%, #D9EFEA 0%, transparent 62%),
-                linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 58%);
+                radial-gradient(1000px 620px at 12% -10%, #DCEBFF 0%, transparent 60%),
+                radial-gradient(900px 560px at 92% -4%, #E1F6FB 0%, transparent 60%),
+                linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 62%);
         }
-        .aurora span { opacity: 0.4; filter: blur(90px); }
-        .aurora span:nth-child(1) { background: radial-gradient(circle, #8FE0D0, transparent 68%); }
-        .aurora span:nth-child(2) { background: radial-gradient(circle, #A6D6E0, transparent 68%); }
-        .aurora span:nth-child(3) { background: radial-gradient(circle, #9AE0C2, transparent 70%); opacity: 0.3; }
+        .aurora span { opacity: 0.28; filter: blur(95px); }
+        .aurora span:nth-child(1) { background: radial-gradient(circle, #93C5FD, transparent 68%); }
+        .aurora span:nth-child(2) { background: radial-gradient(circle, #A5F3FC, transparent 68%); }
+        .aurora span:nth-child(3) { background: radial-gradient(circle, #BFDBFE, transparent 70%); opacity: 0.2; }
         .glass-card, header, .modal, .search-box, .tag, .stat-item, .lang-switch {
-            background: linear-gradient(160deg, var(--glass-hi) 0%, var(--glass) 60%, rgba(255,255,255,0.72) 100%);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 12px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.06);
+            background: #FFFFFF;
+            box-shadow: 0 10px 30px rgba(2,32,71,0.06), 0 2px 6px rgba(2,32,71,0.04);
+            border: 1px solid rgba(15,23,42,0.06);
         }
-        .glass-card::after, header::after, .modal::after, .search-box::after, .tag::after, .stat-item::after {
-            background: linear-gradient(145deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.02) 50%, rgba(0,0,0,0.05) 100%);
-        }
+        .glass-card::after, header::after, .modal::after, .search-box::after, .tag::after, .stat-item::after { display: none; }
+        .logo .stk { background: linear-gradient(135deg, var(--sea), var(--teal)); border-radius: 12px; padding: 5px; }
+        nav a { color: var(--ink-dim); }
+        nav a:hover { color: var(--teal); }
         body input, body select, body textarea {
-            background: #FFFFFF !important; color: #12211D !important; border-color: rgba(0,0,0,0.14) !important;
+            background: #FFFFFF !important; color: #0F172A !important; border-color: rgba(15,23,42,0.14) !important;
         }
         body input:focus, body select:focus, body textarea:focus { border-color: var(--teal) !important; }
-        body input::placeholder, body textarea::placeholder { color: rgba(18,33,29,0.4) !important; }
+        body input::placeholder, body textarea::placeholder { color: var(--ink-faint) !important; }
     </style>
 </head>
 <body>

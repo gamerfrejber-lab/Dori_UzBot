@@ -27,6 +27,11 @@ public class DoriService {
      * Katalogdan (butun O'zbekiston ro'yxati) qidirish — dori qo'shishda tanlash uchun.
      * Natijalar soni cheklanadi (avtomatik to'ldirish ro'yxati juda uzun bo'lib ketmasligi uchun).
      */
+    /** Katalogdagi jami dorilar soni. */
+    public long katalogSoni() {
+        return katalogRepository.count();
+    }
+
     public List<DoriKatalog> katalogQidirish(String q, int limit) {
         if (q == null || q.trim().length() < 2) {
             return List.of();
