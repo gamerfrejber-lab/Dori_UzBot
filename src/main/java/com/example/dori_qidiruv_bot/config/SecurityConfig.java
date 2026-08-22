@@ -36,6 +36,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/check").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**", "/api/bron/*/chek").permitAll()
+                        // Dori katalogi (butun O'zbekiston ro'yxati) — dori qo'shishda tanlash uchun, faqat admin.
+                        .requestMatchers(HttpMethod.GET, "/api/katalog/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/dori/**", "/api/dorixona/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/dori/**", "/api/dorixona/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/dori/**", "/api/dorixona/**").hasRole("ADMIN")

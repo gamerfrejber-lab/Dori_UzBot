@@ -34,11 +34,11 @@ public class DoriController {
         return ResponseEntity.ok(doriService.barchaDorilar());
     }
 
-    /** Dorini yangilash (narx, mavjudlik va h.k.) — admin panelida tahrirlash uchun. */
+    /** Dorini yangilash (narx, mavjudlik va h.k.) — admin panelida tahrirlash uchun.
+     *  Faqat yuborilgan maydonlar o'zgaradi; nom/firma/dorixona saqlanib qoladi. */
     @PutMapping("/{id}")
     public ResponseEntity<Dori> doriYangilash(@PathVariable Long id, @RequestBody Dori dori) {
-        dori.setId(id);
-        return ResponseEntity.ok(doriService.doriQoshish(dori));
+        return ResponseEntity.ok(doriService.doriYangilash(id, dori));
     }
 
     @DeleteMapping("/{id}")

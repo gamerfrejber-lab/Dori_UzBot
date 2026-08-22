@@ -16,6 +16,8 @@ public class DoriQidiruvResponse {
     private String manufacturer;
     private Double price;
     private Double pachkaNarx;
+    /** Bitta pachkadagi dona soni (masalan 10). */
+    private Integer pachkadagiDona;
     private Boolean available;
     private Dorixona dorixona;
 

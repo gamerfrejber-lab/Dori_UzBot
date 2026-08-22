@@ -36,6 +36,10 @@ public class Dori {
     @Column(name = "pachka_narx")
     private Double pachkaNarx;
 
+    /** Bitta pachkadagi dona soni (masalan 10). Bo'sh bo'lishi mumkin. */
+    @Column(name = "pachkadagi_dona")
+    private Integer pachkadagiDona;
+
     @Column(name = "mavjud")
     private Boolean available;
 
