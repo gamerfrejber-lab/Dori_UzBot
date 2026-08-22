@@ -288,6 +288,88 @@
         }
 
         :focus-visible { outline: 2px solid #16C6A4; outline-offset: 3px; border-radius: 6px; }
+
+        /* ============================================================
+           Katalog avtomat-tanlash (butun O'zbekiston dorilari ro'yxati)
+           ============================================================ */
+        .autocomplete-wrap { position: relative; }
+        .autocomplete-list {
+            display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 200;
+            background: #FFFFFF; border: 1px solid rgba(0,0,0,0.12); border-radius: 14px;
+            max-height: 320px; overflow-y: auto; box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+        }
+        .autocomplete-list.open { display: block; }
+        .ac-item {
+            padding: 0.6rem 0.85rem; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.06);
+            display: flex; flex-direction: column; gap: 2px;
+        }
+        .ac-item:last-child { border-bottom: none; }
+        .ac-item:hover, .ac-item.active { background: rgba(22,198,164,0.14); }
+        .ac-nom { font-weight: 600; font-size: 0.9rem; color: #12211D; line-height: 1.3; }
+        .ac-firma { font-size: 0.78rem; color: rgba(18,33,29,0.6); }
+        .ac-empty { padding: 0.75rem 0.85rem; font-size: 0.85rem; color: rgba(18,33,29,0.6); }
+
+        /* ============================================================
+           YORUG' (OQ) MAVZU — yuqoridagi to'q ranglarni almashtiradi
+           ============================================================ */
+        body { background: #EAF1EE; color: #12211D; }
+        .aurora {
+            background:
+                radial-gradient(1100px 700px at 50% -12%, #D9EFEA 0%, transparent 62%),
+                linear-gradient(180deg, #F4F9F7 0%, #E7F0ED 58%);
+        }
+        .aurora span { opacity: 0.45; filter: blur(90px); }
+        .aurora span:nth-child(1) { background: radial-gradient(circle, #8FE0D0, transparent 68%); }
+        .aurora span:nth-child(2) { background: radial-gradient(circle, #A6D6E0, transparent 68%); }
+
+        header { background: rgba(255,255,255,0.72); border-bottom: 1px solid rgba(0,0,0,0.08); }
+        header.scrolled {
+            background: rgba(255,255,255,0.94);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 0 rgba(22,198,164,0.25);
+            border-bottom-color: rgba(22,198,164,0.35);
+        }
+        nav a { color: rgba(18,33,29,0.75); }
+        nav a:hover { color: #0E9E86; }
+
+        .subtitle { color: rgba(18,33,29,0.6); }
+        .stat, .panel, .tab {
+            background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08);
+        }
+        .stat-value { color: #0E9E86; }
+        .stat-label { color: rgba(18,33,29,0.6); }
+        .tab { color: rgba(18,33,29,0.72); border: 1px solid rgba(0,0,0,0.1); }
+        .panel h2 { color: #0E9E86; }
+
+        input, select {
+            background: #FFFFFF; border: 1px solid rgba(0,0,0,0.15); color: #12211D;
+        }
+        input::placeholder { color: rgba(18,33,29,0.4); }
+        select option { background: #FFFFFF; color: #12211D; }
+
+        .row { border-bottom: 1px solid rgba(0,0,0,0.08); }
+        .row-sub { color: rgba(18,33,29,0.55); }
+
+        .glass-card {
+            background: linear-gradient(160deg,
+                rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.78) 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.85),
+                0 14px 44px rgba(0,0,0,0.10),
+                0 2px 8px rgba(0,0,0,0.06);
+        }
+        .glass-card::after {
+            background: linear-gradient(145deg,
+                rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.02) 50%, rgba(0,0,0,0.06) 100%);
+        }
+
+        .message.ok { background: rgba(76,175,80,0.12); border: 1px solid #4caf50; color: #2e7d32; }
+        .message.err { background: rgba(229,57,53,0.10); border: 1px solid #e53935; color: #c62828; }
+        .btn-small { background: rgba(22,198,164,0.12); }
+        .btn-small:hover { background: rgba(22,198,164,0.22); }
+        .btn-danger { background: rgba(229,57,53,0.10); border: 1px solid #e53935; color: #e53935; }
+        .btn-danger:hover { background: rgba(229,57,53,0.2); }
     </style>
 </head>
 <body>
@@ -377,8 +459,13 @@
 
                 <div class="panel" id="tab-drugs">
                     <h2>${stk('plus','stk-card')} Dori qo'shish</h2>
+                    <p class="subtitle" style="margin-bottom:1rem;">Nomni yozib, butun O'zbekiston katalogidan tanlang — firma va davlat o'zi to'ladi. Keyin narxni kiriting.</p>
                     <div class="form-grid">
-                        <input id="drName" placeholder="Nomi *">
+                        <div class="autocomplete-wrap">
+                            <input id="drName" placeholder="Nomi * — katalogdan qidiring" autocomplete="off"
+                                   oninput="katalogQidir(this.value)" onkeydown="katalogKlaviatura(event)">
+                            <div id="katalogNatija" class="autocomplete-list" data-no-swipe></div>
+                        </div>
                         <input id="drNameRu" placeholder="Ruscha nomi">
                         <input id="drManufacturer" placeholder="Ishlab chiqaruvchi">
                         <input id="drPriceDona" placeholder="Dona narxi (so'm)" type="number">
@@ -552,6 +639,78 @@
                 .catch(function () { showMessage(stk('cancel') + ' O\'chirib bo\'lmadi', false); });
         }
 
+        // ==== Katalogdan qidirish (butun O'zbekiston, ~26 ming nom) ====
+        let katalogNatijalar = [];
+        let katalogTanlangan = -1;
+        let katalogTimer = null;
+
+        function katalogQidir(q) {
+            katalogTanlangan = -1;
+            clearTimeout(katalogTimer);
+            q = (q || '').trim();
+            if (q.length < 2) { katalogYop(); return; }
+            // Debounce — har harfda so'rov yubormaslik uchun
+            katalogTimer = setTimeout(function () {
+                fetch('/api/katalog/qidirish?q=' + encodeURIComponent(q) + '&limit=20', { headers: authHeaders() })
+                    .then(function (r) { return r.ok ? r.json() : []; })
+                    .then(function (list) {
+                        katalogNatijalar = list || [];
+                        katalogChiz();
+                    })
+                    .catch(function () { katalogYop(); });
+            }, 250);
+        }
+
+        function katalogChiz() {
+            const box = document.getElementById('katalogNatija');
+            if (!katalogNatijalar.length) {
+                box.innerHTML = '<div class="ac-empty">Katalogdan topilmadi — nomni qo\'lda yozishingiz mumkin</div>';
+                box.classList.add('open');
+                return;
+            }
+            box.innerHTML = katalogNatijalar.map(function (k, i) {
+                const firma = [k.ishlabChiqaruvchi, k.davlat].filter(Boolean).join(', ');
+                return '<div class="ac-item' + (i === katalogTanlangan ? ' active' : '') + '" onmousedown="katalogTanla(' + i + ')">'
+                    + '<span class="ac-nom">' + esc(k.nomi) + '</span>'
+                    + (firma ? '<span class="ac-firma">' + esc(firma) + '</span>' : '')
+                    + '</div>';
+            }).join('');
+            box.classList.add('open');
+        }
+
+        function katalogTanla(i) {
+            const k = katalogNatijalar[i];
+            if (!k) return;
+            document.getElementById('drName').value = k.nomi || '';
+            document.getElementById('drNameRu').value = k.nomi || '';
+            const firma = [k.ishlabChiqaruvchi, k.davlat].filter(Boolean).join(', ');
+            document.getElementById('drManufacturer').value = firma;
+            katalogYop();
+            document.getElementById('drPriceDona').focus();
+        }
+
+        function katalogYop() {
+            const box = document.getElementById('katalogNatija');
+            box.classList.remove('open');
+            box.innerHTML = '';
+            katalogNatijalar = [];
+            katalogTanlangan = -1;
+        }
+
+        // Yuqoriga/pastga strelka va Enter bilan tanlash
+        function katalogKlaviatura(e) {
+            if (!katalogNatijalar.length) return;
+            if (e.key === 'ArrowDown') { e.preventDefault(); katalogTanlangan = Math.min(katalogTanlangan + 1, katalogNatijalar.length - 1); katalogChiz(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); katalogTanlangan = Math.max(katalogTanlangan - 1, 0); katalogChiz(); }
+            else if (e.key === 'Enter' && katalogTanlangan >= 0) { e.preventDefault(); katalogTanla(katalogTanlangan); }
+            else if (e.key === 'Escape') { katalogYop(); }
+        }
+
+        // Tashqariga bosilganda ro'yxatni yopish
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.autocomplete-wrap')) katalogYop();
+        });
+
         function addDrug() {
             const name = document.getElementById('drName').value.trim();
             const priceDona = parseFloat(document.getElementById('drPriceDona').value) || null;
@@ -564,9 +723,8 @@
                 name: name,
                 nameRu: document.getElementById('drNameRu').value.trim() || null,
                 manufacturer: document.getElementById('drManufacturer').value.trim(),
-                price: priceDona || pricePachka,
-                priceDona: priceDona,
-                pricePachka: pricePachka,
+                price: priceDona,
+                pachkaNarx: pricePachka,
                 pachkadagiDona: pachkadagiDona,
                 available: document.getElementById('drAvailable').value === 'true',
                 dorixonaId: parseInt(pharmacyId, 10)
@@ -599,9 +757,9 @@
                         drugs.map(function (d) {
                             return `<div class="row">
                                 <span><span class="row-main">${esc(d.name)}</span>
-                                <span class="row-sub">${esc(d.nameRu || '')} · ${esc(d.manufacturer || '')} · ${d.priceDona ? 'Dona: ' + d.priceDona.toLocaleString() : ''} ${d.pricePachka ? 'Pachka: ' + d.pricePachka.toLocaleString() : ''} ${!d.priceDona && !d.pricePachka ? (d.price || 0).toLocaleString() + " so'm" : "so'm"} ${d.pachkadagiDona ? '· 1 pachka = ' + d.pachkadagiDona + ' dona' : ''} · ${omborHolati(d)}</span></span>
+                                <span class="row-sub">${esc(d.nameRu || '')} · ${esc(d.manufacturer || '')} · ${d.price ? "Dona: " + d.price.toLocaleString() + " so'm" : ''}${d.price && d.pachkaNarx ? ' · ' : ''}${d.pachkaNarx ? "Pachka: " + d.pachkaNarx.toLocaleString() + " so'm" : ''}${!d.price && !d.pachkaNarx ? "narx yo'q" : ''} ${d.pachkadagiDona ? '· 1 pachka = ' + d.pachkadagiDona + ' dona' : ''} · ${omborHolati(d)}</span></span>
                                 <span>
-                                    <button class="btn-small" onclick="editPrice(${d.id}, ${d.priceDona || 0}, ${d.pricePachka || 0}, '${esc(d.name).replace(/'/g, "\\'")}')">Narx</button>
+                                    <button class="btn-small" onclick="editPrice(${d.id}, ${d.price || 0}, ${d.pachkaNarx || 0}, '${esc(d.name).replace(/'/g, "\\'")}')">Narx</button>
                                     <button class="btn-danger" onclick="deleteDrug(${d.id}, '${esc(d.name).replace(/'/g, "\\'")}')">O'chirish</button>
                                 </span>
                             </div>`;
@@ -630,7 +788,7 @@
             fetch('/api/dori/' + id, {
                 method: 'PUT',
                 headers: authHeaders({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify({ price: priceDona || pricePachka, priceDona: priceDona, pricePachka: pricePachka })
+                body: JSON.stringify({ price: priceDona, pachkaNarx: pricePachka })
             })
                 .then(function (r) {
                     if (!r.ok) throw new Error();

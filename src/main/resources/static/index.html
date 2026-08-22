@@ -655,6 +655,48 @@
             outline-offset: 3px;
             border-radius: 6px;
         }
+
+        /* ============================================================
+           YORUG' (OQ) MAVZU — token qiymatlarni yorug' variantga almashtiradi
+           ============================================================ */
+        :root {
+            --bg-0: #EAF1EE;
+            --bg-1: #F5FAF8;
+            --ink: #12211D;
+            --ink-dim: #4A5D57;
+            --ink-faint: #8A9A94;
+            --teal-deep: #0E9E86;
+            --glass: rgba(255, 255, 255, 0.86);
+            --glass-hi: rgba(255, 255, 255, 0.96);
+            --hairline: rgba(0, 0, 0, 0.10);
+        }
+
+        .aurora {
+            background:
+                radial-gradient(1100px 700px at 50% -12%, #D9EFEA 0%, transparent 62%),
+                linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 58%);
+        }
+        .aurora span { opacity: 0.4; filter: blur(90px); }
+        .aurora span:nth-child(1) { background: radial-gradient(circle, #8FE0D0, transparent 68%); }
+        .aurora span:nth-child(2) { background: radial-gradient(circle, #A6D6E0, transparent 68%); }
+        .aurora span:nth-child(3) { background: radial-gradient(circle, #9AE0C2, transparent 70%); opacity: 0.3; }
+
+        /* Shisha yuzalar: oq fonda yengil soya + nozik chekka */
+        .glass-card, header, .modal, .search-box, .tag, .stat-item, .lang-switch {
+            background: linear-gradient(160deg,
+                var(--glass-hi) 0%, var(--glass) 60%, rgba(255,255,255,0.72) 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.9),
+                0 12px 40px rgba(0, 0, 0, 0.08),
+                0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        /* Chekka gradient halqasini yumshoq to'q rangga o'zgartirish */
+        .glass-card::after, header::after, .modal::after, .search-box::after,
+        .tag::after, .stat-item::after {
+            background: linear-gradient(145deg,
+                rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.02) 50%, rgba(0,0,0,0.05) 100%);
+        }
     </style>
 </head>
 <body>
