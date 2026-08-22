@@ -31,6 +31,12 @@ public class DoriKatalogController {
         return ResponseEntity.ok(doriService.katalogQidirish(q, limit));
     }
 
+    /** Katalogdagi jami dorilar soni (bosh sahifada ko'rsatish uchun — ochiq). */
+    @GetMapping("/soni")
+    public ResponseEntity<Map<String, Long>> soni() {
+        return ResponseEntity.ok(Map.of("jami", doriService.katalogSoni()));
+    }
+
     /** Katalogni sahifalab ko'rish: jami soni + shu sahifadagi dorilar. q ixtiyoriy (qidiruv). */
     @GetMapping("/royxat")
     public ResponseEntity<Map<String, Object>> royxat(
