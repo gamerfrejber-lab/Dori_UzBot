@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Dori katalogi (butun O'zbekiston ro'yxati) API'si.
@@ -28,5 +29,14 @@ public class DoriKatalogController {
             @RequestParam String q,
             @RequestParam(defaultValue = "20") int limit) {
         return ResponseEntity.ok(doriService.katalogQidirish(q, limit));
+    }
+
+    /** Katalogni sahifalab ko'rish: jami soni + shu sahifadagi dorilar. q ixtiyoriy (qidiruv). */
+    @GetMapping("/royxat")
+    public ResponseEntity<Map<String, Object>> royxat(
+            @RequestParam(required = false) String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        return ResponseEntity.ok(doriService.katalogRoyxat(q, page, size));
     }
 }

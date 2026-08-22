@@ -35,6 +35,29 @@ public class DoriService {
         return katalogRepository.qidirish(q.trim(), PageRequest.of(0, chegara));
     }
 
+    /**
+     * Katalogni sahifalab ko'rish (browse). q berilsa qidiruv, bo'lmasa hammasi alifbo tartibida.
+     * Natija: jami soni + shu sahifadagi dorilar.
+     */
+    public Map<String, Object> katalogRoyxat(String q, int page, int size) {
+        int olcham = Math.max(1, Math.min(size, 100));
+        int sahifa = Math.max(0, page);
+        org.springframework.data.domain.Page<DoriKatalog> natija;
+        if (q != null && !q.trim().isEmpty()) {
+            natija = katalogRepository.royxatQidirish(q.trim(),
+                    PageRequest.of(sahifa, olcham, org.springframework.data.domain.Sort.by("nomi")));
+        } else {
+            natija = katalogRepository.findAll(
+                    PageRequest.of(sahifa, olcham, org.springframework.data.domain.Sort.by("nomi")));
+        }
+        Map<String, Object> map = new java.util.LinkedHashMap<>();
+        map.put("jami", natija.getTotalElements());
+        map.put("sahifa", sahifa);
+        map.put("sahifalarSoni", natija.getTotalPages());
+        map.put("dorilar", natija.getContent());
+        return map;
+    }
+
     public List<DoriQidiruvResponse> qidirish(String nomi) {
         List<Dori> dorilar = doriRepository.findByNameContainingIgnoreCase(nomi);
         // Qoldiqlar bitta so'rovda olinadi — har bir dori uchun alohida so'rov yubormaslik uchun.

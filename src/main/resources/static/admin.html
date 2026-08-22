@@ -437,6 +437,7 @@
                 <div class="tabs">
                     <button class="tab active" onclick="openTab('pharmacies', this)">${stk('pharmacy','stk-nav')} Dorixonalar</button>
                     <button class="tab" onclick="openTab('drugs', this)">${stk('pill','stk-nav')} Dorilar</button>
+                    <button class="tab" onclick="openTab('katalog', this)">${stk('search','stk-nav')} Katalog</button>
                     <button class="tab" onclick="openTab('stock', this)">${stk('box','stk-nav')} Ombor / Hisobot</button>
                     <button class="tab" onclick="openTab('claims', this)">${stk('mail','stk-nav')} Arizalar</button>
                     <button class="tab" onclick="openTab('users', this)">${stk('group','stk-nav')} Foydalanuvchilar</button>
@@ -484,6 +485,18 @@
                     <div class="list" id="drugList"></div>
                 </div>
 
+                <div class="panel" id="tab-katalog">
+                    <h2>${stk('search','stk-card')} Dorilar katalogi</h2>
+                    <p class="subtitle" style="margin-bottom:1rem;">Butun O'zbekiston bo'yicha dorilar ro'yxati. Bu — ma'lumotnoma:
+                        dorixona egasi "Dori qo'shish"da shu ro'yxatdan tanlaydi. Mijozga esa faqat narx qo'yilgan dorilar ko'rinadi.</p>
+                    <div class="form-grid">
+                        <input id="katalogQidiruv" placeholder="Nomi yoki firma bo'yicha qidiring..." oninput="katalogRoyxatQidir(this.value)">
+                    </div>
+                    <div id="katalogJami" class="subtitle" style="margin:0.5rem 0;"></div>
+                    <div class="list" id="katalogRoyxat"></div>
+                    <div id="katalogSahifalar" style="display:flex; gap:0.5rem; justify-content:center; margin-top:1rem; flex-wrap:wrap;"></div>
+                </div>
+
                 <div class="panel" id="tab-stock">
                     <h2>${stk('box','stk-card')} Ombor hisobi</h2>
                     <p class="subtitle">Dorixonani tanlang — qancha mahsulot kelgan, qancha sotilgan va qancha qolgani ko'rinadi.
@@ -514,7 +527,7 @@
             loadPharmacies();
         }
 
-        var TAB_ORDER = ['pharmacies', 'drugs', 'stock', 'claims', 'users'];
+        var TAB_ORDER = ['pharmacies', 'drugs', 'katalog', 'stock', 'claims', 'users'];
 
         function openTab(name, button) {
             document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
@@ -524,6 +537,7 @@
             document.getElementById('tab-' + name).classList.add('active');
             if (name === 'users') loadUsers();
             if (name === 'drugs') loadDrugs();
+            if (name === 'katalog') loadKatalog();
             if (name === 'stock') loadStock();
             if (name === 'claims') loadClaims();
         }
@@ -562,7 +576,8 @@
                     document.getElementById('stats').innerHTML = `
                         <div class="stat"><div class="stat-value">${s.users}</div><div class="stat-label">Foydalanuvchi</div></div>
                         <div class="stat"><div class="stat-value">${s.pharmacies}</div><div class="stat-label">Dorixona</div></div>
-                        <div class="stat"><div class="stat-value">${s.drugs}</div><div class="stat-label">Dori</div></div>`;
+                        <div class="stat"><div class="stat-value">${s.drugs}</div><div class="stat-label">Sotuvdagi dori</div></div>
+                        <div class="stat"><div class="stat-value">${(s.katalog || 0).toLocaleString('ru-RU')}</div><div class="stat-label">Katalogda dori</div></div>`;
                 })
                 .catch(function () {});
         }
@@ -710,6 +725,71 @@
         document.addEventListener('click', function (e) {
             if (!e.target.closest('.autocomplete-wrap')) katalogYop();
         });
+
+        // ==== Katalogni ko'rish/qidirish (browse) ====
+        let katalogRoyxatQuery = '';
+        let katalogRoyxatSahifa = 0;
+        let katalogRoyxatTimer = null;
+
+        function loadKatalog() {
+            katalogRoyxatSahifa = 0;
+            fetchKatalogRoyxat();
+        }
+
+        function katalogRoyxatQidir(q) {
+            clearTimeout(katalogRoyxatTimer);
+            katalogRoyxatQuery = (q || '').trim();
+            katalogRoyxatSahifa = 0;
+            katalogRoyxatTimer = setTimeout(fetchKatalogRoyxat, 300);
+        }
+
+        function fetchKatalogRoyxat() {
+            const jamiEl = document.getElementById('katalogJami');
+            const royxatEl = document.getElementById('katalogRoyxat');
+            jamiEl.textContent = 'Yuklanmoqda...';
+            const url = '/api/katalog/royxat?page=' + katalogRoyxatSahifa + '&size=50'
+                + (katalogRoyxatQuery ? '&q=' + encodeURIComponent(katalogRoyxatQuery) : '');
+            fetch(url, { headers: authHeaders() })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (data) {
+                    if (!data) { jamiEl.textContent = 'Xatolik'; return; }
+                    const jami = data.jami || 0;
+                    jamiEl.innerHTML = '<b style="color:#0E9E86;">' + jami.toLocaleString('ru-RU') + '</b> ta dori'
+                        + (katalogRoyxatQuery ? ' (qidiruv bo\'yicha)' : ' katalogda');
+                    const dorilar = data.dorilar || [];
+                    if (!dorilar.length) {
+                        royxatEl.innerHTML = '<p class="subtitle" style="margin-top:1rem;">Topilmadi.</p>';
+                        document.getElementById('katalogSahifalar').innerHTML = '';
+                        return;
+                    }
+                    royxatEl.innerHTML = dorilar.map(function (k) {
+                        const firma = [k.ishlabChiqaruvchi, k.davlat].filter(Boolean).join(', ');
+                        return `<div class="row">
+                            <span><span class="row-main">${esc(k.nomi)}</span>
+                            <span class="row-sub">${esc(firma) || '—'}</span></span>
+                        </div>`;
+                    }).join('');
+                    renderKatalogSahifalar(data.sahifalarSoni || 1);
+                })
+                .catch(function () { jamiEl.textContent = 'Xatolik'; });
+        }
+
+        function renderKatalogSahifalar(jami) {
+            const el = document.getElementById('katalogSahifalar');
+            if (jami <= 1) { el.innerHTML = ''; return; }
+            const joriy = katalogRoyxatSahifa;
+            let html = '';
+            if (joriy > 0) html += '<button class="btn-small" onclick="katalogSahifaGa(' + (joriy - 1) + ')">‹ Oldingi</button>';
+            html += '<span class="subtitle" style="align-self:center;">' + (joriy + 1) + ' / ' + jami + '</span>';
+            if (joriy < jami - 1) html += '<button class="btn-small" onclick="katalogSahifaGa(' + (joriy + 1) + ')">Keyingi ›</button>';
+            el.innerHTML = html;
+        }
+
+        function katalogSahifaGa(p) {
+            katalogRoyxatSahifa = p;
+            fetchKatalogRoyxat();
+            document.getElementById('tab-katalog').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
 
         function addDrug() {
             const name = document.getElementById('drName').value.trim();
