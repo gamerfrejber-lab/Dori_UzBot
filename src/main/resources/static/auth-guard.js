@@ -72,11 +72,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!nav || nav.querySelector('[data-admin-link]')) return;
             var link = document.createElement('a');
             link.href = 'admin.html';
-            link.innerHTML = stk('lock') + ' Admin panel';
+            link.innerHTML = 'Admin';
             link.setAttribute('data-admin-link', '1');
-            link.style.color = '#4fc3f7';
-            link.style.textDecoration = 'none';
-            link.style.marginLeft = '1rem';
+            // Uslub — sayt CSS'idan (nav a) keladi
             nav.appendChild(link);
         })
         .catch(function () { /* admin emas yoki tarmoq xatosi — havola ko'rsatilmaydi */ });

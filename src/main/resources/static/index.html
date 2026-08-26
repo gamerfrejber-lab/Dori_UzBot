@@ -694,11 +694,96 @@
         .glass-card::after, header::after, .modal::after, .search-box::after,
         .tag::after, .stat-item::after { display: none; }
 
-        /* Logo doirasi: cyan -> ko'k */
-        .logo { color: var(--ink); font-weight: 800; }
-        .logo .stk { background: linear-gradient(135deg, var(--sea), var(--teal)); border-radius: 12px; padding: 5px; }
-        nav a { color: var(--ink-dim); font-weight: 600; }
-        nav a:hover { color: var(--teal); }
+        /* ===== HEADER — Lovable "Pharmacy Finder" ko'rinishi ===== */
+        header {
+            padding: 0.9rem 1.4rem;
+            border-radius: 0 0 22px 22px;
+            border-bottom: none;
+            box-shadow: 0 4px 24px rgba(2, 32, 71, 0.05);
+        }
+        .header-content { gap: 0.9rem; }
+
+        /* Logo — cyan→ko'k gradient ikonasi */
+        .logo {
+            display: flex; align-items: center; gap: 0.65rem;
+            color: var(--ink); font-weight: 800; font-size: 1.22rem;
+        }
+        .logo .stk, .logo img.stk {
+            width: 42px; height: 42px; padding: 8px;
+            background: linear-gradient(135deg, var(--sea), var(--teal));
+            border-radius: 14px; box-shadow: 0 6px 16px rgba(37, 99, 235, 0.32);
+            filter: brightness(0) invert(1);
+        }
+
+        /* ===== NAV — matn, faol holat = ko'k pilyula ===== */
+        nav { gap: 0.5rem; align-items: center; }
+        nav a {
+            color: var(--ink-dim); font-weight: 600; font-size: 0.92rem;
+            padding: 0.55rem 1.05rem; border-radius: 999px;
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+        nav a::after { display: none; }
+        nav a:hover { color: var(--teal); background: rgba(37, 99, 235, 0.08); }
+        nav a.active {
+            color: #FFFFFF;
+            background: linear-gradient(135deg, var(--sea), var(--teal));
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        }
+        nav a.active:hover { color: #FFFFFF; background: linear-gradient(135deg, var(--sea), var(--teal)); }
+        /* auth-guard.js qo'shadigan Admin havolasi ham bir xil uslubda */
+        nav a[data-admin-link] { color: var(--ink-dim) !important; margin-left: 0 !important; }
+
+        /* ===== TIL PILYULASI ===== */
+        .lang-switch {
+            background: #EEF3FA; box-shadow: none; border: none;
+            padding: 0.22rem;
+        }
+        .lang-btn { padding: 0.36rem 0.85rem; color: var(--ink-faint); font-weight: 700; }
+        .lang-btn:hover { color: var(--ink-dim); }
+        .lang-btn.active {
+            color: #FFFFFF;
+            background: linear-gradient(135deg, var(--sea), var(--teal));
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        /* ===== PROFIL — katta ko'k gradient CTA ===== */
+        .login-btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.6rem 1.3rem;
+            background: linear-gradient(135deg, var(--sea) 0%, var(--teal) 55%, var(--teal-deep) 100%);
+            color: #FFFFFF; font-weight: 700; font-size: 0.94rem;
+            border-radius: 999px; border: none;
+            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.38), inset 0 1px 0 rgba(255,255,255,0.25);
+            cursor: pointer;
+        }
+        .login-btn .stk, .login-btn img.stk {
+            width: 22px; height: 22px; filter: brightness(0) invert(1);
+        }
+        .login-btn:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45); }
+        .login-btn:active { transform: translateY(0) scale(0.97); }
+
+        /* ===== TELEFON — 720px dan kichik ===== */
+        @media (max-width: 720px) {
+            header { padding: 0.65rem 0.9rem; border-radius: 0 0 16px 16px; }
+            .header-content { gap: 0.5rem; flex-wrap: nowrap; }
+            .logo { font-size: 1rem; gap: 0.5rem; }
+            .logo .stk, .logo img.stk { width: 36px; height: 36px; padding: 7px; border-radius: 12px; }
+            nav { gap: 0.3rem; }
+            /* Mobilda "Bosh sahifa" va "Dorixonalar" matnini yashiramiz, faqat faol
+               sahifa nomi ko'rinadi; boshqalari joyi bo'lmasa yashirilmaydi lekin ixchamlashadi */
+            nav a { padding: 0.4rem 0.7rem; font-size: 0.82rem; }
+            .lang-switch { padding: 0.18rem; }
+            .lang-btn { padding: 0.28rem 0.55rem; font-size: 0.74rem; }
+            .login-btn { padding: 0.5rem 0.75rem; font-size: 0.85rem; gap: 0.35rem; }
+            .login-btn .stk, .login-btn img.stk { width: 18px; height: 18px; }
+        }
+
+        /* Juda tor ekran (~<420px): profil tugmasidan matnni yashiraymiz — faqat ikonka */
+        @media (max-width: 420px) {
+            .login-btn .btn-label { display: none; }
+            .login-btn { padding: 0.5rem 0.6rem; }
+            nav a { padding: 0.35rem 0.55rem; font-size: 0.78rem; }
+        }
 
         /* ===== HERO — ikki ustun (matn + statistika) ===== */
         .hero { max-width: 1180px; text-align: left; padding: clamp(1.2rem, 3vw, 2.2rem) 1.6rem 0.5rem; }
@@ -831,7 +916,7 @@
                     <button type="button" class="lang-btn active" data-lang="uz" onclick="setLang('uz')">UZ</button>
                     <button type="button" class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
                 </div>
-                <button class="login-btn" id="profileBtn" onclick="location.href='profil.html'"><img class="stk stk-nav" data-stk="user" alt="" src="icons/user.png" onerror="stkFallback(this)"> Profil</button>
+                <button class="login-btn" id="profileBtn" onclick="location.href='profil.html'"><img class="stk stk-nav" data-stk="user" alt="" src="icons/user.png" onerror="stkFallback(this)"><span class="btn-label" data-uz="Profil" data-ru="Профиль">Profil</span></button>
             </nav>
         </div>
     </header>
@@ -998,12 +1083,22 @@
         }
 
         // Bu sahifaga faqat token bilan kirilgani uchun tugma doim profilga olib boradi.
+        // btn-label span'ini saqlaymiz — mobil ekranda CSS uni yashiradi.
         const profileBtn = document.getElementById('profileBtn');
         if (profileBtn) {
-            var _uIcon = '<img class="stk stk-nav" data-stk="user" alt="" src="icons/user.png" onerror="stkFallback(this)"> ';
-            profileBtn.innerHTML = _uIcon + (localStorage.getItem('userName')
-                || (currentLang === 'uz' ? 'Profil' : 'Профиль'));
+            const _uIcon = '<img class="stk stk-nav" data-stk="user" alt="" src="icons/user.png" onerror="stkFallback(this)">';
+            const _label = localStorage.getItem('userName') || (currentLang === 'uz' ? 'Profil' : 'Профиль');
+            profileBtn.innerHTML = _uIcon + '<span class="btn-label">' + esc(_label) + '</span>';
         }
+
+        // Joriy sahifadagi nav havolasini "faol" qilib belgilaymiz (ko'k pilyula).
+        (function () {
+            const page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+            document.querySelectorAll('nav a').forEach(function (a) {
+                const href = (a.getAttribute('href') || '').toLowerCase();
+                if (href === page || (page === '' && href === 'index.html')) a.classList.add('active');
+            });
+        })();
 
         const searchInput = document.getElementById('searchInput');
         let searchTimeout;
