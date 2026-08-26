@@ -695,11 +695,16 @@
         .tag::after, .stat-item::after { display: none; }
 
         /* ===== HEADER — Lovable "Pharmacy Finder" ko'rinishi ===== */
-        header {
+        /* Scroll paytida rang o'zgarmasin — Lovable kabi barqaror ko'rinish */
+        header, header.scrolled {
             padding: 0.9rem 1.4rem;
             border-radius: 0 0 22px 22px;
+            border: none;
             border-bottom: none;
-            box-shadow: 0 4px 24px rgba(2, 32, 71, 0.05);
+            background: #FFFFFF;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            box-shadow: 0 4px 24px rgba(2, 32, 71, 0.06);
         }
         .header-content { gap: 0.9rem; }
 
