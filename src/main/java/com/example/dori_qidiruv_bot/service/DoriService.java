@@ -8,9 +8,19 @@ import com.example.dori_qidiruv_bot.repository.DoriKatalogRepository;
 import com.example.dori_qidiruv_bot.repository.DoriRepository;
 import com.example.dori_qidiruv_bot.repository.DorixonaRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -131,5 +141,109 @@ public class DoriService {
 
     public void doriOchirish(Long id) {
         doriRepository.deleteById(id);
+    }
+
+    @Transactional
+    public int excelImportYangilash(Long dorixonaId, MultipartFile file) throws IOException {
+        dorixonaRepository.findById(dorixonaId)
+                .orElseThrow(() -> new IllegalArgumentException("Dorixona topilmadi: " + dorixonaId));
+        doriRepository.deleteByDorixonaId(dorixonaId);
+        return excelParse(file, dorixonaId);
+    }
+
+    @Transactional
+    public int excelImportQoshish(Long dorixonaId, MultipartFile file) throws IOException {
+        dorixonaRepository.findById(dorixonaId)
+                .orElseThrow(() -> new IllegalArgumentException("Dorixona topilmadi: " + dorixonaId));
+        return excelParse(file, dorixonaId);
+    }
+
+    private int excelParse(MultipartFile file, Long dorixonaId) throws IOException {
+        List<Dori> dorilar = new ArrayList<>();
+        try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Row header = sheet.getRow(0);
+            int[] cols = ustunlarniAniqla(header);
+            int colNomi = cols[0], colNarx = cols[1], colFirma = cols[2],
+                colNomiRu = cols[3], colPachkaNarx = cols[4], colPachkaDona = cols[5];
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) continue;
+                String nomi = cellText(row, colNomi);
+                if (nomi.isEmpty()) continue;
+
+                Dori dori = new Dori();
+                dori.setName(nomi);
+                dori.setNameRu(colNomiRu >= 0 ? nullIfEmpty(cellText(row, colNomiRu)) : null);
+                dori.setManufacturer(colFirma >= 0 ? nullIfEmpty(cellText(row, colFirma)) : null);
+                dori.setPrice(colNarx >= 0 ? cellNumber(row, colNarx) : null);
+                dori.setPachkaNarx(colPachkaNarx >= 0 ? cellNumber(row, colPachkaNarx) : null);
+                if (colPachkaDona >= 0) {
+                    Double pd = cellNumber(row, colPachkaDona);
+                    dori.setPachkadagiDona(pd != null ? pd.intValue() : null);
+                }
+                dori.setAvailable(true);
+                dori.setDorixonaId(dorixonaId);
+                dorilar.add(dori);
+            }
+        }
+        doriRepository.saveAll(dorilar);
+        return dorilar.size();
+    }
+
+    private int[] ustunlarniAniqla(Row header) {
+        int colNomi = -1, colNarx = -1, colFirma = -1,
+            colNomiRu = -1, colPachkaNarx = -1, colPachkaDona = -1;
+        if (header != null) {
+            for (int c = 0; c < header.getLastCellNum(); c++) {
+                String h = cellText(header, c).toLowerCase();
+                if (colNomi < 0 && (h.contains("наименование") || h.contains("nomi") || h.contains("номи")
+                        || h.contains("name") || h.contains("nom")))
+                    colNomi = c;
+                else if (colNarx < 0 && (h.contains("цена") || h.contains("narx") || h.contains("нарх")
+                        || h.contains("price") || h.contains("dona")))
+                    colNarx = c;
+                else if (colFirma < 0 && (h.contains("производитель") || h.contains("ishlab") || h.contains("firma")
+                        || h.contains("manufacturer") || h.contains("ишлаб")))
+                    colFirma = c;
+                else if (colNomiRu < 0 && (h.contains("nomi_ru") || h.contains("ruscha")))
+                    colNomiRu = c;
+                else if (colPachkaNarx < 0 && (h.contains("pachka_narx") || h.contains("pachka narx")))
+                    colPachkaNarx = c;
+                else if (colPachkaDona < 0 && (h.contains("pachkadagi") || h.contains("pachka dona")))
+                    colPachkaDona = c;
+            }
+        }
+        if (colNomi < 0) colNomi = 1;
+        if (colNarx < 0) colNarx = 2;
+        if (colFirma < 0) colFirma = 3;
+        return new int[] { colNomi, colNarx, colFirma, colNomiRu, colPachkaNarx, colPachkaDona };
+    }
+
+    private String nullIfEmpty(String s) {
+        return s == null || s.isEmpty() ? null : s;
+    }
+
+    private String cellText(Row row, int col) {
+        Cell cell = row.getCell(col);
+        if (cell == null) return "";
+        if (cell.getCellType() == CellType.STRING) return cell.getStringCellValue().trim();
+        if (cell.getCellType() == CellType.NUMERIC) return String.valueOf((long) cell.getNumericCellValue());
+        return "";
+    }
+
+    private Double cellNumber(Row row, int col) {
+        Cell cell = row.getCell(col);
+        if (cell == null) return null;
+        if (cell.getCellType() == CellType.NUMERIC) {
+            double val = cell.getNumericCellValue();
+            return val > 0 ? val : null;
+        }
+        if (cell.getCellType() == CellType.STRING) {
+            try { return Double.parseDouble(cell.getStringCellValue().trim()); }
+            catch (NumberFormatException e) { return null; }
+        }
+        return null;
     }
 }

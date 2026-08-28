@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,4 +39,7 @@ public class Dorixona {
 
     @Column(name = "karta_raqami")
     private String kartaRaqami;
+
+    @Column(name = "obuna_tugashi")
+    private LocalDateTime obunaTugashi;
 }

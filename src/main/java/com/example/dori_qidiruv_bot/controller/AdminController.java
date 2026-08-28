@@ -6,6 +6,7 @@ import com.example.dori_qidiruv_bot.repository.DoriRepository;
 import com.example.dori_qidiruv_bot.repository.DorixonaRepository;
 import com.example.dori_qidiruv_bot.repository.SoovRepository;
 import com.example.dori_qidiruv_bot.repository.UserRepository;
+import com.example.dori_qidiruv_bot.service.DoriService;
 import com.example.dori_qidiruv_bot.service.OmborService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +36,7 @@ public class AdminController {
     private final DoriKatalogRepository katalogRepository;
     private final OmborService omborService;
     private final SoovRepository soovRepository;
+    private final DoriService doriService;
 
     /**
      * Joriy foydalanuvchi admin yoki yo'qligini aytadi — sayt shunga qarab admin bo'limini
@@ -98,6 +102,53 @@ public class AdminController {
             ));
         }
         return ResponseEntity.ok(Map.of("ok", true, "qoldiq", qoldiq));
+    }
+
+    /** Dorixona obuna muddatini o'rnatish/o'chirish. */
+    @PostMapping("/dorixona/{id}/obuna")
+    public ResponseEntity<Map<String, Object>> obunaYangilash(
+            @PathVariable Long id, @RequestBody Map<String, String> body) {
+        return dorixonaRepository.findById(id)
+                .map(dx -> {
+                    String sana = body.get("obunaTugashi");
+                    dx.setObunaTugashi(sana != null && !sana.isEmpty()
+                            ? java.time.LocalDateTime.parse(sana) : null);
+                    dorixonaRepository.save(dx);
+                    return ResponseEntity.ok(Map.of("ok", (Object) true));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    /** Excel fayldan dorilarni yangilash — eski dorilarni O'CHIRIB, yangilarini kiritadi. */
+    @PostMapping("/dori/import/{dorixonaId}")
+    public ResponseEntity<Map<String, Object>> excelImport(
+            @PathVariable Long dorixonaId,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            int soni = doriService.excelImportYangilash(dorixonaId, file);
+            return ResponseEntity.ok(Map.of("ok", true, "soni", soni));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("ok", false,
+                    "xato", "Excel faylni o'qib bo'lmadi: " + e.getMessage()));
+        }
+    }
+
+    /** Excel fayldan yangi dorilar QO'SHISH — eski dorilar saqlanib qoladi. */
+    @PostMapping("/dori/qoshish-import/{dorixonaId}")
+    public ResponseEntity<Map<String, Object>> excelQoshish(
+            @PathVariable Long dorixonaId,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            int soni = doriService.excelImportQoshish(dorixonaId, file);
+            return ResponseEntity.ok(Map.of("ok", true, "soni", soni));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("ok", false,
+                    "xato", "Excel faylni o'qib bo'lmadi: " + e.getMessage()));
+        }
     }
 
     /** Kirim/chiqim so'rovi tanasi. narx va izoh ixtiyoriy. */

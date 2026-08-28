@@ -60,13 +60,18 @@ public class DorixonaController {
      * Dorixonani yangilash
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Dorixona> update(@PathVariable Long id, @RequestBody Dorixona dorixona) {
-        if (!dorixonaRepository.findById(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        dorixona.setId(id);
-        Dorixona updated = dorixonaRepository.save(dorixona);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Dorixona> update(@PathVariable Long id, @RequestBody Dorixona yangi) {
+        return dorixonaRepository.findById(id)
+                .map(mavjud -> {
+                    if (yangi.getName() != null) mavjud.setName(yangi.getName());
+                    if (yangi.getAddress() != null) mavjud.setAddress(yangi.getAddress());
+                    if (yangi.getTelefon() != null) mavjud.setTelefon(yangi.getTelefon());
+                    if (yangi.getKartaRaqami() != null) mavjud.setKartaRaqami(yangi.getKartaRaqami());
+                    if (yangi.getLatitude() != null) mavjud.setLatitude(yangi.getLatitude());
+                    if (yangi.getLongitude() != null) mavjud.setLongitude(yangi.getLongitude());
+                    return ResponseEntity.ok(dorixonaRepository.save(mavjud));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**

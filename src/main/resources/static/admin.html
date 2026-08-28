@@ -482,6 +482,13 @@
                     <div class="form-grid" style="margin-top:1.5rem;">
                         <select id="filterPharmacy" onchange="loadDrugs()"></select>
                     </div>
+                    <div id="excelButtons" style="display:none; margin-top:1rem; gap:0.6rem; flex-wrap:wrap; align-items:center;">
+                        <button class="btn" onclick="excelYangilash()" style="background:linear-gradient(140deg,#ff9800,#f57c00);font-size:0.9rem;">Excel: Dorilarni yangilash</button>
+                        <button class="btn" onclick="excelQoshish()" style="font-size:0.9rem;">Excel: Yangi dorilar qo'shish</button>
+                        <input type="file" id="excelFile" accept=".xlsx,.xls" style="display:none;" onchange="excelYuborish()">
+                        <span id="excelHolat" class="row-sub"></span>
+                    </div>
+                    <div class="message" id="excelMessage"></div>
                     <div class="list" id="drugList"></div>
                 </div>
 
@@ -592,10 +599,14 @@
                     document.getElementById('pharmacyList').innerHTML =
                         '<h2 style="margin-top:1.5rem;">' + stk('pharmacy') + ' Barcha dorixonalar (' + list.length + ')</h2>' +
                         list.map(function (p) {
+                            const obuna = obunaHolati(p.obunaTugashi);
                             return `<div class="row">
                                 <span><span class="row-main">${esc(p.name)}</span>
-                                <span class="row-sub">${esc(p.address || '')} · ${esc(p.telefon || '')}</span></span>
-                                <button class="btn-danger" onclick="deletePharmacy(${p.id}, '${esc(p.name).replace(/'/g, "\\'")}')">O'chirish</button>
+                                <span class="row-sub">${esc(p.address || '')} · ${esc(p.telefon || '')} · ${obuna}</span></span>
+                                <span>
+                                    <button class="btn-small" onclick="obunaBelgilash(${p.id}, '${esc(p.name).replace(/'/g, "\\'")}', '${p.obunaTugashi || ''}')">Obuna</button>
+                                    <button class="btn-danger" onclick="deletePharmacy(${p.id}, '${esc(p.name).replace(/'/g, "\\'")}')">O'chirish</button>
+                                </span>
                             </div>`;
                         }).join('');
                     fillPharmacySelects();
@@ -829,7 +840,13 @@
         function loadDrugs() {
             const id = document.getElementById('filterPharmacy').value;
             const list = document.getElementById('drugList');
-            if (!id) { list.innerHTML = '<p class="subtitle" style="margin-top:1rem;">Dorilarini ko\'rish uchun dorixonani tanlang.</p>'; return; }
+            const excelBtns = document.getElementById('excelButtons');
+            if (!id) {
+                list.innerHTML = '<p class="subtitle" style="margin-top:1rem;">Dorilarini ko\'rish uchun dorixonani tanlang.</p>';
+                if (excelBtns) excelBtns.style.display = 'none';
+                return;
+            }
+            if (excelBtns) excelBtns.style.display = 'flex';
             fetch('/api/dorixona/' + id + '/dorilar')
                 .then(function (r) { return r.json(); })
                 .then(function (drugs) {
@@ -1068,6 +1085,105 @@
                     box.innerHTML = stk('cancel') + ' Serverga ulanib bo\'lmadi';
                     box.className = 'message show err';
                 });
+        }
+
+        // ==== Obuna holati ====
+        function obunaHolati(tugash) {
+            if (!tugash) return stk('available') + ' Cheksiz obuna';
+            var sana = new Date(tugash);
+            var hozir = new Date();
+            if (sana > hozir) {
+                return stk('check') + ' Obuna: ' + sana.toLocaleDateString('uz-UZ') + ' gacha';
+            }
+            return stk('unavailable') + ' Obuna tugagan (' + sana.toLocaleDateString('uz-UZ') + ')';
+        }
+
+        function obunaBelgilash(id, nomi, joriy) {
+            var savol = '«' + nomi + '» obuna tugash sanasini kiriting (YYYY-MM-DD formatda).\nBo\'sh qoldiring — cheksiz obuna.';
+            var joriyKun = joriy ? joriy.substring(0, 10) : '';
+            var input = prompt(savol, joriyKun);
+            if (input === null) return;
+            var body = {};
+            if (input.trim() === '') {
+                body.obunaTugashi = null;
+            } else {
+                var sana = new Date(input.trim() + 'T23:59:59');
+                if (isNaN(sana.getTime())) { showMessage(stk('cancel') + ' Noto\'g\'ri sana formati', false); return; }
+                body.obunaTugashi = input.trim() + 'T23:59:59';
+            }
+            fetch('/api/admin/dorixona/' + id + '/obuna', {
+                method: 'POST',
+                headers: authHeaders({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify(body)
+            })
+                .then(function (r) {
+                    if (!r.ok) throw new Error();
+                    showMessage(stk('check') + ' Obuna yangilandi', true);
+                    loadPharmacies();
+                })
+                .catch(function () { showMessage(stk('cancel') + ' Yangilab bo\'lmadi', false); });
+        }
+
+        // ==== Excel import ====
+        var excelRejim = '';
+
+        function excelYangilash() {
+            var id = document.getElementById('filterPharmacy').value;
+            if (!id) { excelXabar(stk('cancel') + ' Avval dorixonani tanlang', false); return; }
+            var nomi = document.getElementById('filterPharmacy').selectedOptions[0].text;
+            if (!confirm('«' + nomi + '» dorixonasidagi BARCHA dorilar o\'chiriladi va Excel fayldagilar kiritiladi.\n\nDavom etsinmi?')) return;
+            excelRejim = 'yangilash';
+            document.getElementById('excelFile').click();
+        }
+
+        function excelQoshish() {
+            var id = document.getElementById('filterPharmacy').value;
+            if (!id) { excelXabar(stk('cancel') + ' Avval dorixonani tanlang', false); return; }
+            excelRejim = 'qoshish';
+            document.getElementById('excelFile').click();
+        }
+
+        function excelYuborish() {
+            var fileInput = document.getElementById('excelFile');
+            var file = fileInput.files[0];
+            if (!file) return;
+            var dorixonaId = document.getElementById('filterPharmacy').value;
+            if (!dorixonaId) return;
+
+            var url = excelRejim === 'yangilash'
+                ? '/api/admin/dori/import/' + dorixonaId
+                : '/api/admin/dori/qoshish-import/' + dorixonaId;
+
+            document.getElementById('excelHolat').textContent = 'Yuklanmoqda...';
+            var formData = new FormData();
+            formData.append('file', file);
+
+            fetch(url, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: formData })
+                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (res) {
+                    document.getElementById('excelHolat').textContent = '';
+                    if (!res.ok) {
+                        excelXabar(stk('cancel') + ' ' + (res.data.xato || 'Xatolik'), false);
+                    } else {
+                        excelXabar(stk('check') + ' ' + res.data.soni + ' ta dori ' + (excelRejim === 'yangilash' ? 'yangilandi' : 'qo\'shildi'), true);
+                        loadDrugs();
+                        loadStats();
+                    }
+                })
+                .catch(function () {
+                    document.getElementById('excelHolat').textContent = '';
+                    excelXabar(stk('cancel') + ' Serverga ulanib bo\'lmadi', false);
+                });
+
+            fileInput.value = '';
+        }
+
+        function excelXabar(text, ok) {
+            var box = document.getElementById('excelMessage');
+            if (!box) return;
+            box.innerHTML = text;
+            box.className = 'message show ' + (ok ? 'ok' : 'err');
+            setTimeout(function () { box.className = 'message'; }, 5000);
         }
 
         function loadUsers() {
