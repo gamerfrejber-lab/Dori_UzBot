@@ -3,9 +3,9 @@ package com.example.dori_qidiruv_bot.service;
 import com.example.dori_qidiruv_bot.entity.Dorixona;
 import com.example.dori_qidiruv_bot.repository.DoriRepository;
 import com.example.dori_qidiruv_bot.repository.DorixonaRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,16 +15,16 @@ import java.util.Set;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DemoTozalash {
+public class DemoTozalash implements CommandLineRunner {
 
     private final DorixonaRepository dorixonaRepository;
     private final DoriRepository doriRepository;
 
     private static final Set<String> SAQLANADIGAN = Set.of("Vazira farm");
 
-    @PostConstruct
+    @Override
     @Transactional
-    public void tozalash() {
+    public void run(String... args) {
         List<Dorixona> hammasi = dorixonaRepository.findAll();
         List<Dorixona> ochiriladiganlar = hammasi.stream()
                 .filter(dx -> !SAQLANADIGAN.contains(dx.getName()))
