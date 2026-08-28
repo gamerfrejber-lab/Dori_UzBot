@@ -381,6 +381,9 @@
         body input:focus, body select:focus, body textarea:focus { border-color: var(--teal) !important; }
         body input::placeholder, body textarea::placeholder { color: var(--ink-faint) !important; }
 
+        /* Telefon Mini App'da chiziq/bo'shliq muammosini oldini olish */
+        html, body { overflow-x: hidden; }
+
         /* ===== HEADER — index.html bilan bir xil, scroll'da rang o'zgarmasin ===== */
         header, header.scrolled {
             padding: 0.9rem 1.4rem; border-radius: 0 0 22px 22px; border: none; border-bottom: none;
@@ -436,7 +439,7 @@
 
         /* ===== DORIXONA KARTOCHKALARI (Lovable) ===== */
         .pharmacies-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
             gap: 1.1rem; margin-top: 1rem;
         }
         .ph-card-lg {
