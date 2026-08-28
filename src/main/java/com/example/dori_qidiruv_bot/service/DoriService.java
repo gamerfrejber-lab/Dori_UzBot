@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.dori_qidiruv_bot.util.LatCyrUtil;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +49,9 @@ public class DoriService {
             return List.of();
         }
         int chegara = Math.max(1, Math.min(limit, 50));
-        return katalogRepository.qidirish(q.trim(), PageRequest.of(0, chegara));
+        String trimmed = q.trim();
+        String alt = translitAlt(trimmed);
+        return katalogRepository.qidirish(trimmed, alt, PageRequest.of(0, chegara));
     }
 
     /**
@@ -59,7 +63,9 @@ public class DoriService {
         int sahifa = Math.max(0, page);
         org.springframework.data.domain.Page<DoriKatalog> natija;
         if (q != null && !q.trim().isEmpty()) {
-            natija = katalogRepository.royxatQidirish(q.trim(),
+            String trimmed = q.trim();
+            String alt = translitAlt(trimmed);
+            natija = katalogRepository.royxatQidirish(trimmed, alt,
                     PageRequest.of(sahifa, olcham, org.springframework.data.domain.Sort.by("nomi")));
         } else {
             natija = katalogRepository.findAll(
@@ -74,7 +80,9 @@ public class DoriService {
     }
 
     public List<DoriQidiruvResponse> qidirish(String nomi) {
-        List<Dori> dorilar = doriRepository.findByNameContainingIgnoreCase(nomi);
+        String alt = LatCyrUtil.hasLatin(nomi) ? LatCyrUtil.latToCyr(nomi)
+                   : LatCyrUtil.hasCyrillic(nomi) ? LatCyrUtil.cyrToLat(nomi) : nomi;
+        List<Dori> dorilar = doriRepository.findByNameContainingIgnoreCase(nomi, alt);
         // Qoldiqlar bitta so'rovda olinadi — har bir dori uchun alohida so'rov yubormaslik uchun.
         Map<Long, long[]> qoldiqlar = omborService.qoldiqlar();
 
@@ -231,6 +239,12 @@ public class DoriService {
         if (cell.getCellType() == CellType.STRING) return cell.getStringCellValue().trim();
         if (cell.getCellType() == CellType.NUMERIC) return String.valueOf((long) cell.getNumericCellValue());
         return "";
+    }
+
+    private String translitAlt(String text) {
+        if (LatCyrUtil.hasLatin(text)) return LatCyrUtil.latToCyr(text);
+        if (LatCyrUtil.hasCyrillic(text)) return LatCyrUtil.cyrToLat(text);
+        return text;
     }
 
     private Double cellNumber(Row row, int col) {

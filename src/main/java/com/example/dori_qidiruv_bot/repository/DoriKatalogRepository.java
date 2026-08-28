@@ -17,11 +17,15 @@ public interface DoriKatalogRepository extends JpaRepository<DoriKatalog, Long> 
      */
     @Query("SELECT k FROM DoriKatalog k WHERE LOWER(k.nomi) LIKE LOWER(CONCAT('%', :q, '%')) "
             + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :q, '%')) "
+            + "OR LOWER(k.nomi) LIKE LOWER(CONCAT('%', :alt, '%')) "
+            + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :alt, '%')) "
             + "ORDER BY k.nomi ASC")
-    List<DoriKatalog> qidirish(@Param("q") String q, Pageable pageable);
+    List<DoriKatalog> qidirish(@Param("q") String q, @Param("alt") String alt, Pageable pageable);
 
     /** Katalogni sahifalab qidirish (jami soni bilan) — "Katalog" bo'limida ko'rish uchun. */
     @Query("SELECT k FROM DoriKatalog k WHERE LOWER(k.nomi) LIKE LOWER(CONCAT('%', :q, '%')) "
-            + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :q, '%'))")
-    Page<DoriKatalog> royxatQidirish(@Param("q") String q, Pageable pageable);
+            + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :q, '%')) "
+            + "OR LOWER(k.nomi) LIKE LOWER(CONCAT('%', :alt, '%')) "
+            + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :alt, '%'))")
+    Page<DoriKatalog> royxatQidirish(@Param("q") String q, @Param("alt") String alt, Pageable pageable);
 }
