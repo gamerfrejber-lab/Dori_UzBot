@@ -694,6 +694,9 @@
         .glass-card::after, header::after, .modal::after, .search-box::after,
         .tag::after, .stat-item::after { display: none; }
 
+        /* Mobil bo'shliq muammosi (Telegram Mini App'da chiziq): overflow-x qatlami */
+        html, body { overflow-x: hidden; }
+
         /* ===== HEADER — Lovable "Pharmacy Finder" ko'rinishi ===== */
         /* Scroll paytida rang o'zgarmasin — Lovable kabi barqaror ko'rinish */
         header, header.scrolled {

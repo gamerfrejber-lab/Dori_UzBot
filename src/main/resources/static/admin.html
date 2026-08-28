@@ -370,6 +370,146 @@
         .btn-small:hover { background: rgba(22,198,164,0.22); }
         .btn-danger { background: rgba(229,57,53,0.10); border: 1px solid #e53935; color: #e53935; }
         .btn-danger:hover { background: rgba(229,57,53,0.2); }
+
+        /* ============================================================
+           LOVABLE KO'K PALITRA — barcha sayt bilan bir xil ideal ko'rinish
+           ============================================================ */
+        :root {
+            --bg-0: #E9F0FA; --bg-1: #F6F9FD;
+            --ink: #0F172A; --ink-dim: #5B6B82; --ink-faint: #94A3B8;
+            --teal: #2563EB; --teal-deep: #1D4ED8; --sea: #06B6D4; --ember: #F97316;
+            --hairline: rgba(15,23,42,0.08);
+        }
+        html, body { overflow-x: hidden; }
+        body { background: var(--bg-0); color: var(--ink); }
+        .aurora {
+            background:
+                radial-gradient(1000px 620px at 12% -10%, #DCEBFF 0%, transparent 60%),
+                radial-gradient(900px 560px at 92% -4%, #E1F6FB 0%, transparent 60%),
+                linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 62%);
+        }
+        .aurora span { opacity: 0.28; filter: blur(95px); }
+        .aurora span:nth-child(1) { background: radial-gradient(circle, #93C5FD, transparent 68%); }
+        .aurora span:nth-child(2) { background: radial-gradient(circle, #A5F3FC, transparent 68%); }
+
+        /* HEADER: barqaror oq (scroll'da o'zgarmasin) */
+        header, header.scrolled {
+            padding: 0.9rem 1.4rem !important; border-radius: 0 0 22px 22px !important;
+            border: none !important; border-bottom: none !important;
+            background: #FFFFFF !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+            box-shadow: 0 4px 24px rgba(2,32,71,0.06) !important;
+        }
+        .logo { display: flex; align-items: center; gap: 0.65rem; color: var(--ink); font-weight: 800; font-size: 1.22rem; }
+        .logo .stk, .logo img.stk {
+            width: 42px; height: 42px; padding: 8px;
+            background: linear-gradient(135deg, var(--sea), var(--teal));
+            border-radius: 14px; box-shadow: 0 6px 16px rgba(37,99,235,0.32);
+            filter: brightness(0) invert(1);
+        }
+        nav { gap: 0.5rem; align-items: center; }
+        nav a {
+            color: var(--ink-dim) !important; font-weight: 600; font-size: 0.92rem;
+            padding: 0.55rem 1.05rem; border-radius: 999px; text-decoration: none;
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+        nav a::after { display: none; }
+        nav a:hover { color: var(--teal) !important; background: rgba(37,99,235,0.08); }
+        nav a.active {
+            color: #FFFFFF !important;
+            background: linear-gradient(135deg, var(--sea), var(--teal));
+            box-shadow: 0 6px 16px rgba(37,99,235,0.35);
+        }
+        .lang-switch { background: #EEF3FA !important; box-shadow: none; border: none; padding: 0.22rem !important; }
+        .lang-btn { padding: 0.36rem 0.85rem !important; color: var(--ink-faint) !important; font-weight: 700 !important; }
+        .lang-btn.active {
+            color: #FFFFFF !important;
+            background: linear-gradient(135deg, var(--sea), var(--teal)) !important;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.35) !important;
+        }
+        .login-btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.6rem 1.3rem;
+            background: linear-gradient(135deg, var(--sea) 0%, var(--teal) 55%, var(--teal-deep) 100%);
+            color: #FFFFFF; font-weight: 700; font-size: 0.94rem;
+            border-radius: 999px; border: none; cursor: pointer;
+            box-shadow: 0 8px 22px rgba(37,99,235,0.38), inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+        .login-btn .stk, .login-btn img.stk { width: 22px; height: 22px; filter: brightness(0) invert(1); }
+        .login-btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
+
+        /* STATISTIKA kartochkalari */
+        .stat {
+            background: #FFFFFF !important; border: 1px solid var(--hairline) !important;
+            box-shadow: 0 8px 24px rgba(2,32,71,0.05) !important; border-radius: 22px !important;
+            padding: 1.5rem 1rem !important;
+        }
+        .stat-value { color: var(--teal) !important; font-weight: 800 !important; font-size: 2.2rem !important; }
+        .stat-label { color: var(--ink-dim) !important; font-weight: 600 !important; }
+
+        /* Panel va tablar */
+        .panel {
+            background: #FFFFFF !important; border: 1px solid var(--hairline) !important;
+            box-shadow: 0 12px 30px rgba(2,32,71,0.05) !important; border-radius: 22px !important;
+        }
+        .panel h2 { color: var(--ink) !important; font-weight: 800; }
+        .panel h2 img.stk, .panel h2 .stk { filter: none; }
+
+        .tab {
+            background: #FFFFFF !important; border: 1px solid var(--hairline) !important;
+            color: var(--ink-dim) !important; font-weight: 600;
+        }
+        .tab:hover { color: var(--teal) !important; }
+        .tab.active {
+            color: #FFFFFF !important;
+            background: linear-gradient(135deg, var(--sea), var(--teal)) !important;
+            border: 1px solid transparent !important;
+            box-shadow: 0 8px 20px rgba(37,99,235,0.35) !important;
+        }
+
+        /* Tugmalar */
+        .btn {
+            background: linear-gradient(135deg, var(--sea) 0%, var(--teal) 55%, var(--teal-deep) 100%) !important;
+            color: #FFFFFF !important; border-radius: 14px !important; font-weight: 700 !important;
+            box-shadow: 0 10px 24px rgba(37,99,235,0.35) !important;
+        }
+        .btn:hover { filter: brightness(1.06); }
+        .btn-small {
+            background: rgba(37,99,235,0.10) !important; color: var(--teal) !important;
+            border: 1px solid rgba(37,99,235,0.25) !important; border-radius: 10px !important;
+        }
+        .btn-small:hover { background: rgba(37,99,235,0.18) !important; }
+
+        /* Input/select */
+        input, select {
+            background: #FFFFFF !important; color: var(--ink) !important;
+            border: 1px solid rgba(15,23,42,0.14) !important; border-radius: 12px !important;
+        }
+        input:focus, select:focus { border-color: var(--teal) !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.18) !important; }
+
+        /* Foydalanuvchi qatorlari (rasm 6 kabi tashqi ko'rinish) */
+        .row { border-bottom: 1px solid var(--hairline) !important; padding: 0.9rem 0.4rem; }
+        .row-main { color: var(--ink); font-weight: 700; }
+        .row-sub { color: var(--ink-dim) !important; }
+
+        h1, .container h1 { color: var(--ink); }
+        .subtitle { color: var(--ink-dim); }
+        .stk-card { filter: none; }
+
+        @media (max-width: 720px) {
+            header, header.scrolled { padding: 0.65rem 0.9rem !important; border-radius: 0 0 16px 16px !important; }
+            .header-content { gap: 0.5rem; flex-wrap: nowrap; }
+            .logo { font-size: 1rem; gap: 0.5rem; }
+            .logo .stk, .logo img.stk { width: 36px; height: 36px; padding: 7px; border-radius: 12px; }
+            nav { gap: 0.3rem; }
+            nav a { padding: 0.4rem 0.7rem; font-size: 0.82rem; }
+            .lang-btn { padding: 0.28rem 0.55rem !important; font-size: 0.74rem !important; }
+            .login-btn { padding: 0.5rem 0.75rem; font-size: 0.85rem; gap: 0.35rem; }
+            .login-btn .stk, .login-btn img.stk { width: 18px; height: 18px; }
+        }
+        @media (max-width: 420px) {
+            .login-btn .btn-label { display: none; }
+            .login-btn { padding: 0.5rem 0.6rem; }
+        }
     </style>
 </head>
 <body>
@@ -381,7 +521,12 @@
             <nav>
                 <a href="index.html">Bosh sahifa</a>
                 <a href="dorixonalar.html">Dorixonalar</a>
-                <a href="profil.html">Profil</a>
+                <a href="admin.html" class="active">Admin</a>
+                <div class="lang-switch">
+                    <button type="button" class="lang-btn active" data-lang="uz" onclick="setLang && setLang('uz')">UZ</button>
+                    <button type="button" class="lang-btn" data-lang="ru" onclick="setLang && setLang('ru')">RU</button>
+                </div>
+                <button class="login-btn" onclick="location.href='profil.html'"><img class="stk stk-nav" data-stk="user" alt="" src="icons/user.png" onerror="stkFallback(this)"><span class="btn-label">Profil</span></button>
             </nav>
         </div>
     </header>
