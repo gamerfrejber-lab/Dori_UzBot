@@ -985,6 +985,23 @@
         /** Oxirgi qidiruv so'zi — joylashuvga ruxsat berilgach natijalarni qayta chizish uchun. */
         let lastQuery = '';
 
+        const _cyrMap = {'А':'A','Б':'B','В':'V','Г':'G','Д':'D','Е':'E','Ё':'Yo','Ж':'J','З':'Z','И':'I','Й':'Y','К':'K','Л':'L','М':'M','Н':'N','О':'O','П':'P','Р':'R','С':'S','Т':'T','У':'U','Ф':'F','Х':'X','Ц':'Ts','Ч':'Ch','Ш':'Sh','Щ':'Shch','Ъ':'ʼ','Ы':'I','Ь':'','Э':'E','Ю':'Yu','Я':'Ya',
+            'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'yo','ж':'j','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'x','ц':'ts','ч':'ch','ш':'sh','щ':'shch','ъ':'ʼ','ы':'i','ь':'','э':'e','ю':'yu','я':'ya'};
+        function cyrToLat(s) {
+            if (!s) return s;
+            let r = '';
+            for (let i = 0; i < s.length; i++) {
+                const c = s[i];
+                r += (c in _cyrMap) ? _cyrMap[c] : c;
+            }
+            return r;
+        }
+        function doriNomi(nomi, nomiRu) {
+            if (currentLang === 'ru') return nomiRu || nomi || '';
+            const n = nomi || nomiRu || '';
+            return /[А-Яа-яЁё]/.test(n) ? cyrToLat(n) : n;
+        }
+
         /** Lokatsiya nega olinmagani: 'unsupported' | 'denied' | 'unavailable' | null. */
         let locationError = null;
 
@@ -1177,11 +1194,12 @@
                     + '</div><div class="cards-grid">'
                     + kat.map(k => {
                         const firma = [k.ishlabChiqaruvchi, k.davlat].filter(Boolean).join(', ');
+                        const katNomi = uz ? cyrToLat(k.nomi || '') : (k.nomi || '');
                         return `<div class="med-card" style="cursor:default;">
                             <div class="badge">${esc(doriShakli(k.nomi))}</div>
                             <div class="ic"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"></div>
-                            <div class="nom">${esc(k.nomi || '')}</div>
-                            <div class="desc">${esc(firma) || (uz ? 'Katalog dorisi' : 'Из каталога')}</div>
+                            <div class="nom">${esc(katNomi)}</div>
+                            <div class="desc">${esc(uz ? cyrToLat(firma) : firma) || (uz ? 'Katalog dorisi' : 'Из каталога')}</div>
                         </div>`;
                     }).join('') + '</div>';
                 resultsDiv.classList.add('show');
@@ -1220,7 +1238,7 @@
             const uz = currentLang === 'uz';
             resultsDiv.innerHTML = locationBanner() + results.map((dori, i) => {
                 const ph = dori.dorixona;
-                const drugName = (currentLang === 'ru' && (dori.nomi_ru || dori.nameRu)) || dori.nomi || dori.name;
+                const drugName = doriNomi(dori.nomi || dori.name, dori.nomi_ru || dori.nameRu);
                 const price = (dori.narx || dori.price || 0).toLocaleString();
                 const pachka = dori.pachkaNarx || 0;
                 return `
@@ -1266,7 +1284,7 @@
             if (!dori) return;
             const ph = dori.dorixona;
             const uz = currentLang === 'uz';
-            const drugName = (currentLang === 'ru' && dori.nameRu) || dori.name;
+            const drugName = doriNomi(dori.name, dori.nameRu);
 
             document.getElementById('modalBox').innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -1558,11 +1576,12 @@
                 joy.innerHTML = dorilar.map(k => {
                     const firma = [k.ishlabChiqaruvchi, k.davlat].filter(Boolean).join(', ');
                     const nomEsc = (k.nomi || '').replace(/'/g, "\\'");
+                    const katNomi = uz ? cyrToLat(k.nomi || '') : (k.nomi || '');
                     return `<div class="med-card" onclick="quickSearch('${nomEsc}')">
                         <div class="badge">${esc(doriShakli(k.nomi))}</div>
                         <div class="ic"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"></div>
-                        <div class="nom">${esc(k.nomi || '')}</div>
-                        <div class="desc">${esc(firma) || (uz ? 'Katalog dorisi' : 'Из каталога')}</div>
+                        <div class="nom">${esc(katNomi)}</div>
+                        <div class="desc">${esc(uz ? cyrToLat(firma) : firma) || (uz ? 'Katalog dorisi' : 'Из каталога')}</div>
                     </div>`;
                 }).join('');
             } catch (e) {

@@ -543,6 +543,11 @@
         let currentLang = localStorage.getItem('lang') || 'uz';
         let userLocation = null;
 
+        const _cyrMap = {'А':'A','Б':'B','В':'V','Г':'G','Д':'D','Е':'E','Ё':'Yo','Ж':'J','З':'Z','И':'I','Й':'Y','К':'K','Л':'L','М':'M','Н':'N','О':'O','П':'P','Р':'R','С':'S','Т':'T','У':'U','Ф':'F','Х':'X','Ц':'Ts','Ч':'Ch','Ш':'Sh','Щ':'Shch','Ъ':'ʼ','Ы':'I','Ь':'','Э':'E','Ю':'Yu','Я':'Ya',
+            'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'yo','ж':'j','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'x','ц':'ts','ч':'ch','ш':'sh','щ':'shch','ъ':'ʼ','ы':'i','ь':'','э':'e','ю':'yu','я':'ya'};
+        function cyrToLat(s) { if (!s) return s; let r = ''; for (let i = 0; i < s.length; i++) { const c = s[i]; r += (c in _cyrMap) ? _cyrMap[c] : c; } return r; }
+        function doriNomi(nomi, nomiRu) { if (currentLang === 'ru') return nomiRu || nomi || ''; const n = nomi || nomiRu || ''; return /[А-Яа-яЁё]/.test(n) ? cyrToLat(n) : n; }
+
         /** Lokatsiya nega olinmagani: 'unsupported' | 'denied' | 'unavailable' | null. */
         let locationError = null;
 
@@ -815,7 +820,7 @@
             }
             const title = stk('pill') + ' ' + (currentLang === 'uz' ? `Dorilar (${drugs.length})` : `Лекарства (${drugs.length})`);
             const rows = drugs.map((drug, i) => {
-                const drugName = currentLang === 'ru' && drug.nameRu ? drug.nameRu : drug.name;
+                const drugName = doriNomi(drug.name, drug.nameRu);
                 const price = (drug.price || 0).toLocaleString();
                 const tugagan = drug.hisobYuritiladi ? (drug.qoldiq || 0) <= 0 : !drug.available;
                 const status = tugagan
@@ -840,7 +845,7 @@
             if (!drug) return;
             const uz = currentLang === 'uz';
             const box = document.getElementById('modalBox');
-            const drugName = currentLang === 'ru' && drug.nameRu ? drug.nameRu : drug.name;
+            const drugName = doriNomi(drug.name, drug.nameRu);
 
             box.innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
