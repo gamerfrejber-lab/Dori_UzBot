@@ -74,8 +74,9 @@ document.addEventListener('DOMContentLoaded', function () {
             link.href = 'admin.html';
             link.innerHTML = 'Admin';
             link.setAttribute('data-admin-link', '1');
-            // Uslub — sayt CSS'idan (nav a) keladi
-            nav.appendChild(link);
+            var langSwitch = nav.querySelector('.lang-switch');
+            if (langSwitch) nav.insertBefore(link, langSwitch);
+            else nav.appendChild(link);
         })
         .catch(function () { /* admin emas yoki tarmoq xatosi — havola ko'rsatilmaydi */ });
 });
