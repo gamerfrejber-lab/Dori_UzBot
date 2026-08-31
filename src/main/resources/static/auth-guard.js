@@ -8,6 +8,10 @@
 (function () {
     var page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
     var isAuthPage = ['login.html', 'sms.html', 'ism.html'].indexOf(page) !== -1;
+    // Ochiq (Google indekslashi kerak bo'lgan) sahifalar. Bularga login talab qilinmaydi —
+    // mehmonlar dorixonalarni ko'rishi, dorilarni qidirishi mumkin. Bron qilish uchungina
+    // ular login.html'ga yo'naltiriladi (o'sha yerda tekshiruv qilinadi).
+    var isPublicPage = ['index.html', 'dorixonalar.html', 'taqdimot.html', ''].indexOf(page) !== -1;
     var token = localStorage.getItem('token');
     var tg = window.Telegram && window.Telegram.WebApp;
 
@@ -47,12 +51,12 @@
             })
             .catch(function () {
                 document.documentElement.style.visibility = 'visible';
-                if (!isAuthPage) location.replace('login.html');
+                if (!isAuthPage && !isPublicPage) location.replace('login.html');
             });
         return;
     }
 
-    if (!isAuthPage) location.replace('login.html');
+    if (!isAuthPage && !isPublicPage) location.replace('login.html');
 })();
 
 /*
