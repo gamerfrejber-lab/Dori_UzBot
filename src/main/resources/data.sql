@@ -1,1 +1,15 @@
-UPDATE dorixona SET karta_raqami = '4067 0700 0521 8784' WHERE LOWER(nomi) LIKE '%suxrob%' AND (karta_raqami IS NULL OR karta_raqami = '');
+-- Karta raqami environment variable orqali boshqariladi, hardcode qilinmaydi.
+
+-- pg_trgm: LIKE '%...%' qidiruvni tezlashtiruvchi GIN indekslar.
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+CREATE INDEX IF NOT EXISTS dori_nomi_trgm_idx ON dori USING gin (nomi gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS dori_nomi_ru_trgm_idx ON dori USING gin (nomi_ru gin_trgm_ops);
+
+-- Dori katalog (26k qator) uchun trigram indekslar.
+CREATE INDEX IF NOT EXISTS dori_katalog_nomi_trgm_idx ON dori_katalog USING gin (nomi gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS dori_katalog_ishlab_trgm_idx ON dori_katalog USING gin (ishlab_chiqaruvchi gin_trgm_ops);
+
+-- Telefon raqami bo'yicha tez qidiruv (regexp_replace funksional indeks).
+CREATE INDEX IF NOT EXISTS bot_user_phone_digits_idx
+    ON bot_user (regexp_replace(phone, '[^0-9]', '', 'g'));

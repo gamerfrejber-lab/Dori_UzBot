@@ -5,6 +5,7 @@ import com.example.dori_qidiruv_bot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 
 @Service
@@ -50,13 +51,12 @@ public class AuthService {
         User user = userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new RuntimeException("User topilmadi"));
         
-        // Kod tekshirish
-        if (!code.equals(user.getVerificationCode())) {
+        if (user.getVerificationCode() == null
+                || !MessageDigest.isEqual(code.getBytes(), user.getVerificationCode().getBytes())) {
             throw new RuntimeException("Noto'g'ri kod");
         }
-        
-        // Kod muddati tekshirish
-        if (user.getCodeExpiry().isBefore(LocalDateTime.now())) {
+
+        if (user.getCodeExpiry() == null || user.getCodeExpiry().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Kod muddati tugagan");
         }
         

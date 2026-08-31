@@ -82,14 +82,19 @@ public class DoriService {
     public List<DoriQidiruvResponse> qidirish(String nomi) {
         String alt = LatCyrUtil.hasLatin(nomi) ? LatCyrUtil.latToCyr(nomi)
                    : LatCyrUtil.hasCyrillic(nomi) ? LatCyrUtil.cyrToLat(nomi) : nomi;
-        List<Dori> dorilar = doriRepository.findByNameContainingIgnoreCase(nomi, alt);
-        // Qoldiqlar bitta so'rovda olinadi — har bir dori uchun alohida so'rov yubormaslik uchun.
+        List<Dori> dorilar = doriRepository.findByNameContainingIgnoreCase(nomi, alt, PageRequest.of(0, 50));
         Map<Long, long[]> qoldiqlar = omborService.qoldiqlar();
+
+        List<Long> dorixonaIds = dorilar.stream()
+                .map(Dori::getDorixonaId)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Long, Dorixona> dorixonaMap = dorixonaRepository.findAllById(dorixonaIds).stream()
+                .collect(Collectors.toMap(Dorixona::getId, d -> d));
 
         return dorilar.stream()
                 .map(dori -> {
-                    Dorixona dorixona = dorixonaRepository.findById(dori.getDorixonaId())
-                            .orElse(null);
+                    Dorixona dorixona = dorixonaMap.get(dori.getDorixonaId());
                     long[] ombor = qoldiqlar.getOrDefault(dori.getId(), new long[] { 0, 0 });
                     return new DoriQidiruvResponse(
                             dori.getId(),

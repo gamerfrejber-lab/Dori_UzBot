@@ -3,6 +3,7 @@ package com.example.dori_qidiruv_bot.config;
 import com.example.dori_qidiruv_bot.entity.User;
 import com.example.dori_qidiruv_bot.repository.UserRepository;
 import com.example.dori_qidiruv_bot.service.JwtService;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,12 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Bearer tokenni tekshirib, haqiqiy foydalanuvchi bo'lsa SecurityContext'ga
- * ROLE_USER (va admin ro'yxatidagi raqam bo'lsa ROLE_ADMIN) authority bilan yozadi.
- * Token yo'q/yaroqsiz bo'lsa shunchaki keyingi filtrga o'tkazadi — permitAll bo'lgan
- * yo'llar baribir ishlayveradi, faqat authenticated()/hasRole talab qilinganda to'sqinlik qiladi.
- */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -38,6 +33,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Value("${app.admin-phones:}")
     private String adminPhonesRaw;
+
+    private Set<String> adminPhones;
+
+    @PostConstruct
+    void initAdminPhones() {
+        adminPhones = (adminPhonesRaw == null || adminPhonesRaw.isBlank())
+                ? Set.of()
+                : Arrays.stream(adminPhonesRaw.split(","))
+                        .map(JwtAuthenticationFilter::onlyDigits)
+                        .filter(s -> !s.isEmpty())
+                        .collect(Collectors.toUnmodifiableSet());
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -61,24 +68,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     }
                 }
             } catch (Exception ignored) {
-                // Yaroqsiz token — autentifikatsiya qilinmagan holda davom etadi.
             }
         }
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Faqat raqamlar bo'yicha solishtiradi: baza "998..." ko'rinishida saqlashi, sozlamada esa
-     * "+998..." yozilgan bo'lishi mumkin — bunday farq admin huquqini yo'qotmasligi kerak.
-     */
     private boolean isAdminPhone(String phoneNumber) {
         String normalized = onlyDigits(phoneNumber);
-        if (normalized.isEmpty() || adminPhonesRaw == null || adminPhonesRaw.isBlank()) return false;
-        Set<String> adminPhones = Arrays.stream(adminPhonesRaw.split(","))
-                .map(JwtAuthenticationFilter::onlyDigits)
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toSet());
-        return adminPhones.contains(normalized);
+        return !normalized.isEmpty() && adminPhones.contains(normalized);
     }
 
     private static String onlyDigits(String value) {

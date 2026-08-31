@@ -13,14 +13,14 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.security.SecureRandom;
 import java.util.Map;
-import java.util.Random;
 
 @Service
 @Slf4j
 public class SmsService {
 
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
     private final RestClient restClient = RestClient.create();
 
     /**
@@ -83,7 +83,7 @@ public class SmsService {
         }
 
         // Hech qanday kanal ishlamadi: kodni faqat logga yozamiz va xato qaytaramiz.
-        log.warn("Kodni yetkazib bo'lmadi: {} (kod: {})", phoneNumber, code);
+        log.warn("Kodni yetkazib bo'lmadi: {}", phoneNumber);
         throw new IllegalStateException("KOD_YETKAZILMADI");
     }
 
@@ -96,12 +96,14 @@ public class SmsService {
         try {
             String url = telegramNotifyUrl
                     + "?phone=" + URLEncoder.encode(phoneNumber, StandardCharsets.UTF_8)
-                    + "&code=" + URLEncoder.encode(code, StandardCharsets.UTF_8)
-                    + "&token=" + URLEncoder.encode(telegramNotifyToken, StandardCharsets.UTF_8);
-            botClient.post().uri(url).retrieve().toBodilessEntity();
+                    + "&code=" + URLEncoder.encode(code, StandardCharsets.UTF_8);
+            botClient.post()
+                    .uri(url)
+                    .header("X-Internal-Token", telegramNotifyToken)
+                    .retrieve()
+                    .toBodilessEntity();
             return true;
         } catch (Exception e) {
-            // Manzilni ham logga yozamiz — noto'g'ri sozlangan URL eng ko'p uchraydigan sabab.
             log.warn("Telegram bot orqali yuborib bo'lmadi ({}), url={}: {}",
                     phoneNumber, telegramNotifyUrl, e.getMessage());
             return false;
