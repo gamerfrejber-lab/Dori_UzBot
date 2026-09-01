@@ -13,3 +13,7 @@ CREATE INDEX IF NOT EXISTS dori_katalog_ishlab_trgm_idx ON dori_katalog USING gi
 -- Telefon raqami bo'yicha tez qidiruv (regexp_replace funksional indeks).
 CREATE INDEX IF NOT EXISTS bot_user_phone_digits_idx
     ON bot_user (regexp_replace(phone, '[^0-9]', '', 'g'));
+
+-- Dorixona ish vaqtlari (agar hali o'rnatilmagan bo'lsa).
+UPDATE dorixona SET ish_boshlanishi = '08:00', ish_tugashi = '22:00'
+WHERE ish_boshlanishi IS NULL AND nomi ILIKE '%Vazira%';

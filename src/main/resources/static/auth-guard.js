@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!token || page === 'admin.html') return;
 
     fetch('/api/admin/check', { headers: { 'Authorization': 'Bearer ' + token } })
-        .then(function (r) { return r.json(); })
+        .then(function (r) { if (!r.ok) throw new Error('not admin'); return r.json(); })
         .then(function (data) {
             if (!data || !data.admin) return;
             var nav = document.querySelector('nav');
