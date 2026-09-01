@@ -543,6 +543,16 @@
             return headers;
         }
 
+        function handleApiError(r) {
+            if (r.status === 401 || r.status === 403) {
+                localStorage.removeItem('token');
+                alert('Sessiya tugagan. Qayta kiring.');
+                location.href = 'login.html';
+                return true;
+            }
+            return false;
+        }
+
         function esc(value) {
             return String(value == null ? '' : value)
                 .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -723,7 +733,7 @@
 
         function loadStats() {
             fetch('/api/admin/stats', { headers: authHeaders() })
-                .then(function (r) { return r.json(); })
+                .then(function (r) { if (handleApiError(r)) return; return r.json(); })
                 .then(function (s) {
                     document.getElementById('stats').innerHTML = `
                         <div class="stat"><div class="stat-value">${s.users}</div><div class="stat-label">Foydalanuvchi</div></div>
@@ -787,6 +797,7 @@
                 body: JSON.stringify(body)
             })
                 .then(function (r) {
+                    if (handleApiError(r)) return;
                     if (!r.ok) throw new Error();
                     showMessage(stk('check') + ' Dorixona qo\'shildi', true);
                     ['phName', 'phAddress', 'phPhone', 'phKarta', 'phLat', 'phLon'].forEach(function (id) {
@@ -802,6 +813,7 @@
             if (!confirm('«' + name + '» o\'chirilsinmi? Undagi dorilar ham o\'chadi.')) return;
             fetch('/api/dorixona/' + id, { method: 'DELETE', headers: authHeaders() })
                 .then(function (r) {
+                    if (handleApiError(r)) return;
                     if (!r.ok) throw new Error();
                     showMessage(stk('check') + ' O\'chirildi', true);
                     loadPharmacies();
@@ -971,6 +983,7 @@
                 body: JSON.stringify(body)
             })
                 .then(function (r) {
+                    if (handleApiError(r)) return;
                     if (!r.ok) throw new Error();
                     showMessage(stk('check') + ' Dori qo\'shildi', true);
                     ['drName', 'drNameRu', 'drManufacturer', 'drPriceDona', 'drPricePachka', 'drPachkadagiDona'].forEach(function (id) {
@@ -1033,6 +1046,7 @@
                 body: JSON.stringify({ price: priceDona, pachkaNarx: pricePachka })
             })
                 .then(function (r) {
+                    if (handleApiError(r)) return;
                     if (!r.ok) throw new Error();
                     showMessage(stk('check') + ' Narx yangilandi', true);
                     loadDrugs();
@@ -1044,6 +1058,7 @@
             if (!confirm('«' + name + '» o\'chirilsinmi?')) return;
             fetch('/api/dori/' + id, { method: 'DELETE', headers: authHeaders() })
                 .then(function (r) {
+                    if (handleApiError(r)) return;
                     if (!r.ok) throw new Error();
                     showMessage(stk('check') + ' O\'chirildi', true);
                     loadDrugs();
@@ -1064,7 +1079,7 @@
                 return;
             }
             fetch('/api/admin/ombor/hisobot/' + id, { headers: authHeaders() })
-                .then(function (r) { return r.json(); })
+                .then(function (r) { if (handleApiError(r)) return; return r.json(); })
                 .then(function (h) {
                     totals.innerHTML = `
                         <div class="stat"><div class="stat-value">${son(h.turlarSoni)}</div><div class="stat-label">Mahsulot turi</div></div>
@@ -1111,7 +1126,7 @@
                 headers: authHeaders({ 'Content-Type': 'application/json' }),
                 body: JSON.stringify({ doriId: doriId, soni: soni, izoh: 'sayt admin paneli' })
             })
-                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (r) { if (handleApiError(r)) return { ok: false, data: {} }; return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                 .then(function (res) {
                     if (!res.ok) {
                         stockMessage(stk('cancel') + ' ' + (res.data.xato || 'Yozib bo\'lmadi') + ' (qoldiq: ' + res.data.qoldiq + ')', false);
@@ -1139,7 +1154,7 @@
             const list = document.getElementById('claimList');
             list.innerHTML = '<p class="subtitle">Yuklanmoqda…</p>';
             fetch('/api/admin/soov', { headers: authHeaders() })
-                .then(function (r) { return r.json(); })
+                .then(function (r) { if (handleApiError(r)) return; return r.json(); })
                 .then(function (arizalar) {
                     if (!arizalar.length) {
                         list.innerHTML = '<p class="subtitle">' + stk('mail') + ' Yangi ariza yo\'q.</p>';
@@ -1210,7 +1225,7 @@
                 : 'Ariza №' + id + ' rad etilsinmi?';
             if (!confirm(savol)) return;
             fetch('/api/admin/soov/' + id + '/' + qaror, { method: 'POST', headers: authHeaders() })
-                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (r) { if (handleApiError(r)) return { ok: false, data: {} }; return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                 .then(function (res) {
                     const box = document.getElementById('claimMessage');
                     if (!res.ok) {
@@ -1262,6 +1277,7 @@
                 body: JSON.stringify(body)
             })
                 .then(function (r) {
+                    if (handleApiError(r)) return;
                     if (!r.ok) throw new Error();
                     showMessage(stk('check') + ' Obuna yangilandi', true);
                     loadPharmacies();
@@ -1304,7 +1320,7 @@
             formData.append('file', file);
 
             fetch(url, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: formData })
-                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (r) { if (handleApiError(r)) return { ok: false, data: {} }; return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                 .then(function (res) {
                     document.getElementById('excelHolat').textContent = '';
                     if (!res.ok) {
@@ -1333,7 +1349,7 @@
 
         function loadUsers() {
             fetch('/api/admin/users', { headers: authHeaders() })
-                .then(function (r) { return r.json(); })
+                .then(function (r) { if (handleApiError(r)) return; return r.json(); })
                 .then(function (users) {
                     document.getElementById('userList').innerHTML =
                         '<p class="subtitle">Jami: ' + users.length + '</p>' +

@@ -903,6 +903,18 @@
         .search-box:focus-within .search-icon { transform: translateY(-50%) scale(1.05); }
         .search-icon .stk { filter: brightness(0) invert(1); }
 
+        /* ===== LOADING SPINNER ===== */
+        .loading-spinner {
+            display: flex; align-items: center; justify-content: center; gap: 0.7rem;
+            padding: 2rem; color: var(--ink-dim); font-size: 0.95rem;
+        }
+        .loading-spinner::before {
+            content: ''; width: 22px; height: 22px; border-radius: 50%;
+            border: 3px solid var(--hairline); border-top-color: var(--teal);
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         /* ===== TAGS (oq pilyulalar) ===== */
         .tags { justify-content: flex-start; }
         .tag {
@@ -1222,8 +1234,9 @@
 
         async function searchMedicine(query) {
             lastQuery = query;
-            // Joylashuv bir marta olinadi va keyingi qidiruvlarda qayta ishlatiladi —
-            // har safar noldan so'rash sekin edi va ko'pincha muvaffaqiyatsiz tugardi.
+            const resultsEl = document.getElementById('searchResults');
+            resultsEl.innerHTML = `<div class="loading-spinner">${currentLang === 'uz' ? 'Qidirilmoqda...' : 'Поиск...'}</div>`;
+            resultsEl.classList.add('show');
             if (!userLocation) userLocation = await requestLocation();
             try {
                 const response = await fetch(`/api/dori/qidirish?nomi=${encodeURIComponent(query)}`);

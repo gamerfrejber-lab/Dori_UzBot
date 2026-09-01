@@ -39,6 +39,7 @@ public class SecurityConfig {
                                 "/css/**", "/js/**", "/images/**", "/icons/**").permitAll()
                         // Admin ekanini tekshirish hammaga ochiq (token bo'lmasa "admin emas" deydi),
                         // qolgan admin ma'lumotlari faqat adminga.
+                        .requestMatchers("/api/health").permitAll()
                         .requestMatchers("/api/admin/check").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**", "/api/bron/*/chek").permitAll()
