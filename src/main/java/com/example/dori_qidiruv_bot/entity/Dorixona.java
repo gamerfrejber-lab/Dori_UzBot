@@ -42,4 +42,10 @@ public class Dorixona {
 
     @Column(name = "obuna_tugashi")
     private LocalDateTime obunaTugashi;
+
+    @Column(name = "ish_boshlanishi")
+    private String ishBoshlanishi;
+
+    @Column(name = "ish_tugashi")
+    private String ishTugashi;
 }

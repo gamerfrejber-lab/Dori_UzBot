@@ -69,6 +69,8 @@ public class DorixonaController {
                     if (yangi.getKartaRaqami() != null) mavjud.setKartaRaqami(yangi.getKartaRaqami());
                     if (yangi.getLatitude() != null) mavjud.setLatitude(yangi.getLatitude());
                     if (yangi.getLongitude() != null) mavjud.setLongitude(yangi.getLongitude());
+                    if (yangi.getIshBoshlanishi() != null) mavjud.setIshBoshlanishi(yangi.getIshBoshlanishi());
+                    if (yangi.getIshTugashi() != null) mavjud.setIshTugashi(yangi.getIshTugashi());
                     return ResponseEntity.ok(dorixonaRepository.save(mavjud));
                 })
                 .orElse(ResponseEntity.notFound().build());

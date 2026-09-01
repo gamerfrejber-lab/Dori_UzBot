@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
     <script src="auth-guard.js"></script>
-    <script src="stickers.js"></script>
-    <script src="swipe.js"></script>
+    <script src="stickers.js" defer></script>
+    <script src="swipe.js" defer></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toshkent dorixonalari — Dori Qidiruv</title>
@@ -480,6 +480,7 @@
         .ph-i { display: inline-flex; align-items: center; justify-content: center; color: var(--teal); }
         .ph-i .stk, .ph-i img.stk { width: 15px; height: 15px; }
         .ph-open { color: #16A34A; font-weight: 700; }
+        .ph-closed { color: #DC2626; font-weight: 700; }
         .ph-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
         .ph-btn {
             flex: 1; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
@@ -551,6 +552,8 @@
 
     <footer>
         <p data-uz="Dori Qidiruv — dorini topish va oldindan band qilish xizmati" data-ru="Dori Qidiruv — сервис поиска и брони лекарств">Dori Qidiruv — dorini topish va oldindan band qilish xizmati</p>
+        <p style="margin-top:0.6rem;"><a href="https://t.me/dori_UzBot" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:none;font-weight:600;">Telegram bot: @dori_UzBot</a></p>
+        <p style="margin-top:0.4rem;font-size:0.8rem;" data-uz="Aloqa: +998 88 986 35 40" data-ru="Контакт: +998 88 986 35 40">Aloqa: +998 88 986 35 40</p>
     </footer>
 
     <script>
@@ -643,6 +646,23 @@
             return km < 1
                 ? `${Math.round(km * 1000)} ${currentLang === 'uz' ? 'm' : 'м'}`
                 : `${km.toFixed(1)} ${currentLang === 'uz' ? 'km' : 'км'}`;
+        }
+
+        function dorixonaOchiqmi(dorixona) {
+            var b = dorixona.ishBoshlanishi, t = dorixona.ishTugashi;
+            if (!b || !t) return true;
+            var now = new Date();
+            var hm = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            return hm >= b && hm < t;
+        }
+        function ishVaqtiMatn(dorixona, uz) {
+            var b = dorixona.ishBoshlanishi, t = dorixona.ishTugashi;
+            if (!b || !t) return uz ? 'Ochiq' : 'Открыто';
+            if (dorixonaOchiqmi(dorixona)) return (uz ? 'Ochiq' : 'Открыто') + ' · ' + b + '–' + t;
+            return (uz ? 'Yopiq' : 'Закрыто') + ' · ' + b + '–' + t;
+        }
+        function ishVaqtiClass(dorixona) {
+            return dorixonaOchiqmi(dorixona) ? 'ph-open' : 'ph-closed';
         }
 
         function setLang(lang) {
@@ -779,7 +799,7 @@
                             <div class="ph-nom-row"><span class="ph-nom">${esc(nomi)}</span>${uzun ? '<span class="ph-247">24/7</span>' : ''}</div>
                             <div class="ph-row"><span class="ph-i">${stk('pin')}</span><span class="ph-tuman">${esc(asosiy)}</span></div>
                             ${qolgan ? `<div class="ph-addr">${esc(qolgan)}</div>` : ''}
-                            <div class="ph-row"><span class="ph-i">${stk('clock')}</span><span class="ph-open">${uz ? 'Ochiq' : 'Открыто'}${uzun ? ' · 24 ' + (uz ? 'soat' : 'ч.') : ''}</span></div>
+                            <div class="ph-row"><span class="ph-i">${stk('clock')}</span><span class="${ishVaqtiClass(pharmacy)}">${ishVaqtiMatn(pharmacy, uz)}${uzun ? ' · 24 ' + (uz ? 'soat' : 'ч.') : ''}</span></div>
                             ${pharmacy._km != null ? `<div class="ph-row"><span class="ph-i">${stk('ruler')}</span><span>${formatDistance(pharmacy._km)}</span></div>` : ''}
                         </div>
                     </div>
@@ -942,6 +962,10 @@
         async function bronYubor(doriId, nomi, turi) {
             const uz = currentLang === 'uz';
             const natija = document.getElementById('bronNatija');
+            if (!localStorage.getItem('token')) {
+                natija.innerHTML = `<p style="color:#ff6b6b;">${uz ? 'Bron qilish uchun avval tizimga kiring.' : 'Для бронирования войдите в систему.'} <a href="login.html" style="color:var(--teal);font-weight:600;">${uz ? 'Kirish' : 'Войти'}</a></p>`;
+                return;
+            }
             const soni = parseInt(document.getElementById('bronSoniInput').value, 10);
             if (!soni || soni <= 0) {
                 natija.innerHTML = `<p style="color:#ff6b6b;">${uz ? 'Son noto\'g\'ri.' : 'Неверное количество.'}</p>`;
