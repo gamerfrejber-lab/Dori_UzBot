@@ -85,7 +85,7 @@ public class BronService {
         javob.put("doriNomi", dori.getName());
         javob.put("narx", narx);
         javob.put("jami", jami);
-        javob.put("tolovSummasi", tolovSummasi);
+        javob.put("tolovSummasi", 0.0);
         javob.put("dorixonaNomi", dorixona == null ? null : dorixona.getName());
         javob.put("manzil", dorixona == null ? null : dorixona.getAddress());
         javob.put("telefon", dorixona == null ? null : dorixona.getTelefon());
