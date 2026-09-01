@@ -2,6 +2,7 @@ package com.example.dori_qidiruv_bot.repository;
 
 import com.example.dori_qidiruv_bot.entity.Dori;
 import com.example.dori_qidiruv_bot.entity.Dorixona;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,7 @@ public interface DoriRepository extends JpaRepository<Dori, Long> {
             + "OR LOWER(d.nameRu) LIKE LOWER(CONCAT('%', :name, '%')) "
             + "OR LOWER(d.name) LIKE LOWER(CONCAT('%', :alt, '%')) "
             + "OR LOWER(d.nameRu) LIKE LOWER(CONCAT('%', :alt, '%')))")
-    List<Dori> findByNameContainingIgnoreCase(@Param("name") String name, @Param("alt") String alt);
+    List<Dori> findByNameContainingIgnoreCase(@Param("name") String name, @Param("alt") String alt, Pageable pageable);
 
     /** Berilgan dorixonadagi barcha dorilar (nomi bo'yicha alifbo tartibida). */
     List<Dori> findByDorixonaIdOrderByNameAsc(Long dorixonaId);

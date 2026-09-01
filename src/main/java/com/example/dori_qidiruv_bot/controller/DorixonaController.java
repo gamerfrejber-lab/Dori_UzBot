@@ -41,7 +41,7 @@ public class DorixonaController {
      */
     @GetMapping("/{id}/dorilar")
     public ResponseEntity<List<Dori>> getDrugs(@PathVariable Long id) {
-        if (dorixonaRepository.findById(id).isEmpty()) {
+        if (!dorixonaRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(doriService.dorixonaDorilari(id));
@@ -79,7 +79,7 @@ public class DorixonaController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (!dorixonaRepository.findById(id).isPresent()) {
+        if (!dorixonaRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
         dorixonaRepository.deleteById(id);
