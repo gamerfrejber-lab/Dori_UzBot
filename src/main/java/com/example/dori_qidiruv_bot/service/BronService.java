@@ -62,18 +62,16 @@ public class BronService {
         bron.setSoni(soni);
         bron.setTur(tur != null ? tur : Bron.DONA);
         bron.setKod(kodYarat());
-        bron.setHolat(Bron.TOLOV_KUTILMOQDA);
-        bron.setEgagaXabar(true);
+        bron.setHolat(Bron.YANGI);
+        bron.setEgagaXabar(false);
         bron.setMijozgaXabar(true);
         bron.setSana(LocalDateTime.now());
 
         Double narx = Bron.PACHKA.equals(bron.getTur()) ? dori.getPachkaNarx() : dori.getPrice();
         if (narx == null) narx = dori.getPrice();
         double jami = (narx != null ? narx : 0) * soni;
-        double tolovSummasi = Math.ceil(jami * 0.3);
-        bron.setTolovSummasi(tolovSummasi);
-        bron.setTolovHolati("KUTILMOQDA");
-        bron.setOlibKetishMuddati(LocalDateTime.now().plusDays(5));
+        bron.setTolovSummasi(0.0);
+        bron.setOlibKetishMuddati(LocalDateTime.now().plusDays(2));
 
         bronRepository.save(bron);
 

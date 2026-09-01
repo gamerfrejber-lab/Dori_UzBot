@@ -1398,17 +1398,17 @@
                 return `<div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
                     <button class="modal-map-btn" style="flex:1;background:linear-gradient(135deg,#66bb6a,#43a047);"
                         onclick="bronBoshla(${dori.id}, '${esc(dori.name).replace(/'/g, "\\'")}', 'dona')">
-                        ${stk('pill')} ${uz ? 'Dona bron' : 'Штучно'}
+                        ${stk('pill')} ${uz ? 'Dona band qilish' : 'Штучно'}
                     </button>
                     <button class="modal-map-btn" style="flex:1;background:linear-gradient(135deg,#42a5f5,#1e88e5);"
                         onclick="bronBoshla(${dori.id}, '${esc(dori.name).replace(/'/g, "\\'")}', 'pachka')">
-                        ${stk('box')} ${uz ? 'Pachka bron' : 'Упаковкой'}
+                        ${stk('box')} ${uz ? 'Pachka band qilish' : 'Упаковкой'}
                     </button>
                 </div>`;
             }
             return `<button class="modal-map-btn" style="background:linear-gradient(135deg,#66bb6a,#43a047);"
                         onclick="bronBoshla(${dori.id}, '${esc(dori.name).replace(/'/g, "\\'")}', 'dona')">
-                        ${stk('basket')} ${uz ? 'Bron qilish' : 'Забронировать'}
+                        ${stk('basket')} ${uz ? 'Band qilish' : 'Записаться'}
                     </button>`;
         }
 
@@ -1437,7 +1437,7 @@
             const uz = currentLang === 'uz';
             const natija = document.getElementById('bronNatija');
             if (!localStorage.getItem('token')) {
-                natija.innerHTML = `<p style="color:#ff6b6b;">${uz ? 'Bron qilish uchun avval tizimga kiring.' : 'Для бронирования войдите в систему.'} <a href="login.html" style="color:var(--teal);font-weight:600;">${uz ? 'Kirish' : 'Войти'}</a></p>`;
+                natija.innerHTML = `<p style="color:#ff6b6b;">${uz ? 'Band qilish uchun avval tizimga kiring.' : 'Для записи войдите в систему.'} <a href="login.html" style="color:var(--teal);font-weight:600;">${uz ? 'Kirish' : 'Войти'}</a></p>`;
                 return;
             }
             const soni = parseInt(document.getElementById('bronSoniInput').value, 10);
@@ -1459,24 +1459,19 @@
                 });
                 const data = await r.json();
                 if (!r.ok) {
-                    natija.innerHTML = `<p style="color:#ff6b6b;">${stk('cancel')} ${esc(data.xato || (uz ? 'Bron qilib bo\'lmadi' : 'Не удалось забронировать'))}</p>`;
+                    natija.innerHTML = `<p style="color:#ff6b6b;">${stk('cancel')} ${esc(data.xato || (uz ? 'Band qilib bo\'lmadi' : 'Не удалось записаться'))}</p>`;
                     return;
                 }
-                localStorage.setItem('bronTolov_' + data.id, JSON.stringify(data));
                 natija.innerHTML = `
                     <div style="margin-top:1rem;padding:1rem;border-radius:16px;background:rgba(102,187,106,0.15);border:1px solid #66bb6a;">
-                        <p style="margin:0 0 0.5rem;"><b>${stk('check')} ${uz ? 'Bron yaratildi!' : 'Бронь создана!'}</b></p>
+                        <p style="margin:0 0 0.5rem;"><b>${stk('check')} ${uz ? 'Band qilindi!' : 'Запись создана!'}</b></p>
                         <p style="margin:0;">${soni} ${birlik}</p>
-                        <p style="margin:0;">${uz ? 'To\'lov summasi (30%)' : 'Сумма оплаты (30%)'}: <b>${(data.tolovSummasi || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>
+                        <p style="margin:0;">${uz ? 'Olib ketish kodi' : 'Код получения'}: <b style="font-size:1.3rem;color:#66bb6a;">${data.kod}</b></p>
                         <p style="margin:0.5rem 0 0;font-size:0.9rem;opacity:0.85;">
-                            ${uz ? 'Bronni tasdiqlash uchun 30% oldindan to\'lov qiling.'
-                                 : 'Для подтверждения брони оплатите 30% предоплату.'}
+                            ${uz ? 'Dorini 2 kun ichida dorixonadan olib keting. Olib ketishda kodni ayting.'
+                                 : 'Заберите лекарство в аптеке в течение 2 дней. При получении назовите код.'}
                         </p>
-                    </div>
-                    <button class="modal-map-btn" style="background:linear-gradient(135deg,#66bb6a,#43a047);margin-top:0.8rem;width:100%;"
-                        onclick="location.href='tolov.html?id=${data.id}'">
-                        ${stk('basket')} ${uz ? 'To\'lovga o\'tish' : 'Перейти к оплате'}
-                    </button>`;
+                    </div>`;
             } catch (e) {
                 natija.innerHTML = `<p style="color:#ff6b6b;">${uz ? 'Serverga ulanib bo\'lmadi.' : 'Не удалось подключиться к серверу.'}</p>`;
             }

@@ -589,7 +589,7 @@
                     </div>
 
                     <div class="glass-card">
-                        <h3 class="card-title"><span class="card-ic"><img class="stk" data-stk="basket" alt="" src="icons/basket.png" onerror="stkFallback(this)"></span> <span>${currentLang === 'uz' ? 'Mening bronlarim' : 'Мои брони'}</span></h3>
+                        <h3 class="card-title"><span class="card-ic"><img class="stk" data-stk="basket" alt="" src="icons/basket.png" onerror="stkFallback(this)"></span> <span>${currentLang === 'uz' ? 'Mening bandlarim' : 'Мои записи'}</span></h3>
                         <div id="bronlarim">
                             <p style="opacity:0.7;">${currentLang === 'uz' ? 'Yuklanmoqda…' : 'Загрузка…'}</p>
                         </div>
@@ -616,8 +616,8 @@
                 const bronlar = await r.json();
                 if (!bronlar.length) {
                     box.innerHTML = `<p style="opacity:0.7;">${uz
-                        ? 'Hozircha bron yo\'q. Dori qidirib, kartasidagi «Bron qilish» tugmasini bosing.'
-                        : 'Пока броней нет. Найдите лекарство и нажмите «Забронировать».'}</p>`;
+                        ? 'Hozircha band qilingan dori yo\'q. Dori qidirib, «Band qilish» tugmasini bosing.'
+                        : 'Пока записей нет. Найдите лекарство и нажмите «Записаться».'}</p>`;
                     return;
                 }
                 box.innerHTML = bronlar.map(b => `
@@ -634,27 +634,20 @@
                             ${uz ? 'Soni' : 'Кол-во'}: <b>${b.soni}</b>
                             · ${uz ? 'Kod' : 'Код'}: <b>${esc(b.kod || '—')}</b>
                         </div>
-                        ${b.tolovSummasi ? `<div style="opacity:0.8;font-size:0.92rem;">
-                            ${uz ? 'To\'lov (30%)' : 'Оплата (30%)'}: <b>${b.tolovSummasi.toLocaleString()} ${uz ? "so'm" : 'сум'}</b>
-                            ${b.tolovHolati === 'KUTILMOQDA' ? ' · <a href="tolov.html?id=' + b.id + '" style="color:#38BDF8;">' + (uz ? 'To\'lov qilish' : 'Оплатить') + '</a>' : ''}
-                            ${b.tolovHolati === 'TEKSHIRILMOQDA' ? ' · <span style="color:#FFA726;">' + (uz ? 'Tekshirilmoqda' : 'Проверяется') + '</span>' : ''}
-                            ${b.tolovHolati === 'TASDIQLANGAN' ? ' · <span style="color:#66bb6a;">' + (uz ? 'Tasdiqlangan' : 'Подтверждён') + '</span>' : ''}
-                            ${b.tolovHolati === 'QAYTARILMAYDI' ? ' · <span style="color:#ef5350;">' + (uz ? 'Qaytarilmaydi' : 'Не возвращается') + '</span>' : ''}
-                        </div>` : ''}
                         ${b.holat === 'MUDDATI_OTGAN' ? `<div style="color:#ef5350;font-size:0.88rem;margin-top:0.2rem;">
-                            ${uz ? '5 kun ichida olib ketilmadi — bron bekor, to\'lov qaytarilmaydi' : 'Не забрали за 5 дней — бронь отменена, оплата не возвращается'}
+                            ${uz ? '2 kun ichida olib ketilmadi — band bekor qilindi' : 'Не забрали за 2 дня — запись отменена'}
                         </div>` : ''}
                     </div>`).join('');
             } catch (e) {
                 box.innerHTML = `<p style="opacity:0.7;">${uz
-                    ? 'Bronlarni yuklab bo\'lmadi.' : 'Не удалось загрузить брони.'}</p>`;
+                    ? 'Bandlarni yuklab bo\'lmadi.' : 'Не удалось загрузить записи.'}</p>`;
             }
         }
 
         function bronHolati(holat, uz) {
             switch (holat) {
-                case 'TOLOV_KUTILMOQDA': return stk('clock') + (uz ? ' To\'lov kutilmoqda' : ' Ожидает оплаты');
-                case 'TOLANGAN': return stk('check') + (uz ? ' To\'langan' : ' Оплачен');
+                case 'YANGI': return stk('clock') + (uz ? ' Kutilmoqda' : ' Ожидает');
+                case 'TOLOV_KUTILMOQDA': return stk('clock') + (uz ? ' Kutilmoqda' : ' Ожидает');
                 case 'TAYYOR': return stk('available') + (uz ? ' Tayyor' : ' Готов');
                 case 'BERILDI': return stk('check') + (uz ? ' Berildi' : ' Выдан');
                 case 'BEKOR': return stk('cancel') + (uz ? ' Bekor qilindi' : ' Отменён');

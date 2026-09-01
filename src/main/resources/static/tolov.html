@@ -288,49 +288,17 @@
                     </div>
 
                     <div class="card">
-                        <div class="summa-box">
-                            <div class="summa-label">${uz ? 'To\'lov summasi (30%)' : 'Сумма оплаты (30%)'}</div>
-                            <div class="summa-son">${tolov.toLocaleString()} ${uz ? "so'm" : 'сум'}</div>
-                        </div>
-
-                        ${kartaRaqami ? `
-                        <div class="karta-box">
-                            <div class="karta-label">${uz ? 'Dorixona karta raqami' : 'Номер карты аптеки'}</div>
-                            <div class="karta-raqam" id="kartaRaqam">${formatKarta(kartaRaqami)}</div>
-                            <div class="karta-nusxa" onclick="nusxaOl()">${stk('doc')} ${uz ? 'Nusxa olish' : 'Скопировать'}</div>
-                        </div>` : `
-                        <div class="shart-box">
-                            <b>${uz ? 'Diqqat!' : 'Внимание!'}</b> ${uz ? 'Dorixona karta raqami kiritilmagan. Dorixonaga murojaat qiling.' : 'Номер карты аптеки не указан.'}
-                        </div>`}
-
                         <div class="shart-box">
                             <b>${uz ? 'Shartlar:' : 'Условия:'}</b><br>
-                            • ${uz ? 'Yuqoridagi karta raqamiga <b>' + tolov.toLocaleString() + " so'm</b> o'tkazing" : 'Переведите <b>' + tolov.toLocaleString() + ' сум</b> на указанную карту'}<br>
-                            • ${uz ? 'To\'lov chekining rasmini yuklang' : 'Загрузите скриншот чека'}<br>
-                            • ${uz ? 'Dorini <b>5 kun</b> ichida olib keting' : 'Заберите лекарство в течение <b>5 дней</b>'}<br>
-                            • ${uz ? '<b>5 kun</b> ichida olib ketilmasa — bron bekor, to\'lov qaytarilmaydi' : 'Если не заберёте за <b>5 дней</b> — бронь отменяется, оплата не возвращается'}
+                            • ${uz ? 'Dorini <b>2 kun</b> ichida dorixonadan olib keting' : 'Заберите лекарство в аптеке в течение <b>2 дней</b>'}<br>
+                            • ${uz ? 'Olib ketishda kodni ayting' : 'При получении назовите код'}<br>
+                            • ${uz ? '<b>2 kun</b> ichida olib ketilmasa — band bekor qilinadi' : 'Если не заберёте за <b>2 дня</b> — запись отменяется'}
                         </div>
 
                         <div class="muddat-box">
                             <div style="color:var(--ink-dim);font-size:0.9rem;">${stk('clock')} ${uz ? 'Olib ketish muddati' : 'Срок получения'}</div>
-                            <div class="kun">5 ${uz ? 'kun' : 'дней'}</div>
+                            <div class="kun">2 ${uz ? 'kun' : 'дня'}</div>
                         </div>
-                    </div>
-
-                    <div class="card">
-                        <p style="margin-bottom:1rem;font-weight:600;">${stk('doc')} ${uz ? 'To\'lov chekini yuklang' : 'Загрузите чек оплаты'}</p>
-                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('chekInput').click()">
-                            <input type="file" id="chekInput" accept="image/*" onchange="chekTanlandi(this)">
-                            <div class="upload-text" id="uploadText">
-                                ${stk('doc','stk-lg')}<br>
-                                ${uz ? 'Chek rasmini tanlang yoki tortib tashlang' : 'Выберите скриншот чека'}
-                            </div>
-                            <img class="upload-preview" id="chekPreview">
-                        </div>
-
-                        <button class="btn btn-primary" id="yuborBtn" disabled onclick="chekYubor()">
-                            ${stk('check')} ${uz ? 'Chekni yuborish' : 'Отправить чек'}
-                        </button>
                     </div>
 
                     <div id="natija" class="natija"></div>
