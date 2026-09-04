@@ -1382,7 +1382,6 @@
 
         const searchInput = document.getElementById('searchInput');
         const acDropdown = document.getElementById('acDropdown');
-        let searchTimeout;
         let acTimeout;
         let acIndex = -1;
 
@@ -1392,22 +1391,30 @@
             return esc(text.substring(0, idx)) + '<b>' + esc(text.substring(idx, idx + query.length)) + '</b>' + esc(text.substring(idx + query.length));
         }
 
+        function doriAsosiyNom(nomi) {
+            return nomi.replace(/\s+(TAB|KAPS|SUPP|SIROP|AMP|SUSP|MAST|GEL|KREM|SPR|KAP|INF|R-R|SHAM|POR|GRAN|DRAZH|PAST|SUP|REKT|SHPR|FL|МГ|МЛ|MG|ML|G|Г|N|№)\b.*/i, '').trim();
+        }
+
         function showAutocomplete(items, query) {
             if (!items || !items.length) { acDropdown.classList.remove('show'); return; }
             const uz = currentLang === 'uz';
+            const ql = query.toLowerCase();
             const seen = new Set();
             let html = '';
             items.forEach(item => {
                 const raw = item.nomi || '';
                 const display = uz ? cyrToLat(raw) : raw;
-                const key = display.toUpperCase();
+                if (display.toLowerCase().indexOf(ql) < 0) return;
+                const shortName = doriAsosiyNom(display);
+                const key = shortName.toUpperCase();
                 if (seen.has(key)) return;
                 seen.add(key);
-                html += `<div class="ac-item" data-val="${esc(display)}">
+                html += `<div class="ac-item" data-val="${esc(shortName)}">
                     <svg class="ac-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-                    <span class="ac-text">${acHighlight(display, query)}</span>
+                    <span class="ac-text">${acHighlight(shortName, query)}</span>
                 </div>`;
             });
+            if (!html) { acDropdown.classList.remove('show'); return; }
             acDropdown.innerHTML = html;
             acDropdown.classList.add('show');
             acIndex = -1;
@@ -1433,24 +1440,35 @@
         }
 
         searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
             clearTimeout(acTimeout);
             const query = e.target.value.trim();
 
             if (query.length < 2) {
-                document.getElementById('searchResults').classList.remove('show');
                 acDropdown.classList.remove('show');
                 return;
             }
 
             acTimeout = setTimeout(() => fetchAutocomplete(query), 200);
-            searchTimeout = setTimeout(() => {
-                acDropdown.classList.remove('show');
-                searchMedicine(query);
-            }, 800);
         });
 
         searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const items = acDropdown.querySelectorAll('.ac-item');
+                if (acIndex >= 0 && items[acIndex]) {
+                    const val = items[acIndex].getAttribute('data-val');
+                    searchInput.value = val;
+                    acDropdown.classList.remove('show');
+                    searchMedicine(val);
+                } else {
+                    const q = searchInput.value.trim();
+                    if (q.length >= 2) {
+                        acDropdown.classList.remove('show');
+                        searchMedicine(q);
+                    }
+                }
+                return;
+            }
             const items = acDropdown.querySelectorAll('.ac-item');
             if (!items.length || !acDropdown.classList.contains('show')) return;
             if (e.key === 'ArrowDown') {
@@ -1463,13 +1481,6 @@
                 acIndex = Math.max(acIndex - 1, 0);
                 items.forEach((el, i) => el.classList.toggle('ac-active', i === acIndex));
                 items[acIndex].scrollIntoView({ block: 'nearest' });
-            } else if (e.key === 'Enter' && acIndex >= 0) {
-                e.preventDefault();
-                const val = items[acIndex].getAttribute('data-val');
-                searchInput.value = val;
-                acDropdown.classList.remove('show');
-                clearTimeout(searchTimeout);
-                searchMedicine(val);
             } else if (e.key === 'Escape') {
                 acDropdown.classList.remove('show');
             }
