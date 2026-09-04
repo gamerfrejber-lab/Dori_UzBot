@@ -1401,7 +1401,7 @@
                     + '</div><div class="cards-grid">'
                     + kat.map(k => {
                         const firma = [k.ishlabChiqaruvchi, k.davlat].filter(Boolean).join(', ');
-                        const katNomi = uz ? cyrToLat(k.nomi || '') : (k.nomi || '');
+                        const katNomi = uz ? (k.nomiUz || cyrToLat(k.nomi || '')) : (k.nomiRu || k.nomi || '');
                         return `<div class="med-card" style="cursor:default;">
                             <div class="badge">${esc(doriShakli(k.nomi))}</div>
                             <div class="ic"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"></div>
@@ -1786,7 +1786,7 @@
                 joy.innerHTML = dorilar.map(k => {
                     const firma = [k.ishlabChiqaruvchi, k.davlat].filter(Boolean).join(', ');
                     const nomEsc = (k.nomi || '').replace(/'/g, "\\'");
-                    const katNomi = uz ? cyrToLat(k.nomi || '') : (k.nomi || '');
+                    const katNomi = uz ? (k.nomiUz || cyrToLat(k.nomi || '')) : (k.nomiRu || k.nomi || '');
                     return `<div class="med-card" onclick="quickSearch('${nomEsc}')">
                         <div class="badge">${esc(doriShakli(k.nomi))}</div>
                         <div class="ic"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"></div>

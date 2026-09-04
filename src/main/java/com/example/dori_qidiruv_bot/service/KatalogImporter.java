@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.core.annotation.Order;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -24,6 +25,7 @@ import java.util.List;
  * takror yuklanmaydi. Katalogni yangilash uchun jadvalni tozalab qayta ishga tushirish kifoya.
  */
 @Component
+@Order(100)
 @RequiredArgsConstructor
 public class KatalogImporter implements CommandLineRunner {
 

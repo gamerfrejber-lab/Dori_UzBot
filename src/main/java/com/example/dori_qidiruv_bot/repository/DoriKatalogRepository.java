@@ -16,6 +16,8 @@ public interface DoriKatalogRepository extends JpaRepository<DoriKatalog, Long> 
      * Avtomatik to'ldirish uchun — natijalar soni Pageable orqali cheklanadi.
      */
     @Query("SELECT k FROM DoriKatalog k WHERE LOWER(k.nomi) LIKE LOWER(CONCAT('%', :q, '%')) "
+            + "OR LOWER(k.nomiRu) LIKE LOWER(CONCAT('%', :q, '%')) "
+            + "OR LOWER(k.nomiUz) LIKE LOWER(CONCAT('%', :q, '%')) "
             + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :q, '%')) "
             + "OR LOWER(k.nomi) LIKE LOWER(CONCAT('%', :alt, '%')) "
             + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :alt, '%')) "
@@ -24,6 +26,8 @@ public interface DoriKatalogRepository extends JpaRepository<DoriKatalog, Long> 
 
     /** Katalogni sahifalab qidirish (jami soni bilan) — "Katalog" bo'limida ko'rish uchun. */
     @Query("SELECT k FROM DoriKatalog k WHERE LOWER(k.nomi) LIKE LOWER(CONCAT('%', :q, '%')) "
+            + "OR LOWER(k.nomiRu) LIKE LOWER(CONCAT('%', :q, '%')) "
+            + "OR LOWER(k.nomiUz) LIKE LOWER(CONCAT('%', :q, '%')) "
             + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :q, '%')) "
             + "OR LOWER(k.nomi) LIKE LOWER(CONCAT('%', :alt, '%')) "
             + "OR LOWER(k.ishlabChiqaruvchi) LIKE LOWER(CONCAT('%', :alt, '%'))")

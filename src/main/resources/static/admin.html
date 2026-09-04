@@ -854,7 +854,7 @@
             box.innerHTML = katalogNatijalar.map(function (k, i) {
                 const firma = [k.ishlabChiqaruvchi, k.davlat].filter(Boolean).join(', ');
                 return '<div class="ac-item' + (i === katalogTanlangan ? ' active' : '') + '" onmousedown="katalogTanla(' + i + ')">'
-                    + '<span class="ac-nom">' + esc(k.nomi) + '</span>'
+                    + '<span class="ac-nom">' + esc(k.nomiUz || k.nomi) + ' / ' + esc(k.nomiRu || k.nomi) + '</span>'
                     + (firma ? '<span class="ac-firma">' + esc(firma) + '</span>' : '')
                     + '</div>';
             }).join('');
@@ -864,8 +864,8 @@
         function katalogTanla(i) {
             const k = katalogNatijalar[i];
             if (!k) return;
-            document.getElementById('drName').value = k.nomi || '';
-            document.getElementById('drNameRu').value = k.nomi || '';
+            document.getElementById('drName').value = k.nomiUz || k.nomi || '';
+            document.getElementById('drNameRu').value = k.nomiRu || k.nomi || '';
             const firma = [k.ishlabChiqaruvchi, k.davlat].filter(Boolean).join(', ');
             document.getElementById('drManufacturer').value = firma;
             katalogYop();
@@ -933,7 +933,7 @@
                     royxatEl.innerHTML = dorilar.map(function (k) {
                         const firma = [k.ishlabChiqaruvchi, k.davlat].filter(Boolean).join(', ');
                         return `<div class="row">
-                            <span><span class="row-main">${esc(k.nomi)}</span>
+                            <span><span class="row-main">${esc(k.nomiUz || k.nomi) + ' / ' + esc(k.nomiRu || k.nomi)}</span>
                             <span class="row-sub">${esc(firma) || '—'}</span></span>
                         </div>`;
                     }).join('');

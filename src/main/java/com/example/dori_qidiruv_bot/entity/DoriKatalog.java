@@ -37,6 +37,13 @@ public class DoriKatalog {
     @Column(name = "nomi", nullable = false, length = 500)
     private String nomi;
 
+    /** Readable names; original supplier spelling remains in nomi. */
+    @Column(name = "nomi_ru", length = 1000)
+    private String nomiRu;
+
+    @Column(name = "nomi_uz", length = 1000)
+    private String nomiUz;
+
     /** Ishlab chiqaruvchi firma (bo'sh bo'lishi mumkin). */
     @Column(name = "ishlab_chiqaruvchi", length = 300)
     private String ishlabChiqaruvchi;
