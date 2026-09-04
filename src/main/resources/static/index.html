@@ -1400,18 +1400,26 @@
             const uz = currentLang === 'uz';
             const ql = query.toLowerCase();
             const seen = new Set();
-            let html = '';
+            const candidates = [];
             items.forEach(item => {
                 const raw = item.nomi || '';
                 const display = uz ? cyrToLat(raw) : raw;
-                if (display.toLowerCase().indexOf(ql) < 0) return;
+                const dl = display.toLowerCase();
+                if (dl.indexOf(ql) < 0) return;
                 const shortName = doriAsosiyNom(display);
                 const key = shortName.toUpperCase();
                 if (seen.has(key)) return;
                 seen.add(key);
-                html += `<div class="ac-item" data-val="${esc(shortName)}">
+                const sl = shortName.toLowerCase();
+                const rank = sl.startsWith(ql) ? 0 : (sl.indexOf(ql) === 0 ? 0 : (dl.startsWith(ql) ? 1 : 2));
+                candidates.push({ shortName, rank });
+            });
+            candidates.sort((a, b) => a.rank - b.rank || a.shortName.localeCompare(b.shortName));
+            let html = '';
+            candidates.slice(0, 8).forEach(c => {
+                html += `<div class="ac-item" data-val="${esc(c.shortName)}">
                     <svg class="ac-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-                    <span class="ac-text">${acHighlight(shortName, query)}</span>
+                    <span class="ac-text">${acHighlight(c.shortName, query)}</span>
                 </div>`;
             });
             if (!html) { acDropdown.classList.remove('show'); return; }
@@ -1430,7 +1438,7 @@
 
         async function fetchAutocomplete(query) {
             try {
-                const r = await fetch('/api/katalog/qidirish?q=' + encodeURIComponent(query) + '&limit=10');
+                const r = await fetch('/api/katalog/autocomplete?q=' + encodeURIComponent(query) + '&limit=15');
                 if (!r.ok) return;
                 const data = await r.json();
                 if (searchInput.value.trim().toLowerCase().indexOf(query.toLowerCase()) === 0) {

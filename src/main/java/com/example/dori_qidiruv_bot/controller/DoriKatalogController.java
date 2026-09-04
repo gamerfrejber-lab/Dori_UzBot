@@ -31,6 +31,14 @@ public class DoriKatalogController {
         return ResponseEntity.ok(doriService.katalogQidirish(q, limit));
     }
 
+    /** Autocomplete — faqat dori nomi bo'yicha qidiruv, prefix match birinchi. */
+    @GetMapping("/autocomplete")
+    public ResponseEntity<List<DoriKatalog>> autocomplete(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "15") int limit) {
+        return ResponseEntity.ok(doriService.katalogAutocomplete(q, limit));
+    }
+
     /** Katalogdagi jami dorilar soni (bosh sahifada ko'rsatish uchun — ochiq). */
     @GetMapping("/soni")
     public ResponseEntity<Map<String, Long>> soni() {
