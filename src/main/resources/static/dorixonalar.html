@@ -540,6 +540,10 @@
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
+                <button class="cart-btn" id="cartBtn" onclick="location.href='index.html#cart'" title="Savatcha" style="position:relative;background:none;border:none;cursor:pointer;padding:0.45rem;border-radius:50%;">
+                    <img class="stk" data-stk="basket" alt="" src="icons/basket.png" onerror="stkFallback(this)" style="width:26px;height:26px;">
+                    <span class="cart-badge" id="cartBadge" style="display:none;position:absolute;top:-2px;right:-4px;background:#F97316;color:#fff;font-size:0.68rem;font-weight:700;min-width:18px;height:18px;border-radius:999px;align-items:center;justify-content:center;padding:0 4px;">0</span>
+                </button>
                 <div class="lang-switch">
                     <button type="button" class="lang-btn active" data-lang="uz" onclick="setLang('uz')">UZ</button>
                     <button type="button" class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
@@ -1032,6 +1036,15 @@
 
         setLang(currentLang);
         loadPharmacies();
+        // Savatcha badge yangilash
+        (function() {
+            try {
+                var cart = JSON.parse(localStorage.getItem('savatcha') || '[]');
+                var total = cart.reduce(function(s, it) { return s + (it.soni || 1); }, 0);
+                var badge = document.getElementById('cartBadge');
+                if (badge && total > 0) { badge.textContent = total; badge.style.display = 'flex'; }
+            } catch(e) {}
+        })();
     </script>
 </body>
 </html>

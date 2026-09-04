@@ -976,6 +976,103 @@
             .hero-stats { flex-direction: row; }
             .hstat { padding: 0.9rem 1rem; }
         }
+
+        /* ============================================================
+           SAVATCHA (KORZINKA)
+           ============================================================ */
+        .cart-btn {
+            position: relative; background: none; border: none; cursor: pointer; padding: 0.45rem;
+            border-radius: 50%; transition: background 0.25s ease;
+        }
+        .cart-btn:hover { background: rgba(37, 99, 235, 0.08); }
+        .cart-btn .stk { width: 26px; height: 26px; }
+        .cart-badge {
+            position: absolute; top: -2px; right: -4px;
+            background: var(--ember); color: #fff; font-size: 0.68rem; font-weight: 700;
+            min-width: 18px; height: 18px; border-radius: 999px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 4px; line-height: 1;
+        }
+        .cart-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            z-index: 300; opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
+        .cart-overlay.show { opacity: 1; visibility: visible; }
+        .cart-panel {
+            position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 92vw);
+            background: #FFFFFF; z-index: 301; box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+            transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.22, 1.15, 0.36, 1);
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .cart-overlay.show .cart-panel { transform: translateX(0); }
+        .cart-header {
+            padding: 1.2rem 1.4rem; border-bottom: 1px solid rgba(15,23,42,0.08);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .cart-header h3 { font-size: 1.15rem; font-weight: 700; color: var(--ink); margin: 0; }
+        .cart-body { flex: 1; overflow-y: auto; padding: 1rem 1.4rem; }
+        .cart-footer {
+            padding: 1rem 1.4rem; border-top: 1px solid rgba(15,23,42,0.08);
+        }
+        .cart-item {
+            display: flex; gap: 0.8rem; align-items: flex-start;
+            padding: 0.9rem 0; border-bottom: 1px solid rgba(15,23,42,0.06);
+        }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item-icon {
+            width: 44px; height: 44px; border-radius: 12px; flex: 0 0 auto;
+            background: linear-gradient(135deg, #E0F2FE, #DBEAFE);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .cart-item-icon .stk { width: 22px; height: 22px; }
+        .cart-item-info { flex: 1; min-width: 0; }
+        .cart-item-name { font-weight: 600; font-size: 0.92rem; color: var(--ink); line-height: 1.3; }
+        .cart-item-meta { font-size: 0.82rem; color: var(--ink-dim); margin-top: 0.2rem; }
+        .cart-item-price { font-weight: 700; color: var(--teal); font-size: 0.92rem; margin-top: 0.3rem; }
+        .cart-item-qty {
+            display: flex; align-items: center; gap: 0.4rem; margin-top: 0.4rem;
+        }
+        .cart-qty-btn {
+            width: 28px; height: 28px; border-radius: 8px; border: 1px solid rgba(15,23,42,0.12);
+            background: #F8FAFC; cursor: pointer; font-size: 1rem; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; color: var(--ink);
+        }
+        .cart-qty-btn:hover { background: rgba(37,99,235,0.08); border-color: var(--teal); }
+        .cart-qty-val { font-weight: 600; min-width: 20px; text-align: center; font-size: 0.95rem; }
+        .cart-remove {
+            background: none; border: none; color: #EF4444; cursor: pointer;
+            font-size: 0.78rem; font-weight: 600; padding: 0.3rem 0; margin-top: 0.2rem;
+        }
+        .cart-remove:hover { text-decoration: underline; }
+        .cart-total {
+            font-size: 1.05rem; font-weight: 700; color: var(--ink);
+            display: flex; justify-content: space-between; margin-bottom: 0.8rem;
+        }
+        .cart-total span:last-child { color: var(--teal); }
+        .cart-checkout-btn {
+            width: 100%; padding: 0.85rem; border: none; border-radius: 14px;
+            background: linear-gradient(135deg, #66bb6a, #43a047);
+            color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+            box-shadow: 0 6px 18px rgba(67,160,71,0.3); font-family: inherit;
+            transition: transform 0.3s cubic-bezier(0.22, 1.15, 0.36, 1), filter 0.2s;
+        }
+        .cart-checkout-btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
+        .cart-checkout-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; filter: none; }
+        .cart-empty {
+            text-align: center; padding: 3rem 1rem; color: var(--ink-faint);
+        }
+        .cart-empty .stk { width: 48px; height: 48px; opacity: 0.4; margin-bottom: 1rem; }
+        .savatchaga-btn {
+            width: 100%; margin-top: 0.7rem; padding: 0.85rem 1.2rem; border: none;
+            border-radius: 14px; cursor: pointer; font-weight: 650; font-size: 0.95rem;
+            font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            background: linear-gradient(135deg, #42a5f5, #1e88e5);
+            color: #fff; box-shadow: 0 6px 18px rgba(30,136,229,0.3);
+            transition: transform 0.3s cubic-bezier(0.22, 1.15, 0.36, 1), filter 0.2s;
+        }
+        .savatchaga-btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
+        .savatchaga-btn:active { transform: translateY(0) scale(0.98); }
     </style>
 </head>
 <body>
@@ -988,6 +1085,10 @@
             <nav>
                 <a href="index.html" data-uz="Bosh sahifa" data-ru="Главная">Bosh sahifa</a>
                 <a href="dorixonalar.html" data-uz="Dorixonalar" data-ru="Аптеки">Dorixonalar</a>
+                <button class="cart-btn" id="cartBtn" onclick="toggleCart(event)" title="Savatcha">
+                    <img class="stk" data-stk="basket" alt="" src="icons/basket.png" onerror="stkFallback(this)">
+                    <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+                </button>
                 <div class="lang-switch">
                     <button type="button" class="lang-btn active" data-lang="uz" onclick="setLang('uz')">UZ</button>
                     <button type="button" class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
@@ -1040,6 +1141,17 @@
 
     <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
         <div class="modal" id="modalBox"></div>
+    </div>
+
+    <div class="cart-overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()">
+        <div class="cart-panel">
+            <div class="cart-header">
+                <h3 id="cartTitle" data-uz="Savatcha" data-ru="Корзина">Savatcha</h3>
+                <button class="modal-close" onclick="closeCart()">&times;</button>
+            </div>
+            <div class="cart-body" id="cartBody"></div>
+            <div class="cart-footer" id="cartFooter"></div>
+        </div>
     </div>
 
     <footer>
@@ -1381,11 +1493,12 @@
             const uz = currentLang === 'uz';
             const drugName = doriNomi(dori.name, dori.nameRu);
 
+            const dozasi = doriDozasi(dori.nameRu || dori.name || '');
             document.getElementById('modalBox').innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
                 <h2>${stk('pill','stk-lg')} ${esc(drugName)}</h2>
                 ${dori.name ? `<p><strong>${uz ? 'Nomi' : 'Название'}:</strong> ${stk('label')} ${esc(dori.name)}</p>` : ''}
-                ${dori.nameRu ? `<p><strong>${uz ? 'Ruscha nomi' : 'На русском'}:</strong> ${stk('ru')} ${esc(dori.nameRu)}</p>` : ''}
+                ${dozasi ? `<p><strong>${uz ? 'Shakli va dozasi' : 'Форма и доза'}:</strong> ${stk('doc')} ${esc(dozasi)}</p>` : ''}
                 <p><strong>${uz ? 'Ishlab chiqaruvchi' : 'Производитель'}:</strong> ${stk('factory')} ${esc(dori.manufacturer || '—')}</p>
                 <p><strong>${uz ? 'Dona narxi' : 'За шт.'}:</strong> ${stk('money')} <b>${(dori.price || 0).toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>
                 ${(dori.pachkaNarx || 0) > 0 ? `<p><strong>${uz ? 'Pachka narxi' : 'За упаковку'}:</strong> ${stk('box')} <b>${dori.pachkaNarx.toLocaleString()} ${uz ? "so'm" : 'сум'}</b></p>` : ''}
@@ -1397,6 +1510,9 @@
                 ${ph.latitude && ph.longitude ? `<button class="modal-map-btn" onclick="window.open('https://yandex.com/maps/?pt=${ph.longitude},${ph.latitude}&z=17&l=map','_blank')">
                     ${stk('pin')} ${uz ? 'Xaritada ko\'rish' : 'Показать на карте'}</button>` : ''}` : ''}
                 ${bronTugmasi(dori, uz)}
+                <button class="savatchaga-btn" onclick="savatchagaQosh(${index})">
+                    ${stk('basket')} ${uz ? 'Savatchaga qo\'shish' : 'В корзину'}
+                </button>
                 <div id="bronNatija"></div>`;
             document.getElementById('modalOverlay').classList.add('show');
         }
@@ -1693,10 +1809,177 @@
             if (q) quickSearch(q);
         }
 
+        /* ================================================================
+           SAVATCHA (KORZINKA)
+           ================================================================ */
+        function getCart() {
+            try { return JSON.parse(localStorage.getItem('savatcha') || '[]'); }
+            catch(e) { return []; }
+        }
+        function saveCart(cart) {
+            localStorage.setItem('savatcha', JSON.stringify(cart));
+            updateCartBadge();
+        }
+        function updateCartBadge() {
+            const cart = getCart();
+            const badge = document.getElementById('cartBadge');
+            if (!badge) return;
+            const total = cart.reduce((s, it) => s + (it.soni || 1), 0);
+            badge.textContent = total;
+            badge.style.display = total > 0 ? 'flex' : 'none';
+        }
+        function savatchagaQosh(index) {
+            const dori = lastResults[index];
+            if (!dori) return;
+            const uz = currentLang === 'uz';
+            const cart = getCart();
+            const existing = cart.find(it => it.id === dori.id);
+            if (existing) {
+                existing.soni = (existing.soni || 1) + 1;
+            } else {
+                cart.push({
+                    id: dori.id,
+                    name: dori.name || dori.nomi,
+                    nameRu: dori.nameRu || dori.nomi_ru,
+                    price: dori.price || dori.narx || 0,
+                    pachkaNarx: dori.pachkaNarx || 0,
+                    manufacturer: dori.manufacturer || dori.ishlab_chiqaruvchi || '',
+                    dorixona: dori.dorixona ? { id: dori.dorixona.id, name: dori.dorixona.name || dori.dorixona.nomi } : null,
+                    soni: 1,
+                    tur: 'dona'
+                });
+            }
+            saveCart(cart);
+            closeModal();
+            toggleCart();
+        }
+        function cartItemQty(index, delta) {
+            const cart = getCart();
+            if (!cart[index]) return;
+            cart[index].soni = Math.max(1, (cart[index].soni || 1) + delta);
+            saveCart(cart);
+            renderCart();
+        }
+        function cartItemRemove(index) {
+            const cart = getCart();
+            cart.splice(index, 1);
+            saveCart(cart);
+            renderCart();
+        }
+        function toggleCart(e) {
+            if (e) e.preventDefault();
+            const overlay = document.getElementById('cartOverlay');
+            overlay.classList.toggle('show');
+            if (overlay.classList.contains('show')) renderCart();
+        }
+        function closeCart() {
+            document.getElementById('cartOverlay').classList.remove('show');
+        }
+        function renderCart() {
+            const cart = getCart();
+            const uz = currentLang === 'uz';
+            const body = document.getElementById('cartBody');
+            const footer = document.getElementById('cartFooter');
+            if (!cart.length) {
+                body.innerHTML = `<div class="cart-empty">
+                    <img class="stk" data-stk="basket" alt="" src="icons/basket.png" onerror="stkFallback(this)">
+                    <p>${uz ? 'Savatcha bo\'sh' : 'Корзина пуста'}</p>
+                </div>`;
+                footer.innerHTML = '';
+                return;
+            }
+            let jami = 0;
+            body.innerHTML = cart.map((it, i) => {
+                const narx = (it.price || 0) * (it.soni || 1);
+                jami += narx;
+                const itemName = doriNomi(it.name, it.nameRu);
+                return `<div class="cart-item">
+                    <div class="cart-item-icon"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"></div>
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${esc(itemName)}</div>
+                        <div class="cart-item-meta">${esc(it.dorixona ? it.dorixona.name : '')}${it.manufacturer ? ' · ' + esc(it.manufacturer) : ''}</div>
+                        <div class="cart-item-price">${narx.toLocaleString()} ${uz ? "so'm" : 'сум'}</div>
+                        <div class="cart-item-qty">
+                            <button class="cart-qty-btn" onclick="cartItemQty(${i},-1)">−</button>
+                            <span class="cart-qty-val">${it.soni || 1}</span>
+                            <button class="cart-qty-btn" onclick="cartItemQty(${i},1)">+</button>
+                            <button class="cart-remove" onclick="cartItemRemove(${i})">${uz ? 'O\'chirish' : 'Удалить'}</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+            footer.innerHTML = `
+                <div class="cart-total">
+                    <span>${uz ? 'Jami' : 'Итого'}:</span>
+                    <span>${jami.toLocaleString()} ${uz ? "so'm" : 'сум'}</span>
+                </div>
+                <button class="cart-checkout-btn" onclick="bronHammasi()">
+                    ${stk('check')} ${uz ? 'Barchasini bron qilish' : 'Забронировать всё'}
+                </button>`;
+        }
+        async function bronHammasi() {
+            const cart = getCart();
+            if (!cart.length) return;
+            const uz = currentLang === 'uz';
+            const footer = document.getElementById('cartFooter');
+            footer.innerHTML = `<p style="text-align:center;padding:1rem;">${uz ? 'Yuborilmoqda…' : 'Отправка…'}</p>`;
+            const token = localStorage.getItem('token') || '';
+            let ok = 0, fail = 0;
+            for (const it of cart) {
+                try {
+                    const r = await fetch('/api/bron', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                        body: JSON.stringify({ doriId: it.id, soni: it.soni || 1, tur: it.tur || 'dona' })
+                    });
+                    if (r.ok) ok++; else fail++;
+                } catch(e) { fail++; }
+            }
+            if (ok > 0) {
+                saveCart([]);
+                renderCart();
+                footer.innerHTML = `<div style="text-align:center;padding:1rem;color:#16A34A;font-weight:600;">
+                    ${stk('check')} ${ok} ${uz ? 'ta dori bron qilindi!' : 'лекарств забронировано!'}
+                    ${fail > 0 ? `<br><span style="color:#EF4444;">${fail} ${uz ? 'ta xatolik' : 'ошибок'}</span>` : ''}
+                </div>`;
+            } else {
+                footer.innerHTML = `<div style="text-align:center;padding:1rem;color:#EF4444;font-weight:600;">
+                    ${uz ? 'Bron qilib bo\'lmadi. Qayta urinib ko\'ring.' : 'Не удалось забронировать. Попробуйте ещё раз.'}
+                </div>
+                <button class="cart-checkout-btn" onclick="bronHammasi()" style="margin-top:0.5rem;">
+                    ${uz ? 'Qayta urinish' : 'Повторить'}
+                </button>`;
+            }
+        }
+
+        /** Dori nomidan shakl va dozani ajratadi (masalan "ПАРАЦЕТАМОЛ ТАБ 500МГ №10" → "ТАБ 500МГ №10"). */
+        function doriDozasi(nomi) {
+            if (!nomi) return '';
+            const uz = currentLang === 'uz';
+            const shakllar = ['ТАБ','КАПС','СИРОП','АМП','Р-Р','РАСТВОР','ИНЪЕК','СУПП','СВЕЧ','МАЗЬ','КРЕМ','ГЕЛЬ','КАПЛИ','СПРЕЙ','ПОРОШ','САШЕ','ТАБЛ','ДРАЖ','СУСПЕНЗИЯ','НАСТОЙКА','ПЛАСТЫРЬ','ПЛЕНК','ЭМУЛЬС','ЛИНИМЕНТ'];
+            const up = nomi.toUpperCase();
+            for (const s of shakllar) {
+                const idx = up.indexOf(s);
+                if (idx > 0) {
+                    let doza = nomi.substring(idx).trim();
+                    if (uz) doza = cyrToLat(doza);
+                    return doza;
+                }
+            }
+            const numMatch = nomi.match(/\d+\s*(МГ|МЛ|МКГ|Г|MG|ML|MCG|G)/i);
+            if (numMatch) {
+                let doza = nomi.substring(numMatch.index).trim();
+                if (uz) doza = cyrToLat(doza);
+                return doza;
+            }
+            return '';
+        }
+
         setLang(currentLang);
         salomlashuv();
         loadPharmacies();
         haqiqiyMalumot();
+        updateCartBadge();
     </script>
 </body>
 </html>
