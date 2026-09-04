@@ -689,6 +689,8 @@
             document.querySelectorAll('[data-uz]').forEach(el => {
                 el.textContent = el.getAttribute('data-' + lang);
             });
+
+            loadPharmacies();
         }
 
         // Bu sahifaga faqat token bilan kirilgani uchun profil tugmasi doim profilga olib boradi.
