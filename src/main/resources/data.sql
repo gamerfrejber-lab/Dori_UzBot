@@ -18,6 +18,6 @@ CREATE INDEX IF NOT EXISTS bot_user_phone_digits_idx
 UPDATE dorixona SET ish_boshlanishi = '08:00', ish_tugashi = '22:00'
 WHERE ish_boshlanishi IS NULL AND nomi ILIKE '%Vazira%';
 
--- Manzil tuzatish: "12 kivartil" → "Yunusobod 12-chi kvartl".
-UPDATE dorixona SET manzil = 'Yunusobod 12-chi kvartl'
-WHERE nomi ILIKE '%Vazira%' AND (manzil IS NULL OR manzil NOT LIKE '%Yunusobod%');
+-- Dorixona nomi va manzil tuzatish.
+UPDATE dorixona SET nomi = 'Vazira Pharm', manzil = 'Yunusobod 11-chi kvartl'
+WHERE nomi ILIKE '%Vazira%';

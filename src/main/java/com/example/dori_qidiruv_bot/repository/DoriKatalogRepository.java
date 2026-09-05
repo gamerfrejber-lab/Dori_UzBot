@@ -24,6 +24,11 @@ public interface DoriKatalogRepository extends JpaRepository<DoriKatalog, Long> 
             + "ORDER BY k.nomi ASC")
     List<DoriKatalog> qidirish(@Param("q") String q, @Param("alt") String alt, Pageable pageable);
 
+    @Query("SELECT k FROM DoriKatalog k WHERE LOWER(k.nomi) LIKE LOWER(CONCAT('%', :q, '%')) "
+            + "OR LOWER(k.nomi) LIKE LOWER(CONCAT('%', :alt, '%')) "
+            + "ORDER BY CASE WHEN LOWER(k.nomi) LIKE LOWER(CONCAT(:q, '%')) OR LOWER(k.nomi) LIKE LOWER(CONCAT(:alt, '%')) THEN 0 ELSE 1 END, k.nomi ASC")
+    List<DoriKatalog> autocomplete(@Param("q") String q, @Param("alt") String alt, Pageable pageable);
+
     /** Katalogni sahifalab qidirish (jami soni bilan) — "Katalog" bo'limida ko'rish uchun. */
     @Query("SELECT k FROM DoriKatalog k WHERE LOWER(k.nomi) LIKE LOWER(CONCAT('%', :q, '%')) "
             + "OR LOWER(k.nomiRu) LIKE LOWER(CONCAT('%', :q, '%')) "
