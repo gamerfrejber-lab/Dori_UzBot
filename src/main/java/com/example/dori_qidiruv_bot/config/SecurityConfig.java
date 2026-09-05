@@ -35,7 +35,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/*.html", "/*.js", "/api/auth/**",
+                        .requestMatchers("/", "/*.html", "/*.js", "/*.css", "/*.ico",
+                                "/*.png", "/*.svg", "/*.json", "/*.txt", "/*.webmanifest",
+                                "/api/auth/**",
                                 "/css/**", "/js/**", "/images/**", "/icons/**").permitAll()
                         // Admin ekanini tekshirish hammaga ochiq (token bo'lmasa "admin emas" deydi),
                         // qolgan admin ma'lumotlari faqat adminga.
@@ -44,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**", "/api/bron/*/chek").permitAll()
                         // Katalog qidiruvi va soni — mijozlar ham dori nomlarini topa olishi uchun ochiq.
-                        .requestMatchers(HttpMethod.GET, "/api/katalog/qidirish", "/api/katalog/soni").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/katalog/qidirish", "/api/katalog/autocomplete", "/api/katalog/soni").permitAll()
                         // Katalogni to'liq sahifalab ko'rish (browse) — faqat admin.
                         .requestMatchers(HttpMethod.GET, "/api/katalog/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/dori/**", "/api/dorixona/**").hasRole("ADMIN")

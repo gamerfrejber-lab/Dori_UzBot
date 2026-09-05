@@ -54,6 +54,16 @@ public class DoriService {
         return katalogRepository.qidirish(trimmed, alt, PageRequest.of(0, chegara));
     }
 
+    public List<DoriKatalog> katalogAutocomplete(String q, int limit) {
+        if (q == null || q.trim().length() < 2) {
+            return List.of();
+        }
+        int chegara = Math.max(1, Math.min(limit, 50));
+        String trimmed = q.trim();
+        String alt = translitAlt(trimmed);
+        return katalogRepository.autocomplete(trimmed, alt, PageRequest.of(0, chegara));
+    }
+
     /**
      * Katalogni sahifalab ko'rish (browse). q berilsa qidiruv, bo'lmasa hammasi alifbo tartibida.
      * Natija: jami soni + shu sahifadagi dorilar.

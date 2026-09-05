@@ -384,6 +384,7 @@
             max-width: 620px;
             margin: 0 auto;
             position: relative;
+            z-index: 100;
             border-radius: 999px;
             transition: box-shadow 0.45s var(--ease), transform 0.45s var(--spring);
         }
@@ -415,13 +416,61 @@
             transform: translateY(-50%);
             font-size: 1.15rem;
             opacity: 0.75;
-            pointer-events: none;
+            cursor: pointer;
+            pointer-events: auto;
             transition: opacity 0.3s var(--ease), transform 0.4s var(--spring);
         }
         .search-box:focus-within .search-icon {
             opacity: 1;
             transform: translateY(-50%) scale(1.12);
         }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 0.35rem;
+            background: var(--glass);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: 1.2rem;
+            border: 1px solid var(--glass-edge);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+            z-index: 900;
+            max-height: 380px;
+            overflow-y: auto;
+            display: none;
+        }
+        .autocomplete-dropdown.show { display: block; }
+        .ac-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 1.2rem;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .ac-item:last-child { border-bottom: none; }
+        .ac-item:hover, .ac-item.ac-active {
+            background: rgba(56,189,248,0.12);
+        }
+        .ac-item .ac-icon {
+            width: 1.2rem;
+            height: 1.2rem;
+            opacity: 0.45;
+            flex-shrink: 0;
+        }
+        .ac-item .ac-text {
+            flex: 1;
+            font-size: 0.92rem;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ac-item .ac-text b { color: var(--accent); font-weight: 600; }
 
         .tags {
             display: flex;
@@ -606,6 +655,7 @@
             margin-bottom: 0.5rem;
         }
         .modal p strong { color: var(--ink); font-weight: 600; }
+        .modal p .stk, .modal p img.stk { width: 1.4em !important; height: 1.4em !important; vertical-align: -0.25em !important; }
 
         .modal-close {
             position: absolute;
@@ -1113,8 +1163,9 @@
             </div>
         </div>
         <div class="search-box anim anim-2">
-            <input type="text" class="search-input" id="searchInput" placeholder="Dori nomini kiriting..." data-placeholder-uz="Dori nomini kiriting..." data-placeholder-ru="Введите название лекарства...">
+            <input type="text" class="search-input" id="searchInput" autocomplete="off" placeholder="Dori nomini kiriting..." data-placeholder-uz="Dori nomini kiriting..." data-placeholder-ru="Введите название лекарства...">
             <span class="search-icon" onclick="qidiruvTugma()"><img class="stk stk-search" data-stk="search" alt="" src="icons/search.png" onerror="stkFallback(this)"></span>
+            <div class="autocomplete-dropdown" id="acDropdown"></div>
         </div>
         <div class="tags anim anim-3">
             <button type="button" class="tag" onclick="quickSearch('Paracetamol')"><img class="stk" data-stk="pill" alt="" src="icons/pill.png" onerror="stkFallback(this)"> Paracetamol</button>
@@ -1308,6 +1359,7 @@
             salomlashuv();
             haqiqiyMalumot();
             loadPharmacies();
+            if (lastQuery) searchMedicine(lastQuery);
         }
 
         // Bu sahifaga faqat token bilan kirilgani uchun tugma doim profilga olib boradi.
@@ -1329,22 +1381,126 @@
         })();
 
         const searchInput = document.getElementById('searchInput');
-        let searchTimeout;
+        const acDropdown = document.getElementById('acDropdown');
+        let acTimeout;
+        let acIndex = -1;
+
+        function acHighlight(text, query) {
+            const idx = text.toLowerCase().indexOf(query.toLowerCase());
+            if (idx < 0) return esc(text);
+            return esc(text.substring(0, idx)) + '<b>' + esc(text.substring(idx, idx + query.length)) + '</b>' + esc(text.substring(idx + query.length));
+        }
+
+        function doriAsosiyNom(nomi) {
+            return nomi.replace(/\s+(TAB|KAPS|SUPP|SIROP|AMP|SUSP|MAST|GEL|KREM|SPR|KAP|INF|R-R|SHAM|POR|GRAN|DRAZH|PAST|SUP|REKT|SHPR|FL|МГ|МЛ|MG|ML|G|Г|N|№)\b.*/i, '').trim();
+        }
+
+        function showAutocomplete(items, query) {
+            if (!items || !items.length) { acDropdown.classList.remove('show'); return; }
+            const uz = currentLang === 'uz';
+            const ql = query.toLowerCase();
+            const seen = new Set();
+            const candidates = [];
+            items.forEach(item => {
+                const raw = item.nomi || '';
+                const display = uz ? cyrToLat(raw) : raw;
+                const dl = display.toLowerCase();
+                if (dl.indexOf(ql) < 0) return;
+                const shortName = doriAsosiyNom(display);
+                const key = shortName.toUpperCase();
+                if (seen.has(key)) return;
+                seen.add(key);
+                const sl = shortName.toLowerCase();
+                const rank = sl.startsWith(ql) ? 0 : (sl.indexOf(ql) === 0 ? 0 : (dl.startsWith(ql) ? 1 : 2));
+                candidates.push({ shortName, rank });
+            });
+            candidates.sort((a, b) => a.rank - b.rank || a.shortName.localeCompare(b.shortName));
+            let html = '';
+            candidates.slice(0, 10).forEach(c => {
+                html += `<div class="ac-item" data-val="${esc(c.shortName)}">
+                    <svg class="ac-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+                    <span class="ac-text">${acHighlight(c.shortName, query)}</span>
+                </div>`;
+            });
+            if (!html) { acDropdown.classList.remove('show'); return; }
+            acDropdown.innerHTML = html;
+            acDropdown.classList.add('show');
+            acIndex = -1;
+            acDropdown.querySelectorAll('.ac-item').forEach(el => {
+                el.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    searchInput.value = el.getAttribute('data-val');
+                    acDropdown.classList.remove('show');
+                    searchMedicine(el.getAttribute('data-val'));
+                });
+            });
+        }
+
+        async function fetchAutocomplete(query) {
+            try {
+                const r = await fetch('/api/katalog/autocomplete?q=' + encodeURIComponent(query) + '&limit=30');
+                if (!r.ok) return;
+                const data = await r.json();
+                if (searchInput.value.trim().toLowerCase().indexOf(query.toLowerCase()) === 0) {
+                    showAutocomplete(data, searchInput.value.trim());
+                }
+            } catch(e) {}
+        }
 
         searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
+            clearTimeout(acTimeout);
             const query = e.target.value.trim();
 
             if (query.length < 2) {
-                document.getElementById('searchResults').classList.remove('show');
+                acDropdown.classList.remove('show');
                 return;
             }
 
-            searchTimeout = setTimeout(() => searchMedicine(query), 500);
+            acTimeout = setTimeout(() => fetchAutocomplete(query), 200);
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const items = acDropdown.querySelectorAll('.ac-item');
+                if (acIndex >= 0 && items[acIndex]) {
+                    const val = items[acIndex].getAttribute('data-val');
+                    searchInput.value = val;
+                    acDropdown.classList.remove('show');
+                    searchMedicine(val);
+                } else {
+                    const q = searchInput.value.trim();
+                    if (q.length >= 2) {
+                        acDropdown.classList.remove('show');
+                        searchMedicine(q);
+                    }
+                }
+                return;
+            }
+            const items = acDropdown.querySelectorAll('.ac-item');
+            if (!items.length || !acDropdown.classList.contains('show')) return;
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                acIndex = Math.min(acIndex + 1, items.length - 1);
+                items.forEach((el, i) => el.classList.toggle('ac-active', i === acIndex));
+                items[acIndex].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                acIndex = Math.max(acIndex - 1, 0);
+                items.forEach((el, i) => el.classList.toggle('ac-active', i === acIndex));
+                items[acIndex].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'Escape') {
+                acDropdown.classList.remove('show');
+            }
+        });
+
+        searchInput.addEventListener('blur', () => {
+            setTimeout(() => acDropdown.classList.remove('show'), 150);
         });
 
         function quickSearch(name) {
             searchInput.value = name;
+            acDropdown.classList.remove('show');
             searchMedicine(name);
         }
 
