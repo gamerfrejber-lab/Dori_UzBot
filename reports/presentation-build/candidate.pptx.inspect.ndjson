@@ -1,0 +1,94 @@
+{"kind":"deck","id":"pr/f4kvyn","name":"Deck"}
+{"kind":"layout","layoutId":"bd7cedc8-de3c-4c98-b470-b4e58ef45430","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"e7733c9b-6ab3-481a-a0ba-b41edfbd5968","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/yl6u44","slide":1,"title":"01","textShapes":4}
+{"kind":"textbox","id":"sh/ilor2psf","slide":1,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[1150,661,60,26]}
+{"kind":"textbox","id":"sh/5ozqd4rq","slide":1,"text":"Dori Qidiruv","textPreview":"Dori Qidiruv","textChars":12,"textLines":1,"bbox":[76,169,820,100]}
+{"kind":"textbox","id":"sh/knq94za5","slide":1,"text":"Dorixonalar uchun\nhamkorlik taklifi","textPreview":"Dorixonalar uchun | hamkorlik taklifi","textChars":35,"textLines":2,"bbox":[80,292,780,160]}
+{"kind":"textbox","id":"sh/vyx87uto","slide":1,"text":"Mijoz kerakli dorini topsin.\nDorixonangiz bilan bog‘lansin.","textPreview":"Mijoz kerakli dorini topsin. | Dorixonangiz bilan bog‘lansin.","textChars":59,"textLines":2,"bbox":[80,509,810,90]}
+{"kind":"image","id":"im/ra5w7qlw","slide":1,"name":"","alt":"pharmacy","bbox":[905,195,270,270]}
+{"kind":"notes","id":"nt/yl6u44","slide":1,"text":"Dorixona rahbari uchun kirish: Dori Qidiruv mijozlarga dori mavjud bo‘lgan dorixonani topish va oldindan band qilish imkonini taqdim etadi. Manba: src/main/resources/static/taqdimot.html va index.html."}
+{"kind":"slide","id":"sl/x9hshb","slide":2,"title":"Dori izlayotgan mijozga ko‘rinish","textShapes":7}
+{"kind":"textbox","id":"sh/m5cjm5sb","slide":2,"text":"Dori izlayotgan mijozga ko‘rinish","textPreview":"Dori izlayotgan mijozga ko‘rinish","textChars":33,"textLines":1,"bbox":[76,58,1128,116]}
+{"kind":"textbox","id":"sh/98nih0r2","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1150,661,60,26]}
+{"kind":"textbox","id":"sh/87u1ovah","slide":2,"text":"Mijozning ehtiyoji","textPreview":"Mijozning ehtiyoji","textChars":18,"textLines":1,"bbox":[78,224,480,52]}
+{"kind":"textbox","id":"sh/va50ja9s","slide":2,"text":"Kerakli dori qayerda borligini, narxini va dorixonaga qanday borishni bilish.","textPreview":"Kerakli dori qayerda borligini, narxini va dorixonaga qanday borishni bilish.","textChars":77,"textLines":1,"bbox":[78,296,485,180]}
+{"kind":"textbox","id":"sh/a9wjq5sn","slide":2,"text":"Dorixona uchun imkoniyat","textPreview":"Dorixona uchun imkoniyat","textChars":24,"textLines":1,"bbox":[688,224,510,52]}
+{"kind":"textbox","id":"sh/xcnilkry","slide":2,"text":"Mavjud mahsulotlarni ularni qidirayotgan odamlarga ko‘rsatish va murojaatni qabul qilish.","textPreview":"Mavjud mahsulotlarni ularni qidirayotgan odamlarga ko‘rsatish va murojaatni qabul qilish.","textChars":89,"textLines":1,"bbox":[688,296,500,200]}
+{"kind":"textbox","id":"sh/wbe1sfad","slide":2,"text":"Maqsad: dori qidiruvini dorixona bilan bog‘lanishga aylantirish.","textPreview":"Maqsad: dori qidiruvini dorixona bilan bog‘lanishga aylantirish.","textChars":64,"textLines":1,"bbox":[78,575,1110,60]}
+{"kind":"notes","id":"nt/x9hshb","slide":2,"text":"Bu slayd mijoz ehtiyoji va xizmat taklifini tushuntiradi. Savdo o‘sishi yoki auditoriya hajmi bo‘yicha kafolat berilmaydi."}
+{"kind":"slide","id":"sl/o6wzxz","slide":3,"title":"Xaridor uchun qidiruv va bron","textShapes":8}
+{"kind":"textbox","id":"sh/kn6l0za1","slide":3,"text":"Xaridor uchun qidiruv va bron","textPreview":"Xaridor uchun qidiruv va bron","textChars":29,"textLines":1,"bbox":[76,58,1128,116]}
+{"kind":"textbox","id":"sh/jmx4rutg","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1150,661,60,26]}
+{"kind":"textbox","id":"sh/tczmx4by","slide":3,"text":"Dori nomi bo‘yicha qidiruv","textPreview":"Dori nomi bo‘yicha qidiruv","textChars":26,"textLines":1,"bbox":[78,205,800,45]}
+{"kind":"textbox","id":"sh/8b6l4zad","slide":3,"text":"O‘zbekcha va ruscha nomlar bilan izlash.","textPreview":"O‘zbekcha va ruscha nomlar bilan izlash.","textChars":40,"textLines":1,"bbox":[78,258,800,65]}
+{"kind":"textbox","id":"sh/7ax4vuts","slide":3,"text":"Dorixonani tanlash","textPreview":"Dorixonani tanlash","textChars":18,"textLines":1,"bbox":[78,344,800,45]}
+{"kind":"textbox","id":"sh/69o32ps7","slide":3,"text":"Narx, manzil va joylashuvga qarab masofani ko‘rish.","textPreview":"Narx, manzil va joylashuvga qarab masofani ko‘rish.","textChars":51,"textLines":1,"bbox":[78,397,800,65]}
+{"kind":"textbox","id":"sh/9gv2lkbe","slide":3,"text":"Oldindan band qilish","textPreview":"Oldindan band qilish","textChars":20,"textLines":1,"bbox":[78,483,800,45]}
+{"kind":"textbox","id":"sh/ofmlsfat","slide":3,"text":"Miqdorni tanlash va bron so‘rovini yuborish.","textPreview":"Miqdorni tanlash va bron so‘rovini yuborish.","textChars":44,"textLines":1,"bbox":[78,536,800,65]}
+{"kind":"image","id":"im/3a98fu18","slide":3,"name":"","alt":"search","bbox":[940,250,235,235]}
+{"kind":"notes","id":"nt/o6wzxz","slide":3,"text":"Manbalar: src/main/resources/static/index.html qidiruv, geolokatsiya, narx va bron funksiyalari. src/main/java/com/example/dori_qidiruv_bot/controller/BronController.java. Masofa foydalanuvchi joylashuvi mavjud bo‘lganda ko‘rinadi."}
+{"kind":"slide","id":"sl/tqzthy","slide":4,"title":"Qidiruvdan mahsulotni olib ketishgacha","textShapes":14}
+{"kind":"textbox","id":"sh/kri5wj2t","slide":4,"text":"Qidiruvdan mahsulotni olib ketishgacha","textPreview":"Qidiruvdan mahsulotni olib ketishgacha","textChars":38,"textLines":1,"bbox":[76,58,1128,116]}
+{"kind":"textbox","id":"sh/jq94nel8","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1150,661,60,26]}
+{"kind":"textbox","id":"sh/yp0nu9kn","slide":4,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[80,192,84,65]}
+{"kind":"textbox","id":"sh/tgrmt83q","slide":4,"text":"Qidirish","textPreview":"Qidirish","textChars":8,"textLines":1,"bbox":[193,192,260,50]}
+{"kind":"textbox","id":"sh/8fi5k325","slide":4,"text":"Mijoz dori nomini yozadi va dorixonani tanlaydi.","textPreview":"Mijoz dori nomini yozadi va dorixonani tanlaydi.","textChars":48,"textLines":1,"bbox":[466,192,716,82]}
+{"kind":"textbox","id":"sh/7u94rylk","slide":4,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[80,303,84,65]}
+{"kind":"textbox","id":"sh/6t0nytkz","slide":4,"text":"Bron","textPreview":"Bron","textChars":4,"textLines":1,"bbox":[193,303,260,50]}
+{"kind":"textbox","id":"sh/hkbmx83m","slide":4,"text":"Kerakli miqdor bilan band qilish so‘rovini yuboradi.","textPreview":"Kerakli miqdor bilan band qilish so‘rovini yuboradi.","textChars":52,"textLines":1,"bbox":[466,303,716,82]}
+{"kind":"textbox","id":"sh/gj25o321","slide":4,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[80,414,84,65]}
+{"kind":"textbox","id":"sh/mlg7u1c3","slide":4,"text":"Tasdiqlash","textPreview":"Tasdiqlash","textChars":10,"textLines":1,"bbox":[193,414,260,50]}
+{"kind":"textbox","id":"sh/nm9836to","slide":4,"text":"Dorixona mahsulotni tayyorlaydi va javob beradi.","textPreview":"Dorixona mahsulotni tayyorlaydi va javob beradi.","textChars":48,"textLines":1,"bbox":[466,414,716,82]}
+{"kind":"textbox","id":"sh/8nipwbu9","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[80,525,84,65]}
+{"kind":"textbox","id":"sh/9orq5wbu","slide":4,"text":"Olib ketish","textPreview":"Olib ketish","textChars":11,"textLines":1,"bbox":[193,525,260,50]}
+{"kind":"textbox","id":"sh/ap07y1cf","slide":4,"text":"Mijoz kod bilan keladi, dorixona topshirishni qayd etadi.","textPreview":"Mijoz kod bilan keladi, dorixona topshirishni qayd etadi.","textChars":57,"textLines":1,"bbox":[466,525,716,82]}
+{"kind":"notes","id":"nt/tqzthy","slide":4,"text":"Manba: src/main/resources/static/taqdimot.html, Qanday ishlaydi bo‘limi. Dorixona bilan bron jarayonini amaliy namoyishda birgalikda tekshirish taklif etiladi."}
+{"kind":"slide","id":"sl/ho8o6l","slide":5,"title":"Dorixona uchun ish kabineti","textShapes":6}
+{"kind":"textbox","id":"sh/8bap4bmp","slide":5,"text":"Dorixona uchun ish kabineti","textPreview":"Dorixona uchun ish kabineti","textChars":27,"textLines":1,"bbox":[76,58,1128,116]}
+{"kind":"textbox","id":"sh/na1ov654","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1150,661,60,26]}
+{"kind":"textbox","id":"sh/m9s7214j","slide":5,"text":"Mahsulot va qoldiq","textPreview":"Mahsulot va qoldiq","textChars":18,"textLines":1,"bbox":[78,222,740,50]}
+{"kind":"textbox","id":"sh/l8j6twny","slide":5,"text":"Mahsulot qo‘shish, narxni kiritish,\nkirim va chiqimni yuritish.","textPreview":"Mahsulot qo‘shish, narxni kiritish, | kirim va chiqimni yuritish.","textChars":63,"textLines":2,"bbox":[78,285,775,105]}
+{"kind":"textbox","id":"sh/07a50rmt","slide":5,"text":"Bronlar va kundalik ish","textPreview":"Bronlar va kundalik ish","textChars":23,"textLines":1,"bbox":[78,425,745,50]}
+{"kind":"textbox","id":"sh/z61orm58","slide":5,"text":"Kelgan buyurtmaga javob berish,\ntopshirishni belgilash va hisobotni ko‘rish.","textPreview":"Kelgan buyurtmaga javob berish, | topshirishni belgilash va hisobotni ko‘rish.","textChars":76,"textLines":2,"bbox":[78,488,800,105]}
+{"kind":"image","id":"im/j65k3q1o","slide":5,"name":"","alt":"box","bbox":[960,276,225,225]}
+{"kind":"notes","id":"nt/ho8o6l","slide":5,"text":"Manba: src/main/resources/static/taqdimot.html, dorixona ish kabineti tavsifi. Qo‘shimcha manba: service/OmborService.java va service/BronService.java."}
+{"kind":"slide","id":"sl/ls5x86","slide":6,"title":"Hamkorlikdagi vazifalar","textShapes":6}
+{"kind":"textbox","id":"sh/0b6xgrmp","slide":6,"text":"Hamkorlikdagi vazifalar","textPreview":"Hamkorlikdagi vazifalar","textChars":23,"textLines":1,"bbox":[76,58,1128,116]}
+{"kind":"textbox","id":"sh/zaxwnml4","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1150,661,60,26]}
+{"kind":"textbox","id":"sh/y9ofeh4j","slide":6,"text":"Dori Qidiruv jamoasi","textPreview":"Dori Qidiruv jamoasi","textChars":20,"textLines":1,"bbox":[78,215,530,55]}
+{"kind":"textbox","id":"sh/d8felc3y","slide":6,"text":"Dorixonani ulashga yordam beradi.\n\nKabinet va bron jarayonini tushuntiradi.\n\nTexnik murojaatlarni qabul qiladi.","textPreview":"Dorixonani ulashga yordam beradi. |  | Kabinet va bron jarayonini tushuntiradi. |  | Texnik murojaatlarni qabul qiladi.","textChars":111,"textLines":5,"bbox":[78,294,510,280]}
+{"kind":"textbox","id":"sh/cn6xc7md","slide":6,"text":"Dorixona jamoasi","textPreview":"Dorixona jamoasi","textChars":16,"textLines":1,"bbox":[689,215,510,55]}
+{"kind":"textbox","id":"sh/rmxwj2ls","slide":6,"text":"Vakil va dorixona ma’lumotlarini beradi.\n\nNarx va qoldiqni yangilab boradi.\n\nBronlarga javob beradigan xodimni belgilaydi.","textPreview":"Vakil va dorixona ma’lumotlarini beradi. |  | Narx va qoldiqni yangilab boradi. |  | Bronlarga javob beradigan xodimni belgilaydi.","textChars":122,"textLines":5,"bbox":[689,294,505,300]}
+{"kind":"notes","id":"nt/ls5x86","slide":6,"text":"Hamkorlik uchun taklif etilayotgan vazifalar taqsimoti. Yakuniy xizmat doirasi va tomonlar majburiyatlari kelishuvda belgilanadi."}
+{"kind":"slide","id":"sl/dinyh5","slide":7,"title":"Ulanish va sinov jarayoni","textShapes":14}
+{"kind":"textbox","id":"sh/xsb61sze","slide":7,"text":"Ulanish va sinov jarayoni","textPreview":"Ulanish va sinov jarayoni","textChars":25,"textLines":1,"bbox":[76,58,1128,116]}
+{"kind":"textbox","id":"sh/a5k76d03","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1150,661,60,26]}
+{"kind":"textbox","id":"sh/bqtozih8","slide":7,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[79,194,72,60]}
+{"kind":"textbox","id":"sh/kvmpc7i5","slide":7,"text":"Tanishuv","textPreview":"Tanishuv","textChars":8,"textLines":1,"bbox":[183,194,350,50]}
+{"kind":"textbox","id":"sh/5wv65czq","slide":7,"text":"Bot imkoniyatlarini birga ko‘rib chiqamiz.","textPreview":"Bot imkoniyatlarini birga ko‘rib chiqamiz.","textChars":42,"textLines":1,"bbox":[576,194,612,84]}
+{"kind":"textbox","id":"sh/ytk7ax0z","slide":7,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[79,304,72,60]}
+{"kind":"textbox","id":"sh/juto32hk","slide":7,"text":"Ro‘yxatdan o‘tish","textPreview":"Ro‘yxatdan o‘tish","textChars":17,"textLines":1,"bbox":[183,304,350,50]}
+{"kind":"textbox","id":"sh/0zip03il","slide":7,"text":"Dorixona va mas’ul vakil ma’lumotlarini tekshiramiz.","textPreview":"Dorixona va mas’ul vakil ma’lumotlarini tekshiramiz.","textChars":52,"textLines":1,"bbox":[576,304,612,84]}
+{"kind":"textbox","id":"sh/10r6t8z6","slide":7,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[79,414,72,60]}
+{"kind":"textbox","id":"sh/1krqh4zy","slide":7,"text":"Mahsulotlarni kiritish","textPreview":"Mahsulotlarni kiritish","textChars":22,"textLines":1,"bbox":[183,414,350,50]}
+{"kind":"textbox","id":"sh/0jyp8jyd","slide":7,"text":"Narx va qoldiqni tayyorlab, sinov bronini o‘tkazamiz.","textPreview":"Narx va qoldiqni tayyorlab, sinov bronini o‘tkazamiz.","textChars":53,"textLines":1,"bbox":[576,414,612,84]}
+{"kind":"textbox","id":"sh/zip8fehs","slide":7,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[79,524,72,60]}
+{"kind":"textbox","id":"sh/ehg769gn","slide":7,"text":"Natijani baholash","textPreview":"Natijani baholash","textChars":17,"textLines":1,"bbox":[183,524,350,50]}
+{"kind":"textbox","id":"sh/9orqloza","slide":7,"text":"Murojaatlar va ish qulayligini muhokama qilamiz.","textPreview":"Murojaatlar va ish qulayligini muhokama qilamiz.","textChars":48,"textLines":1,"bbox":[576,524,612,84]}
+{"kind":"notes","id":"nt/dinyh5","slide":7,"text":"Taklif etilayotgan ish tartibi. Sinovning muddati va to‘lov shartlari oldindan kelishiladi. Dorixona vakilini tekshirish jarayoni loyiha taqdimotida tasvirlangan."}
+{"kind":"slide","id":"sl/gb82b4","slide":8,"title":"Obuna va hamkorlik shartlari","textShapes":6}
+{"kind":"textbox","id":"sh/58f6tg3y","slide":8,"text":"Obuna va hamkorlik shartlari","textPreview":"Obuna va hamkorlik shartlari","textChars":28,"textLines":1,"bbox":[76,58,1128,116]}
+{"kind":"textbox","id":"sh/ilony147","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1150,661,60,26]}
+{"kind":"textbox","id":"sh/jmxor6ls","slide":8,"text":"Dorixona obunasi","textPreview":"Dorixona obunasi","textChars":16,"textLines":1,"bbox":[78,209,1010,60]}
+{"kind":"textbox","id":"sh/wj65wbm1","slide":8,"text":"Xaridor uchun qidiruv bepul.\nDorixona uchun xizmat obuna asosida taklif etiladi.","textPreview":"Xaridor uchun qidiruv bepul. | Dorixona uchun xizmat obuna asosida taklif etiladi.","textChars":80,"textLines":2,"bbox":[78,299,1080,116]}
+{"kind":"textbox","id":"sh/xkf6pg3m","slide":8,"text":"Narx va muddat","textPreview":"Narx va muddat","textChars":14,"textLines":1,"bbox":[78,462,460,50]}
+{"kind":"textbox","id":"sh/ah4nu14b","slide":8,"text":"Tarif, sinov davri va xizmat ko‘rsatish shartlarini hamkorlikdan oldin kelishamiz.","textPreview":"Tarif, sinov davri va xizmat ko‘rsatish shartlarini hamkorlikdan oldin kelishamiz.","textChars":82,"textLines":1,"bbox":[78,523,1055,92]}
+{"kind":"notes","id":"nt/gb82b4","slide":8,"text":"Manba: src/main/resources/static/taqdimot.html, Biznes modeli bo‘limi. Unda narxlar hali belgilanmagani qayd etilgan. Shu sababli ushbu taqdimot aniq tarif, chegirma yoki bepul sinov va’dasini bermaydi."}
+{"kind":"slide","id":"sl/j42p5o","slide":9,"title":"Hamkorlikni boshlash","textShapes":5}
+{"kind":"textbox","id":"sh/qx4rmhsj","slide":9,"text":"Hamkorlikni boshlash","textPreview":"Hamkorlikni boshlash","textChars":20,"textLines":1,"bbox":[76,58,1128,116]}
+{"kind":"textbox","id":"sh/d0vaxcra","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1150,661,60,26]}
+{"kind":"textbox","id":"sh/czm9orap","slide":9,"text":"Dorixonangiz uchun\namaliy namoyish","textPreview":"Dorixonangiz uchun | amaliy namoyish","textChars":34,"textLines":2,"bbox":[78,220,875,160]}
+{"kind":"textbox","id":"sh/3atsr298","slide":9,"text":"Birgalikda bitta mahsulotni kiritib,\nqidiruv va bron jarayonini ko‘rib chiqamiz.","textPreview":"Birgalikda bitta mahsulotni kiritib, | qidiruv va bron jarayonini ko‘rib chiqamiz.","textChars":80,"textLines":2,"bbox":[80,411,1010,98]}
+{"kind":"textbox","id":"sh/i9krixsn","slide":9,"text":"Xaridor boti: @dori_UzBot\nDorixonalar uchun: @Anvarovich_02_bot","textPreview":"Xaridor boti: @dori_UzBot | Dorixonalar uchun: @Anvarovich_02_bot","textChars":63,"textLines":2,"bbox":[80,552,1070,88]}
+{"kind":"notes","id":"nt/j42p5o","slide":9,"text":"Manba: src/main/resources/static/taqdimot.html footer. Bot foydalanuvchi nomlari loyiha fayllaridan olindi. Ularning jonli holati ushbu taqdimotni tayyorlashda tekshirilmadi."}
