@@ -21,14 +21,15 @@ export function Header() {
           <div className="w-[42px] h-[42px] p-2 bg-gradient-to-br from-brand-sea to-brand rounded-[14px] shadow-[0_6px_16px_rgba(37,99,235,0.32)] flex items-center justify-center">
             <Pill className="w-6 h-6 text-white" />
           </div>
-          <span className="max-[420px]:hidden">Dori Qidiruv</span>
+          <span className="max-[360px]:hidden">Dori Qidiruv</span>
         </Link>
 
         <nav className="flex items-center gap-1">
+          {/* Desktop nav links */}
           <Link
             to="/"
             className={cn(
-              'px-3 py-1.5 rounded-full text-sm font-semibold transition-all no-underline',
+              'hidden md:inline-flex px-3 py-1.5 rounded-full text-sm font-semibold transition-all no-underline',
               isActive('/')
                 ? 'text-white bg-gradient-to-br from-brand-sea to-brand shadow-[0_6px_16px_rgba(37,99,235,0.35)]'
                 : 'text-ink-dim hover:text-brand hover:bg-brand/[0.08]'
@@ -39,7 +40,7 @@ export function Header() {
           <Link
             to="/dorixonalar"
             className={cn(
-              'px-3 py-1.5 rounded-full text-sm font-semibold transition-all no-underline',
+              'hidden md:inline-flex px-3 py-1.5 rounded-full text-sm font-semibold transition-all no-underline',
               isActive('/dorixonalar')
                 ? 'text-white bg-gradient-to-br from-brand-sea to-brand shadow-[0_6px_16px_rgba(37,99,235,0.35)]'
                 : 'text-ink-dim hover:text-brand hover:bg-brand/[0.08]'
@@ -48,9 +49,10 @@ export function Header() {
             {t('dorixonalar')}
           </Link>
 
+          {/* Desktop cart */}
           <button
             onClick={toggle}
-            className="relative p-2 rounded-full hover:bg-brand/[0.08] transition-colors"
+            className="hidden md:flex relative p-2 rounded-full hover:bg-brand/[0.08] transition-colors"
             title={t('savatcha')}
           >
             <ShoppingCart className="w-5 h-5 text-ink-dim" />
@@ -86,10 +88,11 @@ export function Header() {
             </button>
           </div>
 
-          <Link to={token ? '/profil' : '/login'}>
+          {/* Desktop profile button */}
+          <Link to={token ? '/profil' : '/login'} className="hidden md:inline-flex">
             <Button size="sm">
               <User className="w-4 h-4" />
-              <span className="max-[420px]:hidden">{token ? t('profil') : t('kirish')}</span>
+              <span>{token ? t('profil') : t('kirish')}</span>
             </Button>
           </Link>
         </nav>

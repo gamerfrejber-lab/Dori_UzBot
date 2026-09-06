@@ -37,8 +37,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/*.html", "/*.js", "/*.css", "/*.ico",
                                 "/*.png", "/*.svg", "/*.json", "/*.txt", "/*.webmanifest",
+                                "/assets/**", "/icons/**",
+                                "/dorixonalar", "/login", "/sms", "/profil", "/admin",
                                 "/api/auth/**",
-                                "/css/**", "/js/**", "/images/**", "/icons/**").permitAll()
+                                "/css/**", "/js/**", "/images/**").permitAll()
                         // Admin ekanini tekshirish hammaga ochiq (token bo'lmasa "admin emas" deydi),
                         // qolgan admin ma'lumotlari faqat adminga.
                         .requestMatchers("/api/health").permitAll()
