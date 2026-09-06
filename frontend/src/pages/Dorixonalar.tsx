@@ -14,7 +14,7 @@ import { useCart, type CartItem } from '@/hooks/useCart'
 import * as api from '@/lib/api'
 import type { Dorixona, DoriQidiruvResult } from '@/lib/api'
 import { requestLocation, distanceKm, dorixonaOchiqmi, formatDistance } from '@/lib/geo'
-import { doriNomi, doriDozasi, cyrToLat } from '@/lib/cyrillic'
+import { doriNominiTozalash, doriDozasi, cyrToLat } from '@/lib/cyrillic'
 import { bronQilish } from '@/lib/api'
 
 export function Dorixonalar() {
@@ -314,7 +314,7 @@ function DrugDetailModal({
 
   if (!drug) return null
 
-  const name = doriNomi(drug.name || drug.nomi || '', drug.nameRu || drug.nomi_ru || null, lang)
+  const name = doriNominiTozalash(drug.name || drug.nomi || drug.nameRu || drug.nomi_ru || '', lang)
   const dozasi = doriDozasi(drug.nameRu || drug.name || '', lang)
   const price = (drug.price || drug.narx || 0).toLocaleString()
   const pachka = drug.pachkaNarx || 0

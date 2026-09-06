@@ -4,7 +4,7 @@ import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { useLang } from '@/hooks/useLanguage'
 import { useCart } from '@/hooks/useCart'
-import { doriNomi } from '@/lib/cyrillic'
+import { doriNominiTozalash } from '@/lib/cyrillic'
 import { bronQilish } from '@/lib/api'
 
 export function CartPanel() {
@@ -50,7 +50,7 @@ export function CartPanel() {
           ) : (
             <div className="space-y-3">
               {items.map((item, i) => {
-                const name = doriNomi(item.name, item.nameRu, lang)
+                const name = doriNominiTozalash(item.name || item.nameRu || '', lang)
                 const narx = (item.price || 0) * (item.soni || 1)
                 return (
                   <div key={i} className="flex gap-3 items-start py-3 border-b border-slate-50 last:border-b-0">

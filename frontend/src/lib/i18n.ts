@@ -56,6 +56,7 @@ const translations = {
   aloqa: { uz: 'Aloqa: +998 88 986 35 40', ru: 'Контакт: +998 88 986 35 40' },
   nomi: { uz: 'Nomi', ru: 'Название' },
   shakliDozasi: { uz: 'Shakli va dozasi', ru: 'Форма и доза' },
+  tavsifi: { uz: 'Tavsifi:', ru: 'Описание:' },
   katalogDorisi: { uz: 'Katalog dorisi', ru: 'Из каталога' },
   tabletka: { uz: 'Tabletka', ru: 'Таблетки' },
   kapsula: { uz: 'Kapsula', ru: 'Капсулы' },
