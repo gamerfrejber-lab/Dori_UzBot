@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Pill, MapPin, Loader2 } from 'lucide-react'
 import { Hero } from '@/components/Hero'
 import { DrugResultCard, CatalogCard } from '@/components/DrugCard'
@@ -11,6 +12,11 @@ import { requestLocation, distanceKm, type UserLocation } from '@/lib/geo'
 
 export function Home() {
   const { t } = useLang()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!localStorage.getItem('token')) navigate('/login')
+  }, [navigate])
 
   const [results, setResults] = useState<DoriQidiruvResult[]>([])
   const [katalogResults, setKatalogResults] = useState<DoriKatalog[]>([])

@@ -74,7 +74,7 @@ export function SmsVerify() {
       const data = await verifyCode(phone, fullCode)
       if (data.token) {
         localStorage.setItem('token', data.token)
-        navigate('/profil')
+        navigate('/')
       } else {
         setError(data.message || t('notogrriKod'))
       }
