@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Building2, MapPin, Phone, Search, Navigation, Pill, Package, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -18,6 +19,11 @@ import { bronQilish } from '@/lib/api'
 
 export function Dorixonalar() {
   const { lang, t } = useLang()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!localStorage.getItem('token')) navigate('/login')
+  }, [navigate])
   const [pharmacies, setPharmacies] = useState<(Dorixona & { _km?: number })[]>([])
   const [loading, setLoading] = useState(true)
   const [userLoc, setUserLoc] = useState<{ lat: number; lon: number } | null>(null)
