@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "src/main/resources/static", "-l", "3001", "--no-clipboard"],
       "port": 3001
+    },
+    {
+      "name": "react-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "frontend"],
+      "port": 3000
     }
   ]
 }
