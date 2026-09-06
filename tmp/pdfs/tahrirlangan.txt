@@ -1,0 +1,162 @@
+DORI QIDIRUV  /  HAMKORLIK
+Tahrirlangan loyiha
+Dori Qidiruv
+1 / 4
+Dorixona uchun platforma haqida
+Dori Qidiruv mijozga kerakli dorini topish va dorixonaga borishdan oldin band qilish so‘rovini
+yuborishga yordam beradi. Quyida xizmatning qisqa tavsifi keltirilgan.
+Qanday ishlaydi
+Xaridor Telegram bot yoki veb-saytda dori nomini qidiradi. Platforma dorixonalar, narxlar va mavjudlik haqidagi
+ma’lumotni ko‘rsatadi. Joylashuv aniqlanganda masofa ham ko‘rinadi. Xaridor dorixonani tanlab, bron so‘rovini
+yuboradi; dorixona so‘rovga javob beradi.
+Dorixona uchun imkoniyatlar
+Xaridorlarga ko‘rinish. Dorixonangizdagi mahsulotlarni ularni qidirayotgan mijozlarga ko‘rsatish.
+Oldindan murojaat. Mijoz kelishidan oldin mahsulot mavjudligini tekshirish va bronni tasdiqlash.
+Ombor hisobi. Kirim, chiqim, qoldiq va tushum haqidagi ma’lumotlarni yuritish. Ushbu imkoniyat obuna
+xizmatiga qo‘shimcha to‘lovsiz kiradi.
+Manzil va aloqa. Dorixonaning manzili, telefoni va xaritadagi joylashuvini ko‘rsatish.
+Ikki tilda qidiruv. O‘zbekcha va ruscha dori nomlari orqali qidirish.
+Qulay foydalanish. Internetga ulangan telefon va Telegram orqali ishlash. Xizmatdan foydalanish uchun
+alohida qurilma sotib olish talab etilmaydi.
+Platforma muayyan mijozlar sonini, savdo hajmini yoki har bir bronning xarid bilan yakunlanishini kafolatlamaydi.
+Dorixonadan nima talab qilinadi
+Narx va qoldiqni to‘g‘ri kiritish, ularni yangilash, ish vaqtida bronlarga javob berish hamda tasdiqlangan
+mahsulotni kelishilgan muddatgacha ajratib qo‘yish. Ijrochi mas’ul xodimga kabinetdan foydalanish tartibini
+tushuntiradi.
+Xizmatning doirasi
+Ijrochi dori sotmaydi, saqlamaydi va yetkazib bermaydi. Sotuv dorixonada amalga oshiriladi. Dorixona
+mahsulot sifati, saqlash sharoiti va retsept bo‘yicha berish talablariga rioya qiladi. Platformadagi hisob
+dorixonaning majburiy buxgalteriya va kassa hisobini almashtirmaydi.
+Bu sahifa tanishtirish uchun. Tomonlarning majburiyatlari quyidagi shartnoma bandlari bilan belgilanadi.
+Telegram: t.me/dori_UzBot
+Sayt: dori-qidiruv-bot-sayt.onrender.com
+
+DORI QIDIRUV  /  HAMKORLIK
+Tahrirlangan loyiha
+Dori Qidiruv
+2 / 4
+XIZMAT KO‘RSATISH SHARTNOMASI
+№ ____________     Toshkent shahri     “____” ____________ 20____ yil
+Bir tomondan __________________________________________ nomidan
+________________________ asosida ish yurituvchi ________________________ (keyingi o‘rinlarda
+“Ijrochi”), ikkinchi tomondan ____________________________ nomidan ________________________
+asosida ish yurituvchi ________________________ (keyingi o‘rinlarda “Buyurtmachi”), birgalikda “Tomonlar”,
+ushbu shartnomani tuzdilar.
+1. SHARTNOMA PREDMETI
+1.1. Ijrochi Buyurtmachiga “Dori Qidiruv” platformasi (Telegram bot va veb-sayt) hamda dorixona ish
+kabinetidan foydalanish huquqini beradi. Buyurtmachi kelishilgan obuna to‘lovini to‘laydi. Ombor hisobi obuna
+tarkibiga kiradi.
+1.2. Platforma mahsulotlar, narxlar, mavjudlik va dorixona manzilini ko‘rsatadi, bron so‘rovlarini Buyurtmachiga
+yetkazadi. Aniq qoldiq platformada ombor hisobi yuritilganda ko‘rsatiladi.
+1.3. Ijrochi dori vositalarini sotmaydi, saqlamaydi va yetkazib bermaydi. Oldi-sotdi munosabatlari Buyurtmachi
+va xaridor o‘rtasida yuzaga keladi.
+1.4. Bron so‘rovi xarid yoki to‘lov amalga oshganini anglatmaydi. Mahsulotni band qilish Buyurtmachi tasdig‘i va
+unda ko‘rsatilgan muddatga muvofiq amalga oshiriladi.
+2. IJROCHINING MAJBURIYATLARI
+2.1. Ish kabinetini ochish, foydalanish tartibini tushuntirish va platformaning ishlashini ta’minlash uchun zarur
+texnik choralarni ko‘rish.
+2.2. Buyurtmachi kiritgan ma’lumotni buzmasdan ko‘rsatish va bron so‘rovlarini kechiktirmasdan yetkazish.
+Aniqlangan nosozlik haqida xabar berish va uni imkon qadar tez bartaraf etish.
+2.3. Texnik murojaatlar uchun aloqa kanali: ______________________________. Murojaatga dastlabki javob
+berish muddati: ______ ish soati.
+2.4. Ichki tushum, sotuv hajmi va ombor harakatlarini maxfiy saqlash. Xaridorga ko‘rsatish uchun kiritilgan
+mahsulot nomi, narxi, mavjudligi, ko‘rsatiladigan qoldiq, dorixona manzili va aloqa ma’lumotlari bundan
+mustasno.
+2.5. Obuna muddati tugashidan kamida 7 (yetti) kun oldin Buyurtmachini ogohlantirish.
+3. BUYURTMACHINING MAJBURIYATLARI
+3.1. Dorixona va vakil haqidagi haqiqiy ma’lumotlarni taqdim etish; faoliyat uchun zarur litsenziya va
+vakolatlarning amal qilishini ta’minlash.
+3.2. Mahsulot narxi va qoldig‘i o‘zgarganda ma’lumotlarni yangilash; noto‘g‘ri ma’lumot aniqlansa, uni tuzatish.
+3.3. Ish vaqtida kelgan bron so‘roviga ______ soat ichida javob berish. Ish vaqtidan tashqari kelgan so‘rov
+uchun muddat keyingi ish vaqti boshlanganidan hisoblanadi.
+3.4. Tasdiqlangan mahsulotni kamida ______ soat ajratib qo‘yish va xaridorga bronning tugash vaqtini bildirish.
+Muddat tugasa yoki xaridor voz kechsa, bron holatini yangilash.
+3.5. Obuna to‘lovini o‘z vaqtida to‘lash. Kabinetga faqat vakolatli xodimlarni kiritish, kirish ma’lumotlarini
+begonalarga bermaslik va ruxsatsiz kirish haqida Ijrochiga xabar berish.
+
+DORI QIDIRUV  /  HAMKORLIK
+Tahrirlangan loyiha
+Dori Qidiruv
+3 / 4
+4. OBUNA MUDDATI VA TO‘LOV
+4.1. Obuna muddati: ______ oy (1, 3, 6, 9 yoki 12 oy). Boshlanish sanasi: ________________. Tugash sanasi:
+________________.
+4.2. Obuna uchun jami to‘lov: __________________ so‘m. QQS holati: __________________. To‘lov muddati
+va tartibi: ________________________________.
+4.3. To‘lov amalga oshirilgach, Ijrochi kabinetni ______ ish kuni ichida faollashtiradi. Obuna muddati amalda
+faollashtirilgan sanadan hisoblanadi; sanalar Tomonlar tomonidan qayd etiladi.
+4.4. Obuna uzaytirilmasa, yangi bron qabul qilish va ma’lumotlarni qidiruvda ko‘rsatish to‘xtatiladi. Avval
+tasdiqlangan bronlar bo‘yicha Buyurtmachi xaridorni xabardor qiladi va ularning holatini yakunlaydi.
+4.5. Obuna tugagach, hisob ma’lumotlari ______ kun saqlanadi. Shu davrda Buyurtmachi o‘z ma’lumotlarining
+nusxasini so‘rashi mumkin. Saqlash muddati tugagach, qonun bo‘yicha saqlanishi shart bo‘lgan
+ma’lumotlardan tashqari ma’lumotlarni o‘chirish yoki shaxssizlantirish tartibi qo‘llanadi.
+4.6. Yangi tarif va qo‘shimcha pullik xizmatlar Tomonlarning yozma kelishuvi bilan qo‘llanadi. To‘langan davr
+narxi bir tomonlama o‘zgartirilmaydi.
+5. TOMONLARNING JAVOBGARLIGI
+5.1. Buyurtmachi o‘zi kiritgan mahsulot, narx va qoldiq ma’lumotlarining to‘g‘riligi, sotilgan mahsulot sifati,
+saqlash sharoiti va retsept talablariga rioya qilinishi uchun javob beradi.
+5.2. Ijrochi o‘z majburiyatlarini bajarmaganligi yoki lozim darajada bajarmaganligi uchun qonunchilikka muvofiq
+javob beradi. Internet yoki Telegramdagi uzilish Ijrochini barcha majburiyatlardan avtomatik ozod qilmaydi;
+ta’sirlangan Tomon uzilish va ko‘rilayotgan choralar haqida xabar beradi.
+5.3. Bronlarga takroran javob berilmasa, Ijrochi buzilishlarni ko‘rsatib yozma ogohlantiradi va tuzatish uchun
+______ ish kuni beradi. Kamchilik bartaraf etilmasa, yangi bronlarni vaqtincha to‘xtatishi mumkin. Tiklash
+shartlari xabarda ko‘rsatiladi.
+5.4. Xizmat vaqtincha to‘xtaganda obuna muddatini hisoblash va qayta hisob-kitob qilish tartibi:
+________________________________________________________.
+5.5. Platforma muayyan mijozlar soni, savdo hajmi yoki har bir bronning xarid bilan yakunlanishini
+kafolatlamaydi.
+6. SHARTNOMA MUDDATI VA BEKOR QILISH
+6.1. Shartnoma imzolangan kundan kuchga kiradi va obuna muddati oxirigacha amal qiladi. Hisob-kitob va
+maxfiylik bo‘yicha bajarilmagan majburiyatlar tegishli tartibda davom etadi.
+6.2. Tomon bekor qilish tashabbusi haqida boshqa Tomonni kamida 10 (o‘n) kun oldin yozma xabardor qiladi.
+Bekor qilish asoslari, tartibi va moliyaviy oqibatlari Fuqarolik kodeksining 707-moddasi hamda Tomonlarning
+qonunga zid bo‘lmagan yozma kelishuvi asosida belgilanadi.
+6.3. Bekor qilishda Tomonlar ko‘rsatilgan xizmatlar, to‘lovlar va qonuniy talablarni solishtiradi. Qaytarilishi lozim
+bo‘lgan summa aniqlansa, uni qaytarish muddati: ______ ish kuni; tartibi:
+____________________________________________. Ushbu band avtomatik ravishda to‘liq yoki mutanosib
+qaytarish kafolati hisoblanmaydi.
+
+DORI QIDIRUV  /  HAMKORLIK
+Tahrirlangan loyiha
+Dori Qidiruv
+4 / 4
+7. MAXFIYLIK VA YAKUNIY QOIDALAR
+7.1. Tomonlar xaridorning shaxsga doir ma’lumotlaridan bronni bajarish uchun zarur hajmda va qonuniy
+asosda foydalanadi. Ularni qonuniy asossiz reklama uchun ishlatish yoki uchinchi shaxslarga tarqatishga yo‘l
+qo‘yilmaydi. Ushbu shartnoma xaridorning roziligini almashtirmaydi.
+7.2. Tomonlar kirishni cheklash va ma’lumotlarni himoya qilish choralarini ko‘radi. Ruxsatsiz kirish yoki oshkor
+etilish aniqlansa, boshqa Tomonni asossiz kechiktirmasdan xabardor qiladi va oqibatlarni bartaraf etishda
+hamkorlik qiladi.
+7.3. Nizolar muzokara yo‘li bilan hal etiladi. Kelishuv bo‘lmasa, nizo O‘zbekiston Respublikasi qonunchiligiga
+muvofiq vakolatli sudda ko‘riladi.
+7.4. Operativ xabarlar 8-bo‘limdagi kelishilgan aloqa kanallariga yuboriladi. Tarif, majburiyatlar yoki
+shartnomani o‘zgartiruvchi kelishuvlar yozma shaklda rasmiylashtiriladi.
+7.5. Shartnoma teng yuridik kuchga ega ikki nusxada, har bir Tomon uchun bittadan tuziladi. Bo‘sh maydonlar
+imzolashdan oldin to‘ldiriladi; qo‘llanmaydigan shartlar aniq belgilanadi.
+8. TOMONLARNING REKVIZITLARI VA IMZOLARI
+IJROCHI (Platforma)
+To‘liq nomi / F.I.Sh.:
+Tashkiliy-huquqiy maqomi:
+Vakili va vakolat asosi:
+Manzili:
+STIR:
+Bank / MFO:
+Hisob raqami:
+Telefon:
+Kelishilgan Telegram / e-pochta:
+Imzo / F.I.Sh.:
+Sana:
+Muhr (mavjud bo‘lsa)
+BUYURTMACHI (Dorixona)
+Yuridik nomi:
+Dorixona / filial nomi:
+Vakili va vakolat asosi:
+Yuridik va dorixona manzili:
+STIR / litsenziya raqami:
+Bank / MFO:
+Hisob raqami:
+Telefon va ish vaqti:
+Kelishilgan Telegram / e-pochta:
+Imzo / F.I.Sh.:
+Sana:
+Muhr (mavjud bo‘lsa)
