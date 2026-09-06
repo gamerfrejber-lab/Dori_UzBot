@@ -10,7 +10,7 @@ import type { DoriQidiruvResult, DoriKatalog, Dorixona } from '@/lib/api'
 import { requestLocation, distanceKm, type UserLocation } from '@/lib/geo'
 
 export function Home() {
-  const { lang, t } = useLang()
+  const { t } = useLang()
 
   const [results, setResults] = useState<DoriQidiruvResult[]>([])
   const [katalogResults, setKatalogResults] = useState<DoriKatalog[]>([])

@@ -9,7 +9,7 @@ import { bronQilish } from '@/lib/api'
 
 export function CartPanel() {
   const { lang, t } = useLang()
-  const { items, count, updateQty, remove, clear, isOpen, close } = useCart()
+  const { items, updateQty, remove, clear, isOpen, close } = useCart()
   const [bronStatus, setBronStatus] = useState<{ ok: number; fail: number } | null>(null)
   const [loading, setLoading] = useState(false)
 
