@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useLang } from '@/hooks/useLanguage'
 import { useCart, type CartItem } from '@/hooks/useCart'
-import { doriNomi, doriDozasi } from '@/lib/cyrillic'
+import { doriNominiTozalash, doriDozasi, doriTavsifi } from '@/lib/cyrillic'
 import { formatDistance } from '@/lib/geo'
 import { bronQilish, type DoriQidiruvResult } from '@/lib/api'
 
@@ -29,8 +29,10 @@ export function DrugModal({ drug, open, onClose }: Props) {
 
   if (!drug) return null
 
-  const name = doriNomi(drug.name || drug.nomi || '', drug.nameRu || drug.nomi_ru || null, lang)
+  const rawName = drug.name || drug.nomi || drug.nameRu || drug.nomi_ru || ''
+  const name = doriNominiTozalash(rawName, lang)
   const dozasi = doriDozasi(drug.nameRu || drug.name || '', lang)
+  const tavsif = doriTavsifi(rawName, lang)
   const ph = drug.dorixona
   const price = (drug.price || drug.narx || 0).toLocaleString()
   const pachka = drug.pachkaNarx || 0
@@ -88,8 +90,8 @@ export function DrugModal({ drug, open, onClose }: Props) {
         </DialogHeader>
 
         <div className="space-y-2 mt-4 text-sm">
-          {drug.name && (
-            <InfoRow label={t('nomi')} value={drug.name} />
+          {tavsif && (
+            <InfoRow label={t('tavsifi')} value={<span className="text-brand font-medium">{tavsif}</span>} />
           )}
           {dozasi && (
             <InfoRow label={t('shakliDozasi')} value={dozasi} />

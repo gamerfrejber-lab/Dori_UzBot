@@ -19,5 +19,5 @@ UPDATE dorixona SET ish_boshlanishi = '08:00', ish_tugashi = '22:00'
 WHERE ish_boshlanishi IS NULL AND nomi ILIKE '%Vazira%';
 
 -- Dorixona nomi va manzil tuzatish.
-UPDATE dorixona SET nomi = 'Vazira Pharm', manzil = 'Yunusobod 11-chi kvartl'
+UPDATE dorixona SET nomi = 'Vazira Pharm', manzil = 'Yunusobod 11-chi kvartal'
 WHERE nomi ILIKE '%Vazira%';

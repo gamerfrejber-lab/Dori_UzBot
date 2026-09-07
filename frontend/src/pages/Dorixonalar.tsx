@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Building2, MapPin, Phone, Search, Navigation, Pill, Package, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -13,11 +14,16 @@ import { useCart, type CartItem } from '@/hooks/useCart'
 import * as api from '@/lib/api'
 import type { Dorixona, DoriQidiruvResult } from '@/lib/api'
 import { requestLocation, distanceKm, dorixonaOchiqmi, formatDistance } from '@/lib/geo'
-import { doriNomi, doriDozasi, cyrToLat } from '@/lib/cyrillic'
+import { doriNominiTozalash, doriDozasi, cyrToLat } from '@/lib/cyrillic'
 import { bronQilish } from '@/lib/api'
 
 export function Dorixonalar() {
   const { lang, t } = useLang()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!localStorage.getItem('token')) navigate('/login')
+  }, [navigate])
   const [pharmacies, setPharmacies] = useState<(Dorixona & { _km?: number })[]>([])
   const [loading, setLoading] = useState(true)
   const [userLoc, setUserLoc] = useState<{ lat: number; lon: number } | null>(null)
@@ -308,7 +314,7 @@ function DrugDetailModal({
 
   if (!drug) return null
 
-  const name = doriNomi(drug.name || drug.nomi || '', drug.nameRu || drug.nomi_ru || null, lang)
+  const name = doriNominiTozalash(drug.name || drug.nomi || drug.nameRu || drug.nomi_ru || '', lang)
   const dozasi = doriDozasi(drug.nameRu || drug.name || '', lang)
   const price = (drug.price || drug.narx || 0).toLocaleString()
   const pachka = drug.pachkaNarx || 0
