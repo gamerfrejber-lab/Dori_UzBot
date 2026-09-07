@@ -1,7 +1,7 @@
 import { Pill } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { doriNominiTozalash, doriShakli, cyrToLat } from '@/lib/cyrillic'
+import { doriAsosiyNomi, doriShakli, cyrToLat } from '@/lib/cyrillic'
 import { useLang } from '@/hooks/useLanguage'
 import type { DoriQidiruvResult, DoriKatalog } from '@/lib/api'
 import { formatDistance } from '@/lib/geo'
@@ -13,7 +13,7 @@ interface DrugResultCardProps {
 
 export function DrugResultCard({ drug, onClick }: DrugResultCardProps) {
   const { lang, t } = useLang()
-  const name = doriNominiTozalash(drug.nomi || drug.name || drug.nomi_ru || drug.nameRu || '', lang)
+  const name = doriAsosiyNomi(drug.nomi || drug.name || drug.nomi_ru || drug.nameRu || '', lang)
   const price = (drug.narx || drug.price || 0).toLocaleString()
   const pachka = drug.pachkaNarx || 0
   const ph = drug.dorixona
@@ -99,7 +99,7 @@ interface CatalogCardProps {
 
 export function CatalogCard({ drug, onClick }: CatalogCardProps) {
   const { lang } = useLang()
-  const katNomi = doriNominiTozalash(drug.nomi || '', lang)
+  const katNomi = doriAsosiyNomi(drug.nomi || '', lang)
   const firma = [drug.ishlabChiqaruvchi, drug.davlat].filter(Boolean).join(', ')
   const firmaDisplay = lang === 'uz' ? cyrToLat(firma) : firma
   const shakl = doriShakli(drug.nomi, lang)

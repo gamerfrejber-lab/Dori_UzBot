@@ -75,6 +75,10 @@ public class BronService {
 
         bronRepository.save(bron);
 
+        // Bron yozilgandan keyin qoldiqni tekshirish
+        long yangiQoldiq = hisobYuritiladi ? qoldiq - soni : -1;
+        boolean doriTugadi = hisobYuritiladi && yangiQoldiq <= 0;
+
         Dorixona dorixona = dorixonaRepository.findById(dori.getDorixonaId()).orElse(null);
 
         Map<String, Object> javob = new LinkedHashMap<>();
@@ -90,6 +94,10 @@ public class BronService {
         javob.put("manzil", dorixona == null ? null : dorixona.getAddress());
         javob.put("telefon", dorixona == null ? null : dorixona.getTelefon());
         javob.put("kartaRaqami", dorixona == null ? null : dorixona.getKartaRaqami());
+        if (doriTugadi) {
+            javob.put("doriTugadi", true);
+            javob.put("qoldiq", Math.max(yangiQoldiq, 0));
+        }
         return javob;
     }
 

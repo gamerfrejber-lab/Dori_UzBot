@@ -75,7 +75,7 @@ export async function bronQilish(
   soni: number,
   tur: 'dona' | 'pachka',
   token: string
-): Promise<{ kod: string }> {
+): Promise<{ kod: string; doriTugadi?: boolean }> {
   const r = await fetch('/api/bron', {
     method: 'POST',
     headers: {

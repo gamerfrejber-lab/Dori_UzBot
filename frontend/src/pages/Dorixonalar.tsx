@@ -14,7 +14,7 @@ import { useCart, type CartItem } from '@/hooks/useCart'
 import * as api from '@/lib/api'
 import type { Dorixona, DoriQidiruvResult } from '@/lib/api'
 import { requestLocation, distanceKm, dorixonaOchiqmi, formatDistance } from '@/lib/geo'
-import { doriNominiTozalash, doriDozasi, cyrToLat } from '@/lib/cyrillic'
+import { doriAsosiyNomi, doriShakliDozasi } from '@/lib/cyrillic'
 import { bronQilish } from '@/lib/api'
 
 export function Dorixonalar() {
@@ -272,7 +272,7 @@ function PharmacyModal({
           ) : (
             <div className="max-h-[40vh] overflow-y-auto space-y-2">
               {drugs.map((drug) => {
-                const name = lang === 'uz' ? cyrToLat(drug.nomi || drug.name || '') : (drug.nomi || drug.name || '')
+                const name = doriAsosiyNomi(drug.nomi || drug.name || drug.nomi_ru || drug.nameRu || '', lang)
                 const price = (drug.price || drug.narx || 0).toLocaleString()
                 return (
                   <div
@@ -309,13 +309,13 @@ function DrugDetailModal({
   const cart = useCart()
   const [bronMode, setBronMode] = useState<'dona' | 'pachka' | null>(null)
   const [soni, setSoni] = useState(1)
-  const [bronResult, setBronResult] = useState<{ ok: boolean; kod?: string; xato?: string } | null>(null)
+  const [bronResult, setBronResult] = useState<{ ok: boolean; kod?: string; xato?: string; doriTugadi?: boolean } | null>(null)
   const [loading, setLoading] = useState(false)
 
   if (!drug) return null
 
-  const name = doriNominiTozalash(drug.name || drug.nomi || drug.nameRu || drug.nomi_ru || '', lang)
-  const dozasi = doriDozasi(drug.nameRu || drug.name || '', lang)
+  const name = doriAsosiyNomi(drug.name || drug.nomi || drug.nameRu || drug.nomi_ru || '', lang)
+  const dozasi = doriShakliDozasi(drug.nameRu || drug.name || drug.nomi || '', lang)
   const price = (drug.price || drug.narx || 0).toLocaleString()
   const pachka = drug.pachkaNarx || 0
   const canBron = drug.hisobYuritiladi ? (drug.qoldiq || 0) > 0 : drug.available !== false
@@ -329,7 +329,7 @@ function DrugDetailModal({
     setLoading(true)
     try {
       const data = await bronQilish(drug.id, soni, bronMode || 'dona', token)
-      setBronResult({ ok: true, kod: data.kod })
+      setBronResult({ ok: true, kod: data.kod, doriTugadi: data.doriTugadi })
     } catch (e) {
       setBronResult({ ok: false, xato: (e as Error).message })
     } finally {
@@ -370,7 +370,7 @@ function DrugDetailModal({
         </DialogHeader>
 
         <div className="space-y-2 mt-4 text-sm">
-          {dozasi && <InfoRow label={t('shakliDozasi')} value={dozasi} />}
+          {dozasi && <InfoRow label={t('dozasi')} value={dozasi} />}
           <InfoRow label={t('ishlab')} value={drug.manufacturer || drug.ishlab_chiqaruvchi || '—'} />
           <InfoRow label={t('donaNarx')} value={<span className="font-bold">{price} {t('som')}</span>} />
           {pachka > 0 && (
@@ -425,6 +425,11 @@ function DrugDetailModal({
                 <p className="font-bold text-green-700 mb-1"><Check className="w-4 h-4 inline" /> {t('bandQilindi')}</p>
                 <p>{t('olibKetishKodi')}: <span className="text-2xl font-bold text-green-600">{bronResult.kod}</span></p>
                 <p className="text-sm text-ink-dim mt-2">{t('bronInfo')}</p>
+                {bronResult.doriTugadi && (
+                  <p className="text-sm text-orange-600 font-semibold mt-2">
+                    {lang === 'uz' ? "⚠ Bu dori tugadi — dorixona adminiga xabar yuborildi." : '⚠ Лекарство закончилось — уведомление отправлено аптеке.'}
+                  </p>
+                )}
               </>
             ) : (
               <p className="text-red-600 font-semibold">{bronResult.xato}</p>

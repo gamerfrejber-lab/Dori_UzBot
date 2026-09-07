@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useLang } from '@/hooks/useLanguage'
 import { useCart, type CartItem } from '@/hooks/useCart'
-import { doriNominiTozalash, doriDozasi, doriTavsifi } from '@/lib/cyrillic'
+import { doriAsosiyNomi, doriShakliDozasi, doriTavsifi } from '@/lib/cyrillic'
 import { formatDistance } from '@/lib/geo'
 import { bronQilish, type DoriQidiruvResult } from '@/lib/api'
 
@@ -24,14 +24,14 @@ export function DrugModal({ drug, open, onClose }: Props) {
   const cart = useCart()
   const [bronMode, setBronMode] = useState<'dona' | 'pachka' | null>(null)
   const [soni, setSoni] = useState(1)
-  const [bronResult, setBronResult] = useState<{ ok: boolean; kod?: string; xato?: string } | null>(null)
+  const [bronResult, setBronResult] = useState<{ ok: boolean; kod?: string; xato?: string; doriTugadi?: boolean } | null>(null)
   const [loading, setLoading] = useState(false)
 
   if (!drug) return null
 
   const rawName = drug.name || drug.nomi || drug.nameRu || drug.nomi_ru || ''
-  const name = doriNominiTozalash(rawName, lang)
-  const dozasi = doriDozasi(drug.nameRu || drug.name || '', lang)
+  const name = doriAsosiyNomi(rawName, lang)
+  const dozasi = doriShakliDozasi(drug.nameRu || drug.name || rawName, lang)
   const tavsif = doriTavsifi(rawName, lang)
   const ph = drug.dorixona
   const price = (drug.price || drug.narx || 0).toLocaleString()
@@ -48,7 +48,7 @@ export function DrugModal({ drug, open, onClose }: Props) {
     setLoading(true)
     try {
       const data = await bronQilish(drug.id, soni, bronMode || 'dona', token)
-      setBronResult({ ok: true, kod: data.kod })
+      setBronResult({ ok: true, kod: data.kod, doriTugadi: data.doriTugadi })
     } catch (e) {
       setBronResult({ ok: false, xato: (e as Error).message })
     } finally {
@@ -94,7 +94,7 @@ export function DrugModal({ drug, open, onClose }: Props) {
             <InfoRow label={t('tavsifi')} value={<span className="text-brand font-medium">{tavsif}</span>} />
           )}
           {dozasi && (
-            <InfoRow label={t('shakliDozasi')} value={dozasi} />
+            <InfoRow label={t('dozasi')} value={dozasi} />
           )}
           <InfoRow label={t('ishlab')} value={drug.manufacturer || drug.ishlab_chiqaruvchi || '—'} />
           <InfoRow
@@ -208,6 +208,11 @@ export function DrugModal({ drug, open, onClose }: Props) {
                   <span className="text-2xl font-bold text-green-600">{bronResult.kod}</span>
                 </p>
                 <p className="text-sm text-ink-dim mt-2">{t('bronInfo')}</p>
+                {bronResult.doriTugadi && (
+                  <p className="text-sm text-orange-600 font-semibold mt-2">
+                    {lang === 'uz' ? "⚠ Bu dori tugadi — dorixona adminiga xabar yuborildi." : '⚠ Лекарство закончилось — уведомление отправлено аптеке.'}
+                  </p>
+                )}
               </>
             ) : (
               <p className="text-red-600 font-semibold">{bronResult.xato}</p>

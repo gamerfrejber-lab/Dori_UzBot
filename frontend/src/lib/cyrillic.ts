@@ -165,6 +165,61 @@ export function doriNominiTozalash(rawNomi: string, lang: 'uz' | 'ru'): string {
   return result
 }
 
+/** Faqat dori asosiy nomini qaytaradi: "ПАРАЦЕТАМОЛ СУПП РЕКТ 250МГ №10" → "Paratsetamol" */
+export function doriAsosiyNomi(rawNomi: string, lang: 'uz' | 'ru'): string {
+  if (!rawNomi) return ''
+  const up = rawNomi.toUpperCase()
+  let formIdx = -1
+  for (const [kw] of shaklMap) {
+    const idx = up.indexOf(kw)
+    if (idx > 0 && (formIdx < 0 || idx < formIdx)) formIdx = idx
+  }
+  let baseName: string
+  if (formIdx > 0) {
+    baseName = rawNomi.substring(0, formIdx).trim()
+  } else {
+    const dozaIdx = rawNomi.search(/\s+\d+\s*(МГ|МЛ|МКГ|Г|MG|ML|MCG|G|%)/i)
+    baseName = dozaIdx > 0 ? rawNomi.substring(0, dozaIdx).trim() : rawNomi.trim()
+  }
+  baseName = baseName.replace(/\s*[№N]\s*\d+\s*$/i, '').trim()
+  baseName = baseName.replace(/\s+\d+(?:[.,]\d+)?\s*(МГ|МЛ|МКГ|Г|MG|ML|MCG|G|%)\s*$/i, '').trim()
+  if (lang === 'uz') {
+    return hasCyrillic(baseName) ? cyrToLat(toTitleCase(baseName)) : toTitleCase(baseName)
+  }
+  return toTitleCase(baseName)
+}
+
+/** Shakl va dozani chiroyli qaytaradi: "СУПП РЕКТ 250МГ №10" → "Supp Rekt 250 mg" */
+export function doriShakliDozasi(rawNomi: string, lang: 'uz' | 'ru'): string {
+  if (!rawNomi) return ''
+  const up = rawNomi.toUpperCase()
+  let formIdx = -1
+  for (const [kw] of shaklMap) {
+    const idx = up.indexOf(kw)
+    if (idx > 0 && (formIdx < 0 || idx < formIdx)) formIdx = idx
+  }
+  if (formIdx < 0) {
+    const m = rawNomi.match(/(\d+(?:[.,]\d+)?)\s*(МГ|МЛ|МКГ|Г|MG|ML|MCG|G|%)/i)
+    if (!m) return ''
+    if (m[2] === '%') return `${m[1]}%`
+    const unitMap: Record<string, string> = { 'МГ': 'mg', 'MG': 'mg', 'МЛ': 'ml', 'ML': 'ml', 'МКГ': 'mkg', 'MCG': 'mkg', 'Г': 'g', 'G': 'g' }
+    return `${m[1]} ${unitMap[m[2].toUpperCase()] || m[2].toLowerCase()}`
+  }
+  let part = rawNomi.substring(formIdx).trim()
+  part = part.replace(/\s*[№N]\s*\d+/gi, '').trim()
+  part = part
+    .replace(/(\d+)\s*(МГ|MG)/gi, '$1 mg')
+    .replace(/(\d+)\s*(МЛ|ML)/gi, '$1 ml')
+    .replace(/(\d+)\s*(МКГ|MCG)/gi, '$1 mkg')
+    .replace(/(\d+)\s*(Г|G)\b/gi, '$1 g')
+  if (lang === 'uz' && hasCyrillic(part)) part = cyrToLat(part)
+  part = part.split(/\s+/).map(w => {
+    if (/^\d/.test(w) || /^(mg|ml|mkg|g|%)$/i.test(w)) return w.toLowerCase()
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
+  }).join(' ')
+  return part
+}
+
 const tavsiflar: Record<string, { uz: string; ru: string }> = {
   'ПАРАЦЕТАМОЛ': { uz: "Og'riq qoldiruvchi va isitmani tushiruvchi", ru: 'Обезболивающее и жаропонижающее' },
   'ИБУПРОФЕН': { uz: "Yallig'lanishga qarshi og'riq qoldiruvchi", ru: 'Противовоспалительное обезболивающее' },
