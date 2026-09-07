@@ -1,16 +1,3 @@
-# Dori Qidiruv — robotlar uchun ko'rsatma
 User-agent: *
 Allow: /
-Allow: /index.html
-Allow: /dorixonalar.html
-Allow: /taqdimot.html
-# Shaxsiy va ichki sahifalar Google'ga ko'rsatilmaydi
-Disallow: /login.html
-Disallow: /sms.html
-Disallow: /ism.html
-Disallow: /profil.html
-Disallow: /admin.html
-Disallow: /tolov.html
-Disallow: /api/
-
 Sitemap: https://dori-qidiruv-bot-sayt.onrender.com/sitemap.xml

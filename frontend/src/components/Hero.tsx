@@ -27,7 +27,13 @@ function AnimatedNumber({ value }: { value: number }) {
   return <>{display.toLocaleString()}</>
 }
 
-const quickTags = ['Paracetamol', 'Ibuprofen', 'Amoxicillin', 'Aspirin', 'Vitamin C']
+const quickTags = [
+  { label: 'Paratsetamol', q: 'парацетамол' },
+  { label: 'Ibuprofen', q: 'ибупрофен' },
+  { label: 'Amoksitsillin', q: 'амоксициллин' },
+  { label: 'Aspirin', q: 'аспирин' },
+  { label: 'Vitamin C', q: 'витамин' },
+]
 
 export function Hero({ onSearch }: Props) {
   const { t } = useLang()
@@ -80,12 +86,12 @@ export function Hero({ onSearch }: Props) {
       <div className="animate-fade-up delay-3 flex gap-2 flex-wrap mt-4">
         {quickTags.map((tag) => (
           <button
-            key={tag}
-            onClick={() => onSearch(tag)}
+            key={tag.label}
+            onClick={() => onSearch(tag.q)}
             className="flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-100 rounded-full text-sm font-medium text-ink-dim shadow-[0_4px_12px_rgba(2,32,71,0.04)] hover:-translate-y-0.5 hover:text-brand hover:border-brand/30 hover:shadow-[0_10px_22px_rgba(37,99,235,0.16)] transition-all active:translate-y-0 active:scale-[0.97]"
           >
             <Pill className="w-3.5 h-3.5" />
-            {tag}
+            {tag.label}
           </button>
         ))}
       </div>
