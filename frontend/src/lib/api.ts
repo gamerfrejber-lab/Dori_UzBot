@@ -140,7 +140,7 @@ export interface BronItem {
 }
 
 export async function getBronlar(token: string): Promise<BronItem[]> {
-  const r = await fetch('/api/bron/list', {
+  const r = await fetch('/api/bron/meniki', {
     headers: { Authorization: `Bearer ${token}` },
   })
   if (!r.ok) return []

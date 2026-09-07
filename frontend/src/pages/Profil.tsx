@@ -4,7 +4,7 @@ import { User, FileText, ShoppingCart, LogOut, Pill } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useLang } from '@/hooks/useLanguage'
-import { getProfile, getBronlar, type UserProfile, type BronItem } from '@/lib/api'
+import { getProfile, getBronlar, adminCheck, type UserProfile, type BronItem } from '@/lib/api'
 
 export function Profil() {
   const { lang, t } = useLang()
@@ -14,6 +14,7 @@ export function Profil() {
   const [bronlar, setBronlar] = useState<BronItem[]>([])
   const [bronLoading, setBronLoading] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     if (!token) {
@@ -36,6 +37,7 @@ export function Profil() {
         setLoading(false)
         setBronLoading(false)
       })
+    adminCheck(token).then((d) => setIsAdmin(d.admin)).catch(() => {})
   }, [token])
 
   const logout = () => {
@@ -133,7 +135,7 @@ export function Profil() {
         )}
       </Card>
 
-      {user.role === 'ADMIN' && (
+      {isAdmin && (
         <Link to="/admin">
           <Button variant="secondary" className="w-full mb-4">
             {t('adminPanel')}
