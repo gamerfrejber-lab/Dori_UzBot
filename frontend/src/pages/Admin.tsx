@@ -19,7 +19,7 @@ export function Admin() {
 
   useEffect(() => {
     if (!token) {
-      setIsAdmin(false)
+      navigate('/login')
       return
     }
     adminCheck(token)
@@ -30,7 +30,7 @@ export function Admin() {
         }
       })
       .catch(() => setIsAdmin(false))
-  }, [token])
+  }, [token, navigate])
 
   if (isAdmin === null) {
     return (
@@ -75,10 +75,10 @@ export function Admin() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-        <StatCard label={t('adminDorixonalar')} value={stats.dorixonalar ?? '—'} />
-        <StatCard label={t('adminDorilar')} value={stats.dorilar ?? '—'} />
+        <StatCard label={t('adminDorixonalar')} value={stats.pharmacies ?? '—'} />
+        <StatCard label={t('adminDorilar')} value={stats.drugs ?? '—'} />
         <StatCard label={t('adminKatalog')} value={stats.katalog ?? '—'} />
-        <StatCard label={t('adminFoydalanuvchilar')} value={stats.foydalanuvchilar ?? '—'} />
+        <StatCard label={t('adminFoydalanuvchilar')} value={stats.users ?? '—'} />
       </div>
 
       <div className="flex gap-2 flex-wrap mb-5">
@@ -124,7 +124,7 @@ function AdminTabContent({ tab, token }: { tab: Tab; token: string }) {
     setLoading(true)
     const endpoints: Record<Tab, string> = {
       pharmacies: '/api/dorixona',
-      drugs: '/api/admin/dorilar',
+      drugs: '/api/dori',
       catalog: '/api/katalog/qidirish?q=&limit=50',
       users: '/api/admin/users',
     }

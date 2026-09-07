@@ -1,6 +1,15 @@
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
+
+# Install Node.js for frontend build
+RUN apk add --no-cache nodejs npm
+
 COPY . .
+
+# Build React frontend -> src/main/resources/static
+RUN cd frontend && npm install && npm run build
+
+# Build Spring Boot
 RUN chmod +x gradlew
 RUN ./gradlew build -x test
 

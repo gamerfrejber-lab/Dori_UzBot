@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Phone, Send, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -39,6 +39,10 @@ export function Login() {
   const [digits, setDigits] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) navigate('/')
+  }, [navigate])
 
   const cfg = countryConfig[country]
   const fullPhone = cfg.code + digits

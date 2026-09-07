@@ -3,6 +3,7 @@ import { LangProvider } from '@/hooks/useLanguage'
 import { CartProvider } from '@/hooks/useCart'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
+import { BottomNav } from '@/components/BottomNav'
 import { CartPanel } from '@/components/CartPanel'
 import { Home } from '@/pages/Home'
 import { Dorixonalar } from '@/pages/Dorixonalar'
@@ -28,7 +29,7 @@ export default function App() {
         <CartProvider>
           <Aurora />
           <Header />
-          <main>
+          <main className="pb-[68px] md:pb-0">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/index.html" element={<Home />} />
@@ -44,7 +45,10 @@ export default function App() {
               <Route path="/admin.html" element={<Admin />} />
             </Routes>
           </main>
-          <Footer />
+          <div className="hidden md:block">
+            <Footer />
+          </div>
+          <BottomNav />
           <CartPanel />
         </CartProvider>
       </LangProvider>

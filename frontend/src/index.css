@@ -11,14 +11,21 @@
   html {
     scroll-behavior: smooth;
   }
+  html {
+    height: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display',
       'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
     background: #E9F0FA;
     min-height: 100vh;
+    min-height: 100dvh;
     color: #0F172A;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
   }
 }
 
