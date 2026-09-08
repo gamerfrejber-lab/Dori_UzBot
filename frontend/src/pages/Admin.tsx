@@ -125,12 +125,12 @@ function AdminTabContent({ tab, token }: { tab: Tab; token: string }) {
     const endpoints: Record<Tab, string> = {
       pharmacies: '/api/dorixona',
       drugs: '/api/dori',
-      catalog: '/api/katalog/qidirish?q=&limit=50',
+      catalog: '/api/katalog/royxat?size=50',
       users: '/api/admin/users',
     }
     fetch(endpoints[tab], { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.ok ? r.json() : [])
-      .then(setData)
+      .then((json) => setData(tab === 'catalog' && json.dorilar ? json.dorilar : Array.isArray(json) ? json : []))
       .catch(() => setData([]))
       .finally(() => setLoading(false))
   }, [tab, token])
