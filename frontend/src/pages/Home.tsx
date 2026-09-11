@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Pill, MapPin, Loader2 } from 'lucide-react'
+import { Pill, MapPin, Loader2, Clock } from 'lucide-react'
 import { Hero } from '@/components/Hero'
 import { DrugResultCard, CatalogCard } from '@/components/DrugCard'
 import { PharmacyCard } from '@/components/PharmacyCard'
@@ -9,6 +9,28 @@ import { useLang } from '@/hooks/useLanguage'
 import * as api from '@/lib/api'
 import type { DoriQidiruvResult, DoriKatalog, Dorixona } from '@/lib/api'
 import { requestLocation, distanceKm, type UserLocation } from '@/lib/geo'
+
+const HISTORY_KEY = 'dori_search_history'
+const MAX_HISTORY = 20
+
+function getHistory(): string[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch { return [] }
+}
+
+function addToHistory(query: string) {
+  const q = query.trim()
+  if (!q) return
+  const prev = getHistory().filter((h) => h.toLowerCase() !== q.toLowerCase())
+  const next = [q, ...prev].slice(0, MAX_HISTORY)
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)) } catch {}
+}
+
+function clearHistory() {
+  try { localStorage.removeItem(HISTORY_KEY) } catch {}
+}
 
 export function Home() {
   const { t } = useLang()
@@ -27,6 +49,7 @@ export function Home() {
   const [popular, setPopular] = useState<DoriKatalog[]>([])
   const [pharmacies, setPharmacies] = useState<(Dorixona & { _km?: number | null })[]>([])
   const [location, setLocation] = useState<UserLocation | null>(null)
+  const [history, setHistory] = useState<string[]>(getHistory)
 
   const [selectedDrug, setSelectedDrug] = useState<DoriQidiruvResult | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
@@ -70,6 +93,9 @@ export function Home() {
 
       const loc = location || (await requestLocation())
       if (loc) setLocation(loc)
+
+      addToHistory(query)
+      setHistory(getHistory())
 
       try {
         const data = await api.doriQidirish(query)
@@ -159,7 +185,36 @@ export function Home() {
           </div>
         )}
 
-        {popular.length > 0 && (
+        {history.length > 0 && (
+          <>
+            <div className="flex items-center justify-between mt-10 mb-4">
+              <h2 className="flex items-center gap-2 text-xs font-bold text-ink-dim uppercase tracking-widest">
+                <Clock className="w-4 h-4" />
+                <span>{t('qidiruvTarixi')}</span>
+              </h2>
+              <button
+                onClick={() => { clearHistory(); setHistory([]) }}
+                className="text-xs text-ink-faint hover:text-red-500 font-semibold transition-colors"
+              >
+                {t('tarixniTozalash')}
+              </button>
+            </div>
+            <div className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide">
+              {history.map((q, i) => (
+                <button
+                  key={q + i}
+                  onClick={() => handleSearch(q)}
+                  className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-sm font-semibold text-ink whitespace-nowrap"
+                >
+                  <Pill className="w-4 h-4 text-brand" />
+                  {q}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {history.length === 0 && popular.length > 0 && (
           <>
             <SectionTitle icon={<Pill className="w-4 h-4" />} text={t('mashhurDorilar')} />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

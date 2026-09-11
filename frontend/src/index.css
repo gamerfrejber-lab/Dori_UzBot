@@ -83,3 +83,6 @@
 .delay-1 { animation-delay: 0.06s; }
 .delay-2 { animation-delay: 0.16s; }
 .delay-3 { animation-delay: 0.26s; }
+
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }

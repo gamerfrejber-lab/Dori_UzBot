@@ -15,6 +15,8 @@ const translations = {
   dorixona: { uz: 'Dorixona', ru: 'Аптек' },
   xizmat: { uz: 'Xizmat', ru: 'Сервис' },
   mashhurDorilar: { uz: 'Mashhur dorilar', ru: 'Популярные лекарства' },
+  qidiruvTarixi: { uz: 'Qidiruv tarixi', ru: 'История поиска' },
+  tarixniTozalash: { uz: 'Tozalash', ru: 'Очистить' },
   yaqinDorixonalar: { uz: 'Yaqin dorixonalar', ru: 'Ближайшие аптеки' },
   ishlab: { uz: 'Ishlab chiqaruvchi:', ru: 'Производитель:' },
   donaNarx: { uz: 'Dona narxi:', ru: 'За шт.:' },
