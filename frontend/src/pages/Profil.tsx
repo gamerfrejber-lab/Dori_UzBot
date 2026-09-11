@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { User, FileText, ShoppingCart, LogOut, Pill } from 'lucide-react'
+import { User, FileText, ShoppingCart, LogOut, Pill, Building2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useLang } from '@/hooks/useLanguage'
@@ -15,6 +15,7 @@ export function Profil() {
   const [bronLoading, setBronLoading] = useState(false)
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [isDorixonachi, setIsDorixonachi] = useState(false)
 
   useEffect(() => {
     if (!token) {
@@ -38,6 +39,10 @@ export function Profil() {
         setBronLoading(false)
       })
     adminCheck(token).then((d) => setIsAdmin(d.admin)).catch(() => {})
+    fetch('/api/dorixonachi/check', { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.ok ? r.json() : { egasi: false })
+      .then((d) => setIsDorixonachi(d.egasi))
+      .catch(() => {})
   }, [token])
 
   const logout = () => {
@@ -134,6 +139,20 @@ export function Profil() {
           </div>
         )}
       </Card>
+
+      {isDorixonachi && (
+        <Link to="/dorixonachi">
+          <Card className="p-4 mb-4 flex items-center gap-3 cursor-pointer hover:shadow-md transition-shadow">
+            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+              <Building2 className="w-5 h-5 text-orange-500" />
+            </div>
+            <div>
+              <div className="font-bold text-ink">{t('dorixonaPanel')}</div>
+              <div className="text-xs text-ink-dim">{t('dorixonaPanelDesc')}</div>
+            </div>
+          </Card>
+        </Link>
+      )}
 
       {isAdmin && (
         <Link to="/admin">

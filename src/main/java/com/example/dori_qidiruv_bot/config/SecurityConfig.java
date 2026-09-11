@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/*.html", "/*.js", "/*.css", "/*.ico",
                                 "/*.png", "/*.svg", "/*.json", "/*.txt", "/*.webmanifest",
                                 "/assets/**", "/icons/**",
-                                "/dorixonalar", "/login", "/sms", "/profil", "/admin",
+                                "/dorixonalar", "/login", "/sms", "/profil", "/admin", "/dorixonachi",
                                 "/api/auth/**",
                                 "/css/**", "/js/**", "/images/**").permitAll()
                         // Admin ekanini tekshirish hammaga ochiq (token bo'lmasa "admin emas" deydi),
@@ -46,6 +46,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/health").permitAll()
                         .requestMatchers("/api/admin/check").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/dorixonachi/check").authenticated()
+                        .requestMatchers("/api/dorixonachi/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**", "/api/bron/*/chek").permitAll()
                         // Katalog qidiruvi va soni — mijozlar ham dori nomlarini topa olishi uchun ochiq.
                         .requestMatchers(HttpMethod.GET, "/api/katalog/qidirish", "/api/katalog/autocomplete", "/api/katalog/soni").permitAll()

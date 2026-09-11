@@ -48,4 +48,7 @@ public class Dorixona {
 
     @Column(name = "ish_tugashi")
     private String ishTugashi;
+
+    @Column(name = "egasi_telegram_id")
+    private Long egasiTelegramId;
 }

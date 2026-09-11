@@ -11,6 +11,7 @@ import { Login } from '@/pages/Login'
 import { SmsVerify } from '@/pages/SmsVerify'
 import { Profil } from '@/pages/Profil'
 import { Admin } from '@/pages/Admin'
+import { DorixonachiPanel } from '@/pages/DorixonachiPanel'
 
 function Aurora() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
               <Route path="/profil.html" element={<Profil />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin.html" element={<Admin />} />
+              <Route path="/dorixonachi" element={<DorixonachiPanel />} />
             </Routes>
           </main>
           <div className="hidden md:block">

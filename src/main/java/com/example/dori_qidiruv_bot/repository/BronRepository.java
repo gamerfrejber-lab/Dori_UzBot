@@ -53,4 +53,42 @@ public interface BronRepository extends JpaRepository<Bron, Long> {
 
     @Query("SELECT b FROM Bron b WHERE b.olibKetishMuddati < :hozir AND b.holat NOT IN ('BERILDI', 'BEKOR', 'MUDDATI_OTGAN')")
     List<Bron> muddatiOtganlar(@Param("hozir") java.time.LocalDateTime hozir);
+
+    @Query(value = """
+            SELECT b.id AS id,
+                   d.nomi AS doriNomi,
+                   d.narx AS narx,
+                   b.mijoz_ismi AS mijozIsmi,
+                   b.mijoz_telefon AS mijozTelefon,
+                   b.soni AS soni,
+                   b.tur AS tur,
+                   b.kod AS kod,
+                   b.holat AS holat,
+                   b.tolov_summasi AS tolovSummasi,
+                   b.tolov_holati AS tolovHolati,
+                   b.olib_ketish_muddati AS olibKetishMuddati,
+                   b.sana AS sana
+            FROM bron b
+            JOIN dori d ON d.id = b.dori_id
+            WHERE b.dorixona_id = :dorixonaId
+            ORDER BY b.id DESC
+            LIMIT 50
+            """, nativeQuery = true)
+    List<DorixonaBronQator> dorixonaniki(@Param("dorixonaId") Long dorixonaId);
+
+    interface DorixonaBronQator {
+        Long getId();
+        String getDoriNomi();
+        Double getNarx();
+        String getMijozIsmi();
+        String getMijozTelefon();
+        Integer getSoni();
+        String getTur();
+        String getKod();
+        String getHolat();
+        Double getTolovSummasi();
+        String getTolovHolati();
+        java.time.LocalDateTime getOlibKetishMuddati();
+        java.time.LocalDateTime getSana();
+    }
 }

@@ -111,6 +111,23 @@ const translations = {
   adminDorilar: { uz: 'Dorilar', ru: 'Лекарства' },
   adminKatalog: { uz: 'Katalog', ru: 'Каталог' },
   adminFoydalanuvchilar: { uz: 'Foydalanuvchilar', ru: 'Пользователи' },
+  dorixonaPanel: { uz: 'Dorixona paneli', ru: 'Панель аптеки' },
+  dorixonaPanelDesc: { uz: "Dorilar, bronlar va ma'lumotlarni boshqarish", ru: 'Управление лекарствами, бронями и данными' },
+  dxDorilar: { uz: 'Dorilar', ru: 'Лекарства' },
+  dxBronlar: { uz: 'Bronlar', ru: 'Записи' },
+  dxMalumot: { uz: "Ma'lumotlar", ru: 'Данные' },
+  dxDoriQoshish: { uz: "Dori qo'shish", ru: 'Добавить лекарство' },
+  dxSaqlash: { uz: 'Saqlash', ru: 'Сохранить' },
+  dxSaqlandi: { uz: 'Saqlandi!', ru: 'Сохранено!' },
+  dxNarx: { uz: 'Narx', ru: 'Цена' },
+  dxMavjud: { uz: 'Mavjud', ru: 'В наличии' },
+  dxYoq: { uz: "Dorixonangiz yo'q", ru: 'У вас нет аптеки' },
+  dxYoqDesc: { uz: "Dorixona egasi bo'lish uchun Telegram botga murojaat qiling.", ru: 'Обратитесь в Telegram бот чтобы стать владельцем аптеки.' },
+  dxBronYoq: { uz: "Bronlar yo'q", ru: 'Нет записей' },
+  dxTayyor: { uz: 'Tayyor', ru: 'Готово' },
+  dxBerildi: { uz: 'Berildi', ru: 'Выдано' },
+  dxBekor: { uz: 'Bekor', ru: 'Отменить' },
+  dxExcelImport: { uz: 'Excel import', ru: 'Импорт из Excel' },
 } as const
 
 export type TransKey = keyof typeof translations

@@ -46,7 +46,6 @@ export function Home() {
   const [searched, setSearched] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const [popular, setPopular] = useState<DoriKatalog[]>([])
   const [pharmacies, setPharmacies] = useState<(Dorixona & { _km?: number | null })[]>([])
   const [location, setLocation] = useState<UserLocation | null>(null)
   const [history, setHistory] = useState<string[]>(getHistory)
@@ -56,11 +55,6 @@ export function Home() {
 
   useEffect(() => {
     requestLocation().then(setLocation)
-
-    api
-      .katalogQidirish('таб', 6)
-      .then(setPopular)
-      .catch(() => {})
 
     api
       .dorixonalar()
@@ -191,6 +185,7 @@ export function Home() {
               <h2 className="flex items-center gap-2 text-xs font-bold text-ink-dim uppercase tracking-widest">
                 <Clock className="w-4 h-4" />
                 <span>{t('qidiruvTarixi')}</span>
+                <span className="flex-1 h-px bg-gradient-to-r from-slate-200 to-transparent" />
               </h2>
               <button
                 onClick={() => { clearHistory(); setHistory([]) }}
@@ -199,27 +194,18 @@ export function Home() {
                 {t('tarixniTozalash')}
               </button>
             </div>
-            <div className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide">
-              {history.map((q, i) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {history.slice(0, 6).map((q, i) => (
                 <button
                   key={q + i}
                   onClick={() => handleSearch(q)}
-                  className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-sm font-semibold text-ink whitespace-nowrap"
+                  className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all p-4 text-left"
                 >
-                  <Pill className="w-4 h-4 text-brand" />
-                  {q}
+                  <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-3">
+                    <Pill className="w-5 h-5 text-brand" />
+                  </div>
+                  <div className="font-bold text-ink text-sm truncate">{q}</div>
                 </button>
-              ))}
-            </div>
-          </>
-        )}
-
-        {history.length === 0 && popular.length > 0 && (
-          <>
-            <SectionTitle icon={<Pill className="w-4 h-4" />} text={t('mashhurDorilar')} />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {popular.map((k) => (
-                <CatalogCard key={k.id} drug={k} onClick={() => handleSearch(k.nomi)} />
               ))}
             </div>
           </>
