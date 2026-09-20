@@ -39,6 +39,7 @@ public class SecurityConfig {
                                 "/*.png", "/*.svg", "/*.json", "/*.txt", "/*.webmanifest",
                                 "/assets/**", "/icons/**",
                                 "/dorixonalar", "/login", "/sms", "/profil", "/admin", "/dorixonachi",
+                                "/kategoriya/**",
                                 "/api/auth/**",
                                 "/css/**", "/js/**", "/images/**").permitAll()
                         // Admin ekanini tekshirish hammaga ochiq (token bo'lmasa "admin emas" deydi),
