@@ -47,25 +47,25 @@ export function Hero({ onSearch }: Props) {
   }, [])
 
   return (
-    <section className="max-w-[1180px] mx-auto px-4 pt-6 pb-2">
-      <div className="animate-fade-up delay-1 grid grid-cols-[1.7fr_1fr] max-[820px]:grid-cols-1 gap-5 items-stretch">
-        <div className="bg-gradient-to-br from-blue-50 via-blue-50/40 to-orange-50 border border-slate-100 rounded-[28px] p-6 lg:p-10 shadow-[0_12px_34px_rgba(2,32,71,0.06)] flex flex-col justify-center">
-          <Badge variant="warning" className="self-start gap-1.5 mb-5 px-3 py-1.5">
+    <section className="max-w-[1180px] mx-auto px-4 pt-4 sm:pt-6 pb-2">
+      <div className="animate-fade-up delay-1 grid grid-cols-[1.7fr_1fr] max-[820px]:grid-cols-1 gap-4 sm:gap-5 items-stretch">
+        <div className="bg-gradient-to-br from-blue-50 via-blue-50/40 to-orange-50 border border-slate-100 rounded-[22px] sm:rounded-[28px] p-5 sm:p-6 lg:p-10 shadow-[0_12px_34px_rgba(2,32,71,0.06)] flex flex-col justify-center">
+          <Badge variant="warning" className="self-start gap-1.5 mb-3 sm:mb-5 px-3 py-1.5">
             <Search className="w-3.5 h-3.5" />
             {t('qidiruvBadge')}
           </Badge>
-          <h1 className="text-3xl lg:text-5xl font-extrabold text-ink leading-[1.06] tracking-tight mb-2">
+          <h1 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-ink leading-[1.1] tracking-tight mb-1.5 sm:mb-2">
             {t('salom')}{' '}
             <span className="text-brand-ember">{userName || t('mehmon')}!</span>
           </h1>
-          <p className="text-xl lg:text-2xl font-extrabold text-ink leading-tight mb-3">
+          <p className="text-lg sm:text-xl lg:text-2xl font-extrabold text-ink leading-tight mb-2 sm:mb-3">
             {t('doriTopish')}{' '}
             <span className="text-brand">{t('endiOson')}</span>
           </p>
-          <p className="text-ink-dim text-base max-w-lg">{t('heroDesc')}</p>
+          <p className="text-ink-dim text-sm sm:text-base max-w-lg">{t('heroDesc')}</p>
         </div>
 
-        <div className="flex flex-col gap-3 max-[820px]:flex-row">
+        <div className="flex flex-col gap-2.5 sm:gap-3 max-[820px]:flex-row">
           <StatCard
             value={<AnimatedNumber value={drugCount} />}
             label={t('katalogdaDori')}
@@ -83,12 +83,12 @@ export function Hero({ onSearch }: Props) {
         <SearchBox onSearch={onSearch} />
       </div>
 
-      <div className="animate-fade-up delay-3 flex gap-2 flex-wrap mt-4">
+      <div className="animate-fade-up delay-3 flex gap-2 mt-4 overflow-x-auto scrollbar-hide pb-1">
         {quickTags.map((tag) => (
           <button
             key={tag.label}
             onClick={() => onSearch(tag.q)}
-            className="flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-100 rounded-full text-sm font-medium text-ink-dim shadow-[0_4px_12px_rgba(2,32,71,0.04)] hover:-translate-y-0.5 hover:text-brand hover:border-brand/30 hover:shadow-[0_10px_22px_rgba(37,99,235,0.16)] transition-all active:translate-y-0 active:scale-[0.97]"
+            className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-100 rounded-full text-sm font-medium text-ink-dim shadow-[0_4px_12px_rgba(2,32,71,0.04)] hover:-translate-y-0.5 hover:text-brand hover:border-brand/30 hover:shadow-[0_10px_22px_rgba(37,99,235,0.16)] transition-all active:translate-y-0 active:scale-[0.97]"
           >
             <Pill className="w-3.5 h-3.5" />
             {tag.label}
@@ -109,15 +109,15 @@ function StatCard({
   orange?: boolean
 }) {
   return (
-    <div className="bg-white border border-slate-100 rounded-[22px] p-4 lg:p-5 shadow-[0_8px_24px_rgba(2,32,71,0.05)] flex-1 flex flex-col justify-center">
+    <div className="bg-white border border-slate-100 rounded-[18px] sm:rounded-[22px] p-3 sm:p-4 lg:p-5 shadow-[0_8px_24px_rgba(2,32,71,0.05)] flex-1 flex flex-col justify-center min-w-0">
       <div
-        className={`text-2xl lg:text-3xl font-extrabold leading-none ${
+        className={`text-xl sm:text-2xl lg:text-3xl font-extrabold leading-none ${
           orange ? 'text-brand-ember' : 'text-brand'
         }`}
       >
         {value}
       </div>
-      <div className="text-ink-dim text-sm mt-1 font-medium">{label}</div>
+      <div className="text-ink-dim text-xs sm:text-sm mt-0.5 sm:mt-1 font-medium">{label}</div>
     </div>
   )
 }

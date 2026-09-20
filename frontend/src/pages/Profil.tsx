@@ -83,20 +83,20 @@ export function Profil() {
     : '—'
 
   return (
-    <section className="max-w-[800px] mx-auto px-4 py-8">
+    <section className="max-w-[800px] mx-auto px-4 py-6 sm:py-8 pb-24 md:pb-8">
       <div className="text-center mb-8">
-        <div className="w-[110px] h-[110px] rounded-full bg-gradient-to-br from-brand-sea to-brand flex items-center justify-center mx-auto shadow-[0_14px_30px_rgba(37,99,235,0.35)]">
-          <User className="w-14 h-14 text-white" />
+        <div className="w-20 sm:w-[110px] h-20 sm:h-[110px] rounded-full bg-gradient-to-br from-brand-sea to-brand flex items-center justify-center mx-auto shadow-[0_14px_30px_rgba(37,99,235,0.35)]">
+          <User className="w-10 sm:w-14 h-10 sm:h-14 text-white" />
         </div>
-        <h1 className="text-3xl font-extrabold text-ink mt-4">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-ink mt-4">
           {user.name || t('foydalanuvchi')}
         </h1>
         <p className="text-ink-dim font-semibold mt-1">{user.phoneNumber}</p>
       </div>
 
-      <Card className="p-6 mb-4">
-        <h3 className="font-bold text-ink text-lg flex items-center gap-2 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+      <Card className="p-4 sm:p-6 mb-4">
+        <h3 className="font-bold text-ink text-base sm:text-lg flex items-center gap-2 mb-3 sm:mb-4">
+          <div className="w-9 sm:w-10 h-9 sm:h-10 rounded-xl bg-blue-50 flex items-center justify-center">
             <FileText className="w-5 h-5 text-brand" />
           </div>
           {t('shaxsiyMalumot')}
@@ -108,9 +108,9 @@ export function Profil() {
         </div>
       </Card>
 
-      <Card className="p-6 mb-4">
-        <h3 className="font-bold text-ink text-lg flex items-center gap-2 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+      <Card className="p-4 sm:p-6 mb-4">
+        <h3 className="font-bold text-ink text-base sm:text-lg flex items-center gap-2 mb-3 sm:mb-4">
+          <div className="w-9 sm:w-10 h-9 sm:h-10 rounded-xl bg-blue-50 flex items-center justify-center">
             <ShoppingCart className="w-5 h-5 text-brand" />
           </div>
           {t('meningBandlarim')}

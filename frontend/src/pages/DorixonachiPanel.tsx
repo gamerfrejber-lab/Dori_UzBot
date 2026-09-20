@@ -68,22 +68,22 @@ export function DorixonachiPanel() {
   ]
 
   return (
-    <section className="max-w-[1100px] mx-auto px-4 py-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-extrabold text-ink flex items-center gap-2">
-          <Building2 className="w-6 h-6 text-brand" />
+    <section className="max-w-[1100px] mx-auto px-4 py-4 sm:py-6">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-extrabold text-ink flex items-center gap-2">
+          <Building2 className="w-5 sm:w-6 h-5 sm:h-6 text-brand" />
           {dorixona.name}
         </h1>
-        <p className="text-ink-dim mt-1">{t('dorixonaPanelDesc')}</p>
+        <p className="text-ink-dim mt-1 text-sm sm:text-base">{t('dorixonaPanelDesc')}</p>
       </div>
 
-      <div className="flex gap-2 flex-wrap mb-5">
+      <div className="flex gap-1.5 sm:gap-2 mb-4 sm:mb-5 overflow-x-auto scrollbar-hide">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={cn(
-              'flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border',
+              'flex-shrink-0 flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-full text-sm font-semibold transition-all border',
               activeTab === tab.key
                 ? 'text-white bg-gradient-to-br from-brand-sea to-brand border-transparent shadow-[0_8px_20px_rgba(37,99,235,0.35)]'
                 : 'text-ink-dim bg-white border-slate-100 hover:text-brand'
@@ -95,7 +95,7 @@ export function DorixonachiPanel() {
         ))}
       </div>
 
-      <Card className="p-6">
+      <Card className="p-4 sm:p-6">
         {activeTab === 'dorilar' && <DorilarTab token={token!} />}
         {activeTab === 'bronlar' && <BronlarTab token={token!} />}
         {activeTab === 'malumot' && <MalumotTab token={token!} dorixona={dorixona} onUpdate={setDorixona} />}

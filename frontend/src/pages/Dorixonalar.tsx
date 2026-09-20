@@ -97,7 +97,7 @@ export function Dorixonalar() {
   })
 
   return (
-    <section className="max-w-[1180px] mx-auto px-4 py-6">
+    <section className="max-w-[1180px] mx-auto px-4 py-6 pb-24 md:pb-6">
       <div className="mb-6">
         <h1 className="text-2xl font-extrabold text-ink">{t('dorixonaListTitle')}</h1>
         <p className="text-ink-dim mt-1">{t('dorixonaListDesc')}</p>

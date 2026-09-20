@@ -45,7 +45,7 @@ export function CategorySidebar({ open, onClose }: Props) {
     <>
       {open && (
         <div
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[60] transition-opacity"
+          className="fixed inset-0 bg-black/30 z-[60] transition-opacity"
           onClick={onClose}
         />
       )}

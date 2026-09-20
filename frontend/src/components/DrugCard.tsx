@@ -20,7 +20,7 @@ export function DrugResultCard({ drug, onClick }: DrugResultCardProps) {
 
   return (
     <Card
-      className="p-5 cursor-pointer hover:-translate-y-1.5 hover:shadow-[0_18px_40px_rgba(2,32,71,0.10)]"
+      className="p-4 sm:p-5 cursor-pointer hover:-translate-y-1.5 hover:shadow-[0_18px_40px_rgba(2,32,71,0.10)]"
       onClick={onClick}
     >
       <div className="flex items-start gap-3 mb-3">
@@ -106,7 +106,7 @@ export function CatalogCard({ drug, onClick }: CatalogCardProps) {
 
   return (
     <Card
-      className="relative p-5 cursor-pointer hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(2,32,71,0.10)]"
+      className="relative p-4 sm:p-5 cursor-pointer hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(2,32,71,0.10)]"
       onClick={onClick}
     >
       <Badge variant="warning" className="absolute top-4 right-4">

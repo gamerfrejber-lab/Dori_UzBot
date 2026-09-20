@@ -135,7 +135,7 @@ export function Home() {
     <>
       <Hero onSearch={handleSearch} />
 
-      <div className="max-w-[1180px] mx-auto px-4 pb-8">
+      <div className="max-w-[1180px] mx-auto px-4 pb-24 md:pb-8">
         {searched && (
           <div className="mt-6">
             {searching && (

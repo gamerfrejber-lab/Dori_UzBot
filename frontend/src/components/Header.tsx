@@ -24,16 +24,16 @@ export function Header() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-xl hover:bg-slate-100 transition-colors"
+            className="p-1.5 sm:p-2 rounded-xl hover:bg-slate-100 transition-colors"
             aria-label="Kategoriyalar"
           >
-            <Menu className="w-6 h-6 text-ink" />
+            <Menu className="w-5 sm:w-6 h-5 sm:h-6 text-ink" />
           </button>
-          <Link to="/" className="flex items-center gap-2.5 font-extrabold text-lg text-ink no-underline">
-            <div className="w-[42px] h-[42px] p-2 bg-gradient-to-br from-brand-sea to-brand rounded-[14px] shadow-[0_6px_16px_rgba(37,99,235,0.32)] flex items-center justify-center">
-              <Pill className="w-6 h-6 text-white" />
+          <Link to="/" className="flex items-center gap-2 sm:gap-2.5 font-extrabold text-lg text-ink no-underline">
+            <div className="w-9 sm:w-[42px] h-9 sm:h-[42px] p-1.5 sm:p-2 bg-gradient-to-br from-brand-sea to-brand rounded-[12px] sm:rounded-[14px] shadow-[0_6px_16px_rgba(37,99,235,0.32)] flex items-center justify-center">
+              <Pill className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
             </div>
-            <span className="max-[360px]:hidden">Dori Qidiruv</span>
+            <span className="max-[420px]:hidden">Dori Qidiruv</span>
           </Link>
         </div>
 

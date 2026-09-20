@@ -128,7 +128,7 @@ export function SearchBox({ onSearch }: Props) {
           onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
           placeholder={t('qidirish')}
           autoComplete="off"
-          className="w-full py-3.5 pl-6 pr-14 bg-transparent rounded-full text-ink text-base outline-none placeholder:text-ink-faint"
+          className="w-full py-3 sm:py-3.5 pl-4 sm:pl-6 pr-13 sm:pr-14 bg-transparent rounded-full text-ink text-base outline-none placeholder:text-ink-faint"
         />
         <button
           onClick={() => doSearch(query)}
