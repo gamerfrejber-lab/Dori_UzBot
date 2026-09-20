@@ -1,28 +1,41 @@
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ShoppingCart, User, Pill } from 'lucide-react'
+import { ShoppingCart, User, Pill, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useLang } from '@/hooks/useLanguage'
 import { useCart } from '@/hooks/useCart'
 import { cn } from '@/lib/utils'
+import { CategorySidebar } from '@/components/CategorySidebar'
 
 export function Header() {
   const { lang, setLang, t } = useLang()
   const { count, toggle } = useCart()
   const location = useLocation()
   const token = localStorage.getItem('token')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const isActive = (path: string) =>
     location.pathname === path || (path === '/' && location.pathname === '/index.html')
 
   return (
+    <>
     <header className="sticky top-0 z-50 bg-white shadow-[0_4px_24px_rgba(2,32,71,0.06)] rounded-b-[22px]">
       <div className="max-w-[1180px] mx-auto px-4 py-3 flex items-center justify-between gap-3">
-        <Link to="/" className="flex items-center gap-2.5 font-extrabold text-lg text-ink no-underline">
-          <div className="w-[42px] h-[42px] p-2 bg-gradient-to-br from-brand-sea to-brand rounded-[14px] shadow-[0_6px_16px_rgba(37,99,235,0.32)] flex items-center justify-center">
-            <Pill className="w-6 h-6 text-white" />
-          </div>
-          <span className="max-[360px]:hidden">Dori Qidiruv</span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-xl hover:bg-slate-100 transition-colors"
+            aria-label="Kategoriyalar"
+          >
+            <Menu className="w-6 h-6 text-ink" />
+          </button>
+          <Link to="/" className="flex items-center gap-2.5 font-extrabold text-lg text-ink no-underline">
+            <div className="w-[42px] h-[42px] p-2 bg-gradient-to-br from-brand-sea to-brand rounded-[14px] shadow-[0_6px_16px_rgba(37,99,235,0.32)] flex items-center justify-center">
+              <Pill className="w-6 h-6 text-white" />
+            </div>
+            <span className="max-[360px]:hidden">Dori Qidiruv</span>
+          </Link>
+        </div>
 
         <nav className="flex items-center gap-1">
           {/* Desktop nav links */}
@@ -98,5 +111,7 @@ export function Header() {
         </nav>
       </div>
     </header>
+    <CategorySidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    </>
   )
 }

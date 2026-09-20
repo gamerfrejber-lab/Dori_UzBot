@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Pill, MapPin, Loader2, Clock } from 'lucide-react'
 import { Hero } from '@/components/Hero'
 import { DrugResultCard, CatalogCard } from '@/components/DrugCard'
@@ -35,6 +35,8 @@ function clearHistory() {
 export function Home() {
   const { t } = useLang()
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const autoSearchDone = useRef(false)
 
   useEffect(() => {
     if (!localStorage.getItem('token')) navigate('/login')
@@ -119,6 +121,15 @@ export function Home() {
     },
     [location, t]
   )
+
+  useEffect(() => {
+    const q = searchParams.get('search')
+    if (q && !autoSearchDone.current) {
+      autoSearchDone.current = true
+      setSearchParams({}, { replace: true })
+      handleSearch(q)
+    }
+  }, [searchParams, setSearchParams, handleSearch])
 
   return (
     <>
