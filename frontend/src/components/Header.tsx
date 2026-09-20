@@ -20,8 +20,8 @@ export function Header() {
   return (
     <>
     <header className="sticky top-0 z-50 bg-white shadow-[0_4px_24px_rgba(2,32,71,0.06)] rounded-b-[22px]">
-      <div className="max-w-[1180px] mx-auto px-4 py-3 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
+      <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-10 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             onClick={() => setSidebarOpen(true)}
             className="p-1.5 sm:p-2 rounded-xl hover:bg-slate-100 transition-colors"
@@ -29,20 +29,20 @@ export function Header() {
           >
             <Menu className="w-5 sm:w-6 h-5 sm:h-6 text-ink" />
           </button>
-          <Link to="/" className="flex items-center gap-2 sm:gap-2.5 font-extrabold text-lg text-ink no-underline">
-            <div className="w-9 sm:w-[42px] h-9 sm:h-[42px] p-1.5 sm:p-2 bg-gradient-to-br from-brand-sea to-brand rounded-[12px] sm:rounded-[14px] shadow-[0_6px_16px_rgba(37,99,235,0.32)] flex items-center justify-center">
-              <Pill className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
+          <Link to="/" className="flex items-center gap-1.5 sm:gap-2.5 font-extrabold text-ink no-underline">
+            <div className="w-8 sm:w-[42px] h-8 sm:h-[42px] p-1.5 sm:p-2 bg-gradient-to-br from-brand-sea to-brand rounded-[10px] sm:rounded-[14px] shadow-[0_6px_16px_rgba(37,99,235,0.32)] flex items-center justify-center">
+              <Pill className="w-4 sm:w-6 h-4 sm:h-6 text-white" />
             </div>
-            <span className="max-[420px]:hidden">Dori Qidiruv</span>
+            <span className="text-[15px] sm:text-lg">Dori Qidiruv</span>
           </Link>
         </div>
 
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-1 sm:gap-1.5">
           {/* Desktop nav links */}
           <Link
             to="/"
             className={cn(
-              'hidden md:inline-flex px-3 py-1.5 rounded-full text-sm font-semibold transition-all no-underline',
+              'hidden md:inline-flex px-3.5 py-1.5 rounded-full text-sm font-semibold transition-all no-underline',
               isActive('/')
                 ? 'text-white bg-gradient-to-br from-brand-sea to-brand shadow-[0_6px_16px_rgba(37,99,235,0.35)]'
                 : 'text-ink-dim hover:text-brand hover:bg-brand/[0.08]'
@@ -53,7 +53,7 @@ export function Header() {
           <Link
             to="/dorixonalar"
             className={cn(
-              'hidden md:inline-flex px-3 py-1.5 rounded-full text-sm font-semibold transition-all no-underline',
+              'hidden md:inline-flex px-3.5 py-1.5 rounded-full text-sm font-semibold transition-all no-underline',
               isActive('/dorixonalar')
                 ? 'text-white bg-gradient-to-br from-brand-sea to-brand shadow-[0_6px_16px_rgba(37,99,235,0.35)]'
                 : 'text-ink-dim hover:text-brand hover:bg-brand/[0.08]'
@@ -80,7 +80,7 @@ export function Header() {
             <button
               onClick={() => setLang('uz')}
               className={cn(
-                'px-2.5 py-1 rounded-full text-xs font-bold transition-all',
+                'px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold transition-all',
                 lang === 'uz'
                   ? 'text-white bg-gradient-to-br from-brand-sea to-brand shadow-[0_4px_12px_rgba(37,99,235,0.35)]'
                   : 'text-ink-faint hover:text-ink-dim'
@@ -91,7 +91,7 @@ export function Header() {
             <button
               onClick={() => setLang('ru')}
               className={cn(
-                'px-2.5 py-1 rounded-full text-xs font-bold transition-all',
+                'px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold transition-all',
                 lang === 'ru'
                   ? 'text-white bg-gradient-to-br from-brand-sea to-brand shadow-[0_4px_12px_rgba(37,99,235,0.35)]'
                   : 'text-ink-faint hover:text-ink-dim'
