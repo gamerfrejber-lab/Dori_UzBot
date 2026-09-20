@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import {
   Brain, Thermometer, Wind, Stethoscope, Heart, Droplets, Bone,
   Syringe, Eye, Baby, Sparkles, Apple, ShieldPlus, Pill,
-  ArrowLeft, Loader2, Search, Star,
+  ArrowLeft, Loader2, Star, BookOpen, Building2,
 } from 'lucide-react'
 import { getCategoryBySlug, type Category } from '@/lib/categories'
 import { DrugResultCard, CatalogCard } from '@/components/DrugCard'
@@ -29,6 +29,7 @@ export function CategoryPage() {
   const [loading, setLoading] = useState(true)
   const [selectedDrug, setSelectedDrug] = useState<DoriQidiruvResult | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const [showAllKatalog, setShowAllKatalog] = useState(false)
 
   useEffect(() => {
     if (!localStorage.getItem('token')) navigate('/login')
@@ -39,34 +40,37 @@ export function CategoryPage() {
       setLoading(true)
       setResults([])
       setKatalogResults([])
+      setShowAllKatalog(false)
 
       const loc = await requestLocation().catch(() => null)
 
       const allResults: DoriQidiruvResult[] = []
       const allKatalog: DoriKatalog[] = []
-      const seenIds = new Set<number>()
+      const seenDoriIds = new Set<number>()
+      const seenKatIds = new Set<number>()
 
       for (const term of cat.search) {
         try {
-          const data = await api.doriQidirish(term)
-          if (data.length > 0) {
-            for (const d of data) {
-              if (!seenIds.has(d.id)) {
-                seenIds.add(d.id)
-                allResults.push(d)
-              }
+          const [doriData, katData] = await Promise.all([
+            api.doriQidirish(term),
+            api.katalogQidirish(term, 50),
+          ])
+
+          for (const d of doriData) {
+            if (!seenDoriIds.has(d.id)) {
+              seenDoriIds.add(d.id)
+              allResults.push(d)
             }
-          } else {
-            const katData = await api.katalogQidirish(term)
-            for (const k of katData) {
-              if (!seenIds.has(k.id)) {
-                seenIds.add(k.id)
-                allKatalog.push(k)
-              }
+          }
+
+          for (const k of katData) {
+            if (!seenKatIds.has(k.id)) {
+              seenKatIds.add(k.id)
+              allKatalog.push(k)
             }
           }
         } catch {
-          // ignore individual search failures
+          // ignore
         }
       }
 
@@ -105,6 +109,7 @@ export function CategoryPage() {
 
   const Icon = iconMap[category.iconName] || Pill
   const isBolalar = category.slug === 'bolalar'
+  const katalogToShow = showAllKatalog ? katalogResults : katalogResults.slice(0, 12)
 
   return (
     <>
@@ -154,19 +159,6 @@ export function CategoryPage() {
       </section>
 
       <div className="max-w-[1180px] mx-auto px-4 pb-24 md:pb-8">
-        <div className="flex items-center gap-2 mt-6 mb-4">
-          <Search className={`w-4 h-4 ${isBolalar ? 'text-pink-400' : 'text-ink-faint'}`} />
-          <h2 className={`text-xs font-bold uppercase tracking-widest ${isBolalar ? 'text-pink-400' : 'text-ink-dim'}`}>
-            {lang === 'uz' ? 'Topilgan dorilar' : 'Найденные лекарства'}
-          </h2>
-          <span className={`flex-1 h-px ${isBolalar ? 'bg-gradient-to-r from-pink-200 to-transparent' : 'bg-gradient-to-r from-slate-200 to-transparent'}`} />
-          {!loading && (
-            <span className="text-xs text-ink-faint font-semibold">
-              {results.length + katalogResults.length} {lang === 'uz' ? 'ta' : 'шт'}
-            </span>
-          )}
-        </div>
-
         {loading && (
           <div className="flex items-center justify-center gap-2 py-12 text-ink-dim">
             <Loader2 className={`w-5 h-5 animate-spin ${isBolalar ? 'text-pink-400' : ''}`} />
@@ -175,43 +167,78 @@ export function CategoryPage() {
         )}
 
         {!loading && results.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            {results.map((drug, i) => (
-              <DrugResultCard
-                key={drug.id + '-' + i}
-                drug={drug}
-                onClick={() => {
-                  setSelectedDrug(drug)
-                  setModalOpen(true)
-                }}
-              />
-            ))}
-          </div>
-        )}
-
-        {!loading && results.length === 0 && katalogResults.length > 0 && (
           <>
-            <div className={`${isBolalar ? 'bg-pink-50 border-pink-100' : 'bg-white border-slate-100'} rounded-3xl border shadow-sm p-5 mb-4 text-ink-dim text-sm`}>
-              {t('katalogInfo')}
-            </div>
+            <SectionHeader
+              icon={<Building2 className="w-4 h-4" />}
+              title={lang === 'uz' ? 'Dorixonalarda mavjud' : 'Есть в аптеках'}
+              count={results.length}
+              lang={lang}
+              pink={isBolalar}
+            />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {katalogResults.map((k) => (
-                <CatalogCard key={k.id} drug={k} onClick={() => {
-                  navigate(`/?search=${encodeURIComponent(k.nomi)}`)
-                }} />
+              {results.map((drug, i) => (
+                <DrugResultCard
+                  key={drug.id + '-' + i}
+                  drug={drug}
+                  onClick={() => {
+                    setSelectedDrug(drug)
+                    setModalOpen(true)
+                  }}
+                />
               ))}
             </div>
           </>
         )}
 
+        {!loading && katalogResults.length > 0 && (
+          <>
+            <SectionHeader
+              icon={<BookOpen className="w-4 h-4" />}
+              title={lang === 'uz' ? 'Katalogdagi dorilar' : 'Из каталога лекарств'}
+              count={katalogResults.length}
+              lang={lang}
+              pink={isBolalar}
+              className={results.length > 0 ? 'mt-8' : ''}
+            />
+            {results.length === 0 && (
+              <div className={`${isBolalar ? 'bg-pink-50 border-pink-100' : 'bg-blue-50 border-blue-100'} rounded-2xl border p-4 mb-4 text-sm text-ink-dim`}>
+                {lang === 'uz'
+                  ? "Bu dorilar katalogda bor, lekin hozircha dorixonalarda kiritilmagan. Dorixonadan so'rang!"
+                  : 'Эти лекарства есть в каталоге, но пока не внесены аптеками. Спросите в аптеке!'}
+              </div>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {katalogToShow.map((k) => (
+                <CatalogCard key={k.id} drug={k} onClick={() => {
+                  navigate(`/?search=${encodeURIComponent(k.nomi)}`)
+                }} />
+              ))}
+            </div>
+            {katalogResults.length > 12 && !showAllKatalog && (
+              <button
+                onClick={() => setShowAllKatalog(true)}
+                className={`w-full mt-4 py-3 rounded-2xl font-semibold text-sm transition-all ${
+                  isBolalar
+                    ? 'bg-pink-50 text-pink-600 hover:bg-pink-100 border border-pink-200'
+                    : 'bg-brand/5 text-brand hover:bg-brand/10 border border-brand/20'
+                }`}
+              >
+                {lang === 'uz'
+                  ? `Yana ${katalogResults.length - 12} ta dorini ko'rsatish`
+                  : `Показать ещё ${katalogResults.length - 12} лекарств`}
+              </button>
+            )}
+          </>
+        )}
+
         {!loading && results.length === 0 && katalogResults.length === 0 && (
-          <div className={`${isBolalar ? 'bg-pink-50 border-pink-100' : 'bg-white border-slate-100'} rounded-3xl border shadow-sm p-8 text-center text-ink-dim`}>
+          <div className={`mt-6 ${isBolalar ? 'bg-pink-50 border-pink-100' : 'bg-white border-slate-100'} rounded-3xl border shadow-sm p-8 text-center text-ink-dim`}>
             <Pill className={`w-8 h-8 mx-auto mb-3 ${isBolalar ? 'text-pink-300' : 'text-ink-faint'}`} />
             {t('topilmadi')}
           </div>
         )}
 
-        {isBolalar && !loading && results.length > 0 && (
+        {isBolalar && !loading && (results.length > 0 || katalogResults.length > 0) && (
           <div className="mt-6 bg-gradient-to-r from-pink-50 to-yellow-50 border border-pink-100 rounded-2xl p-4 flex items-start gap-3">
             <Star className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
             <p className="text-sm text-pink-700">
@@ -229,5 +256,34 @@ export function CategoryPage() {
         onClose={() => setModalOpen(false)}
       />
     </>
+  )
+}
+
+function SectionHeader({
+  icon,
+  title,
+  count,
+  lang,
+  pink,
+  className = '',
+}: {
+  icon: React.ReactNode
+  title: string
+  count: number
+  lang: string
+  pink?: boolean
+  className?: string
+}) {
+  return (
+    <div className={`flex items-center gap-2 mt-6 mb-4 ${className}`}>
+      <span className={pink ? 'text-pink-400' : 'text-ink-faint'}>{icon}</span>
+      <h2 className={`text-xs font-bold uppercase tracking-widest ${pink ? 'text-pink-400' : 'text-ink-dim'}`}>
+        {title}
+      </h2>
+      <span className={`flex-1 h-px ${pink ? 'bg-gradient-to-r from-pink-200 to-transparent' : 'bg-gradient-to-r from-slate-200 to-transparent'}`} />
+      <span className="text-xs text-ink-faint font-semibold">
+        {count} {lang === 'uz' ? 'ta' : 'шт'}
+      </span>
+    </div>
   )
 }
