@@ -22,19 +22,23 @@ public class KeepAliveService {
             .connectTimeout(Duration.ofSeconds(10))
             .build();
 
-    @Scheduled(fixedRate = 840_000)
+    // Render free servislar 15 daqiqa so'rovsiz qolsa uxlaydi — 10 daqiqada bir ping yetarli.
+    @Scheduled(fixedRate = 600_000)
     public void ping() {
         if (keepAliveUrl == null || keepAliveUrl.isBlank()) return;
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(keepAliveUrl))
-                    .timeout(Duration.ofSeconds(15))
-                    .GET()
-                    .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            log.debug("Keep-alive ping: {}", response.statusCode());
-        } catch (Exception e) {
-            log.warn("Keep-alive ping muvaffaqiyatsiz: {}", e.getMessage());
+        for (String url : keepAliveUrl.split(",")) {
+            if (url.isBlank()) continue;
+            try {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(url.trim()))
+                        .timeout(Duration.ofSeconds(60))
+                        .GET()
+                        .build();
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                log.debug("Keep-alive ping {}: {}", url.trim(), response.statusCode());
+            } catch (Exception e) {
+                log.warn("Keep-alive ping muvaffaqiyatsiz ({}): {}", url.trim(), e.getMessage());
+            }
         }
     }
 }
