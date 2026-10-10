@@ -1,22 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import {
-  Brain, Thermometer, Wind, Stethoscope, Heart, Droplets, Bone,
-  Syringe, Eye, Baby, Sparkles, Apple, ShieldPlus, Pill,
-  ArrowLeft, Loader2, Star, BookOpen, Building2,
-} from 'lucide-react'
+import { Baby, Pill, ArrowLeft, Loader2, Star, BookOpen, Building2 } from 'lucide-react'
 import { getCategoryBySlug, type Category } from '@/lib/categories'
+import { categoryIcons, defaultCategoryIcon } from '@/lib/categoryIcons'
 import { DrugResultCard, CatalogCard } from '@/components/DrugCard'
 import { DrugModal } from '@/components/DrugModal'
 import { useLang } from '@/hooks/useLanguage'
 import * as api from '@/lib/api'
 import type { DoriQidiruvResult, DoriKatalog } from '@/lib/api'
 import { requestLocation, distanceKm } from '@/lib/geo'
-
-const iconMap: Record<string, React.ElementType> = {
-  Brain, Thermometer, Wind, Stethoscope, Heart, Droplets, Bone,
-  Syringe, Eye, Baby, Sparkles, Apple, ShieldPlus, Pill,
-}
 
 export function CategoryPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -44,33 +36,19 @@ export function CategoryPage() {
 
       const loc = await requestLocation().catch(() => null)
 
-      const allResults: DoriQidiruvResult[] = []
       const allKatalog: DoriKatalog[] = []
-      const seenDoriIds = new Set<number>()
       const seenKatIds = new Set<number>()
 
-      for (const term of cat.search) {
-        try {
-          const [doriData, katData] = await Promise.all([
-            api.doriQidirish(term),
-            api.katalogQidirish(term, 50),
-          ])
+      // Dorixonadagi dorilar kategoriyasi serverda aniqlanadi; katalog esa kalit so'zlar bo'yicha qidiriladi.
+      const [allResults, katalogLists] = await Promise.all([
+        api.doriKategoriya(cat.slug).catch((): DoriQidiruvResult[] => []),
+        Promise.all(cat.search.map((term) => api.katalogQidirish(term, 50).catch((): DoriKatalog[] => []))),
+      ])
 
-          for (const d of doriData) {
-            if (!seenDoriIds.has(d.id)) {
-              seenDoriIds.add(d.id)
-              allResults.push(d)
-            }
-          }
-
-          for (const k of katData) {
-            if (!seenKatIds.has(k.id)) {
-              seenKatIds.add(k.id)
-              allKatalog.push(k)
-            }
-          }
-        } catch {
-          // ignore
+      for (const k of katalogLists.flat()) {
+        if (!seenKatIds.has(k.id)) {
+          seenKatIds.add(k.id)
+          allKatalog.push(k)
         }
       }
 
@@ -107,7 +85,7 @@ export function CategoryPage() {
     )
   }
 
-  const Icon = iconMap[category.iconName] || Pill
+  const Icon = categoryIcons[category.iconName] || defaultCategoryIcon
   const isBolalar = category.slug === 'bolalar'
   const katalogToShow = showAllKatalog ? katalogResults : katalogResults.slice(0, 12)
 

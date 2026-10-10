@@ -19,6 +19,12 @@ public interface DoriRepository extends JpaRepository<Dori, Long> {
             + "OR LOWER(d.nameRu) LIKE LOWER(CONCAT('%', :alt, '%')))")
     List<Dori> findByNameContainingIgnoreCase(@Param("name") String name, @Param("alt") String alt, Pageable pageable);
 
+    /** Kategoriyadagi dorilar; :belgi vergul bilan o'ralgan holda beriladi (",yurak,"). */
+    @Query("SELECT d FROM Dori d JOIN Dorixona dx ON dx.id = d.dorixonaId "
+            + "WHERE (dx.obunaTugashi IS NULL OR dx.obunaTugashi > CURRENT_TIMESTAMP) "
+            + "AND d.kategoriya LIKE CONCAT('%', :belgi, '%') ORDER BY d.name")
+    List<Dori> findByKategoriya(@Param("belgi") String belgi, Pageable pageable);
+
     /** Berilgan dorixonadagi barcha dorilar (nomi bo'yicha alifbo tartibida). */
     List<Dori> findByDorixonaIdOrderByNameAsc(Long dorixonaId);
 

@@ -13,7 +13,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'https://dori-qidiruv-bot-sayt.onrender.com',
+        target: 'https://doriuzbot-production.up.railway.app',
         changeOrigin: true,
       },
     },

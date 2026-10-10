@@ -1,12 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { X, Brain, Thermometer, Wind, Stethoscope, Heart, Droplets, Bone, Syringe, Eye, Baby, Sparkles, Apple, ShieldPlus, Pill } from 'lucide-react'
+import { X } from 'lucide-react'
 import { useLang } from '@/hooks/useLanguage'
 import { categories } from '@/lib/categories'
-
-const iconMap: Record<string, React.ElementType> = {
-  Brain, Thermometer, Wind, Stethoscope, Heart, Droplets, Bone,
-  Syringe, Eye, Baby, Sparkles, Apple, ShieldPlus, Pill,
-}
+import { categoryIcons, defaultCategoryIcon } from '@/lib/categoryIcons'
 
 interface Props {
   open: boolean
@@ -50,7 +46,7 @@ export function CategorySidebar({ open, onClose }: Props) {
 
         <div className="overflow-y-auto h-[calc(100%-65px)] py-2">
           {categories.map((cat) => {
-            const Icon = iconMap[cat.iconName] || Pill
+            const Icon = categoryIcons[cat.iconName] || defaultCategoryIcon
             return (
               <button
                 key={cat.slug}

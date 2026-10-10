@@ -22,6 +22,25 @@ export function hasCyrillic(s: string): boolean {
   return /[А-Яа-яЁё]/.test(s)
 }
 
+/**
+ * Bazada tayyor holda saqlangan nommi ("Konkor tabletka 5 mg №30"). Xom nomlar butunlay
+ * KATTA HARFDA keladi ("КОНКОР ТАБ 5МГ №30") — faqat ular qayta formatlanadi.
+ */
+export function tayyorNom(nomi: string): boolean {
+  return /[a-zа-яё]{3}/.test(nomi)
+}
+
+/** Kartada ko'rsatiladigan nom: tayyor nom to'liq (dozasi bilan), xom nom esa tozalangan holda. */
+export function doriKartaNomi(
+  drug: { nomi?: string | null; name?: string | null; nomi_ru?: string | null; nameRu?: string | null },
+  lang: 'uz' | 'ru'
+): string {
+  const uz = drug.nomi || drug.name || ''
+  const ru = drug.nomi_ru || drug.nameRu || ''
+  const tanlangan = lang === 'ru' ? ru || uz : uz || ru
+  return tayyorNom(tanlangan) ? tanlangan : doriAsosiyNomi(uz || ru, lang)
+}
+
 export function doriNomi(nomi: string, nomiRu: string | null, lang: 'uz' | 'ru'): string {
   if (lang === 'ru') return nomiRu || nomi || ''
   const n = nomi || nomiRu || ''

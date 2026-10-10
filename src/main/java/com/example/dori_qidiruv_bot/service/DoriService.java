@@ -92,7 +92,18 @@ public class DoriService {
     public List<DoriQidiruvResponse> qidirish(String nomi) {
         String alt = LatCyrUtil.hasLatin(nomi) ? LatCyrUtil.latToCyr(nomi)
                    : LatCyrUtil.hasCyrillic(nomi) ? LatCyrUtil.cyrToLat(nomi) : nomi;
-        List<Dori> dorilar = doriRepository.findByNameContainingIgnoreCase(nomi, alt, PageRequest.of(0, 50));
+        return javobga(doriRepository.findByNameContainingIgnoreCase(nomi, alt, PageRequest.of(0, 50)));
+    }
+
+    /** Kategoriya sahifasi uchun: shu kategoriyaga tushgan, dorixonalarda bor dorilar. */
+    public List<DoriQidiruvResponse> kategoriyaBoyicha(String slug) {
+        if (slug == null || !slug.matches("[a-z-]{2,40}")) {
+            return List.of();
+        }
+        return javobga(doriRepository.findByKategoriya("," + slug + ",", PageRequest.of(0, 500)));
+    }
+
+    private List<DoriQidiruvResponse> javobga(List<Dori> dorilar) {
         Map<Long, long[]> qoldiqlar = omborService.qoldiqlar();
 
         List<Long> dorixonaIds = dorilar.stream()

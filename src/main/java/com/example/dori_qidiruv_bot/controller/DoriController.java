@@ -24,6 +24,11 @@ public class DoriController {
         return ResponseEntity.ok(natijalar);
     }
 
+    @GetMapping("/kategoriya/{slug}")
+    public ResponseEntity<List<DoriQidiruvResponse>> kategoriyaDorilari(@PathVariable String slug) {
+        return ResponseEntity.ok(doriService.kategoriyaBoyicha(slug));
+    }
+
     @PostMapping
     public ResponseEntity<Dori> doriQoshish(@RequestBody Dori dori) {
         return ResponseEntity.ok(doriService.doriQoshish(dori));

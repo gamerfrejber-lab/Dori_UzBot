@@ -47,6 +47,13 @@ public class Dori {
     private Long dorixonaId;
 
     /**
+     * Kategoriya belgilari, vergul bilan o'ralgan: ",shamollash,bolalar,". Dori nomidan
+     * avtomatik aniqlanadi (KategoriyaBelgilovchi) — qo'lda to'ldirilmaydi.
+     */
+    @Column(name = "kategoriya", length = 120)
+    private String kategoriya;
+
+    /**
      * Omborda qolgani (kirim minus chiqim). Bazada saqlanmaydi — ombor harakatlaridan
      * hisoblanadi va javobga qo'shib yuboriladi.
      */

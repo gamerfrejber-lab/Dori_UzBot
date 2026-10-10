@@ -1,7 +1,7 @@
 import { Pill } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { doriAsosiyNomi, doriShakli, cyrToLat } from '@/lib/cyrillic'
+import { doriAsosiyNomi, doriKartaNomi, doriShakli, cyrToLat } from '@/lib/cyrillic'
 import { useLang } from '@/hooks/useLanguage'
 import type { DoriQidiruvResult, DoriKatalog } from '@/lib/api'
 import { formatDistance } from '@/lib/geo'
@@ -13,7 +13,7 @@ interface DrugResultCardProps {
 
 export function DrugResultCard({ drug, onClick }: DrugResultCardProps) {
   const { lang, t } = useLang()
-  const name = doriAsosiyNomi(drug.nomi || drug.name || drug.nomi_ru || drug.nameRu || '', lang)
+  const name = doriKartaNomi(drug, lang)
   const price = (drug.narx || drug.price || 0).toLocaleString()
   const pachka = drug.pachkaNarx || 0
   const ph = drug.dorixona

@@ -63,6 +63,10 @@ export async function autocomplete(q: string, limit = 30): Promise<DoriKatalog[]
   return get(`/api/katalog/autocomplete?q=${encodeURIComponent(q)}&limit=${limit}`)
 }
 
+export async function doriKategoriya(slug: string): Promise<DoriQidiruvResult[]> {
+  return get(`/api/dori/kategoriya/${encodeURIComponent(slug)}`)
+}
+
 export async function doriQidirish(nomi: string): Promise<DoriQidiruvResult[]> {
   const r = await fetch(`/api/dori/qidirish?nomi=${encodeURIComponent(nomi)}`)
   if (r.status === 404) return []
