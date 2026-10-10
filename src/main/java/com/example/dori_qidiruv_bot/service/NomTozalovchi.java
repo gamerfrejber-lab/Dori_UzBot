@@ -37,7 +37,7 @@ public class NomTozalovchi {
     /** Qo'lda tekshirilgan tarjimalar: xom nom -> {o'zbekcha, ruscha}. */
     private final Map<String, String[]> tayyorNomlar = yukla();
 
-    private record Qator(long id, String xom, String kalit, String lotinKalit, String firma, double narx, long dorixonaId) { }
+    private record Qator(long id, String nomi, String xom, String kalit, String lotinKalit, String firma, double narx, long dorixonaId) { }
 
     private static Map<String, String[]> yukla() {
         Map<String, String[]> natija = new HashMap<>();
@@ -71,8 +71,8 @@ public class NomTozalovchi {
                 if (xom.chars().noneMatch(Character::isLetter) || xom.chars().anyMatch(Character::isLowerCase)) continue;
                 String firma = q.get("ishlab_chiqaruvchi") == null ? "" : kalit((String) q.get("ishlab_chiqaruvchi"));
                 double narx = q.get("narx") == null ? 0 : ((Number) q.get("narx")).doubleValue();
-                String lotin = q.get("nomi") == null ? "" : kalit((String) q.get("nomi"));
-                xomlar.add(new Qator(((Number) q.get("id")).longValue(), xom, kalit(xom), lotin, firma, narx,
+                String nomi = q.get("nomi") == null ? "" : (String) q.get("nomi");
+                xomlar.add(new Qator(((Number) q.get("id")).longValue(), nomi, xom, kalit(xom), kalit(nomi), firma, narx,
                         ((Number) q.get("dorixona_id")).longValue()));
             }
             if (xomlar.isEmpty()) return;
@@ -97,7 +97,7 @@ public class NomTozalovchi {
             if (nom == null) nom = katalogdan.get(q.xom());
             if (nom == null) continue;
             // Tayyor ruscha nomi ham katta harflarda bo'lgan mahsulot har safar qayta yozilmasin.
-            if (kalit(nom[0]).equals(q.lotinKalit()) && kalit(nom[1]).equals(q.kalit())) continue;
+            if (qisqart(nom[0]).equals(q.nomi()) && qisqart(nom[1]).equals(q.xom())) continue;
             // kategoriya NULL — nom o'zgargach KategoriyaBelgilovchi qayta hisoblaydi.
             yangilanadi.add(new Object[]{qisqart(nom[0]), qisqart(nom[1]), q.id()});
         }
