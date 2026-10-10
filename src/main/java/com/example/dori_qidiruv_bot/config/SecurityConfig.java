@@ -68,7 +68,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         if (allowedOrigins == null || allowedOrigins.isEmpty() || allowedOrigins.get(0).isBlank()) {
-            configuration.setAllowedOriginPatterns(List.of("https://*.onrender.com", "http://localhost:*"));
+            configuration.setAllowedOriginPatterns(List.of("https://*.onrender.com", "https://*.up.railway.app", "http://localhost:*"));
         } else {
             configuration.setAllowedOrigins(allowedOrigins);
         }
