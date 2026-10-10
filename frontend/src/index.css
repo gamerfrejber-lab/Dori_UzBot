@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Telegram Mini App to'liq ekran rejimida tepadagi holat paneli va Telegram tugmalari egallagan joy. */
+    --app-top-inset: calc(var(--tg-safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px));
+  }
   * {
     margin: 0;
     padding: 0;

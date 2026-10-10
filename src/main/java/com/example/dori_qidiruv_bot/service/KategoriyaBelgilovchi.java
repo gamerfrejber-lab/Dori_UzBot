@@ -23,16 +23,19 @@ public class KategoriyaBelgilovchi {
 
     private final JdbcTemplate jdbc;
     private final KategoriyaAniqlovchi aniqlovchi;
+    private final NomTozalovchi nomTozalovchi;
 
     /** Ishga tushganda hammasi qayta hisoblanadi — qoidalar o'zgargan bo'lsa eski belgilar yangilanadi. */
     @EventListener(ApplicationReadyEvent.class)
     public void hammasiniQaytaBelgila() {
+        nomTozalovchi.tozala();
         belgila("SELECT id, nomi, nomi_ru, kategoriya FROM dori");
     }
 
-    /** Yangi qo'shilgan (hali belgilanmagan) dorilar. */
+    /** Yangi qo'shilgan (hali belgilanmagan) dorilar: avval nomi tozalanadi, keyin kategoriya belgilanadi. */
     @Scheduled(initialDelay = 120_000, fixedDelay = 120_000)
     public void yangilarniBelgila() {
+        nomTozalovchi.tozala();
         belgila("SELECT id, nomi, nomi_ru, kategoriya FROM dori WHERE kategoriya IS NULL");
     }
 

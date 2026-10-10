@@ -28,7 +28,7 @@ export function CategorySidebar({ open, onClose }: Props) {
       )}
 
       <div
-        className={`fixed top-0 left-0 h-full w-[300px] max-w-[85vw] bg-white z-[70] shadow-2xl transition-transform duration-300 ease-out ${
+        className={`fixed top-0 left-0 h-full w-[300px] max-w-[85vw] bg-white z-[70] pt-[var(--app-top-inset)] shadow-2xl transition-transform duration-300 ease-out ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >

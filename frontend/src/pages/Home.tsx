@@ -232,7 +232,7 @@ export function Home() {
                   pharmacy={ph}
                   onClick={() => {
                     sessionStorage.setItem('ochilsin', String(ph.id))
-                    window.location.href = '/dorixonalar.html'
+                    navigate('/dorixonalar')
                   }}
                 />
               ))}
