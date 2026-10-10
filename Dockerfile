@@ -19,10 +19,11 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8080/api/health || exit 1
+    CMD curl -f http://localhost:${PORT:-8080}/api/health || exit 1
+# Xotira chegarasi: foydalanishga qarab haq olinadigan hostingda hisob oshib ketmasin.
+ENV JAVA_TOOL_OPTIONS="-Xmx320m"
 ENTRYPOINT ["java", \
     "-XX:+UseSerialGC", \
-    "-XX:MaxRAMPercentage=75.0", \
     "-XX:+TieredCompilation", \
     "-XX:TieredStopAtLevel=1", \
     "-Xss256k", \
