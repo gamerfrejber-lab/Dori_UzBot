@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/*.html", "/*.js", "/*.css", "/*.ico",
-                                "/*.png", "/*.svg", "/*.json", "/*.txt", "/*.webmanifest",
+                                "/*.png", "/*.svg", "/*.json", "/*.txt", "/*.xml", "/*.webmanifest",
                                 "/assets/**", "/icons/**",
                                 "/dorixonalar", "/login", "/sms", "/profil", "/admin", "/dorixonachi",
                                 "/kategoriya/**",

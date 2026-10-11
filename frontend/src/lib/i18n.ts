@@ -57,7 +57,7 @@ const translations = {
   footer: { uz: 'Dori Qidiruv — dorini topish va oldindan band qilish xizmati', ru: 'Dori Qidiruv — сервис поиска и брони лекарств' },
   aloqa: { uz: 'Aloqa: +998 88 986 35 40', ru: 'Контакт: +998 88 986 35 40' },
   nomi: { uz: 'Nomi', ru: 'Название' },
-  dozasi: { uz: 'Dozasi:', ru: 'Доза:' },
+  dozasi: { uz: 'Shakli va dozasi:', ru: 'Форма и доза:' },
   tavsifi: { uz: 'Tavsifi:', ru: 'Описание:' },
   katalogDorisi: { uz: 'Katalog dorisi', ru: 'Из каталога' },
   tabletka: { uz: 'Tabletka', ru: 'Таблетки' },

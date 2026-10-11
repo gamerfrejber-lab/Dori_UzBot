@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Search } from 'lucide-react'
 import { autocomplete as fetchAC } from '@/lib/api'
-import { cyrToLat, doriAsosiyNom } from '@/lib/cyrillic'
+import { cyrToLat, doriAsosiyNom, tekisNom } from '@/lib/cyrillic'
 import { useLang } from '@/hooks/useLanguage'
 import { cn } from '@/lib/utils'
 
@@ -44,7 +44,7 @@ export function SearchBox({ onSearch }: Props) {
         for (const item of data) {
           const raw = item.nomi || ''
           const display = lang === 'uz' ? cyrToLat(raw) : raw
-          const shortName = doriAsosiyNom(display)
+          const shortName = tekisNom(doriAsosiyNom(display))
           const key = shortName.toUpperCase()
           if (seen.has(key)) continue
           seen.add(key)

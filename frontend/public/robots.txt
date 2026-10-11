@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
-Sitemap: https://dori-qidiruv-bot-sayt.onrender.com/sitemap.xml
+Disallow: /api/
+Disallow: /admin
+Disallow: /profil
+
+Sitemap: https://doriuzbot-production.up.railway.app/sitemap.xml

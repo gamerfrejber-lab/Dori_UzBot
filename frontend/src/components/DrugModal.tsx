@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useLang } from '@/hooks/useLanguage'
 import { useCart, type CartItem } from '@/hooks/useCart'
-import { doriKartaNomi, doriShakliDozasi, doriTavsifi, tayyorNom } from '@/lib/cyrillic'
+import { doriKartaNomi, doriShakliDozasi, doriTavsifi, tayyorNom, tayyorNomBolaklari } from '@/lib/cyrillic'
 import { formatDistance } from '@/lib/geo'
 import { bronQilish, type DoriQidiruvResult } from '@/lib/api'
 
@@ -30,9 +30,11 @@ export function DrugModal({ drug, open, onClose }: Props) {
   if (!drug) return null
 
   const rawName = drug.name || drug.nomi || drug.nameRu || drug.nomi_ru || ''
-  const name = doriKartaNomi(drug, lang)
-  // Tayyor nomda shakl va doza allaqachon bor — alohida qatorda takrorlanmaydi.
-  const dozasi = tayyorNom(rawName) ? '' : doriShakliDozasi(drug.nameRu || drug.name || rawName, lang)
+  const toliqNom = doriKartaNomi(drug, lang)
+  // Tayyor nom ikkiga bo'linadi: sarlavhada asosiy nom, shakl va doza esa pastdagi qatorda.
+  const bolaklar = tayyorNom(rawName) ? tayyorNomBolaklari(toliqNom) : null
+  const name = bolaklar ? bolaklar.asosiy : toliqNom
+  const dozasi = bolaklar ? bolaklar.qolgani : doriShakliDozasi(drug.nameRu || drug.name || rawName, lang)
   const tavsif = doriTavsifi(rawName, lang)
   const ph = drug.dorixona
   const price = (drug.price || drug.narx || 0).toLocaleString()

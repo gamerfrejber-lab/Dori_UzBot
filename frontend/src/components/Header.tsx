@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ShoppingCart, User, Pill, Menu } from 'lucide-react'
+import { ShoppingCart, User, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useLang } from '@/hooks/useLanguage'
 import { useCart } from '@/hooks/useCart'
@@ -30,9 +30,13 @@ export function Header() {
             <Menu className="w-5 sm:w-6 h-5 sm:h-6 text-ink" />
           </button>
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2.5 font-extrabold text-ink no-underline">
-            <div className="w-8 sm:w-[42px] h-8 sm:h-[42px] p-1.5 sm:p-2 bg-gradient-to-br from-brand-sea to-brand rounded-[10px] sm:rounded-[14px] shadow-[0_6px_16px_rgba(37,99,235,0.32)] flex items-center justify-center">
-              <Pill className="w-4 sm:w-6 h-4 sm:h-6 text-white" />
-            </div>
+            <img
+              src="/icons/logo-96.png"
+              alt=""
+              width={42}
+              height={42}
+              className="w-9 sm:w-[44px] h-9 sm:h-[44px] rounded-full shadow-[0_4px_12px_rgba(88,60,200,0.25)]"
+            />
             <span className="text-[15px] sm:text-lg">Dori Qidiruv</span>
           </Link>
         </div>

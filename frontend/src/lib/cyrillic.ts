@@ -41,6 +41,30 @@ export function doriKartaNomi(
   return tayyorNom(tanlangan) ? tanlangan : doriAsosiyNomi(uz || ru, lang)
 }
 
+// Nomdagi dori shakli boshlanadigan joy: shakl so'zi yoki birinchi raqam/№.
+const SHAKL_SOZI =
+  /\s(?:tabletka|kapsula|shamcha|siropi?|tomchi(?:lari)?|ampula|spreyi?|kremi?|gel|surtma|malhami|kukuni?|eritma(?:si)?|suspenziya|flakon|draje|granula|damlamasi|rektal|vaginal|eruvchan|ko'z|quloq|burun|ichish|ingalyatsiya|so'rish|таблетки|капсулы|суппозитории|сироп|капли|ампулы|спрей|крем|гель|мазь|порошок|раствор|суспензия|флакон|драже|гранулы|глазные|глазная|ушные|пастилки|настойка)(?=\s|$)|\s(?=\d|№)/i
+
+/** Tayyor nomni ikkiga bo'ladi: "Paratsetamol" + "rektal shamcha 125 mg №10". */
+export function tayyorNomBolaklari(nom: string): { asosiy: string; qolgani: string } {
+  const m = SHAKL_SOZI.exec(nom)
+  if (!m || m.index === 0) return { asosiy: nom, qolgani: '' }
+  return { asosiy: nom.slice(0, m.index).trim(), qolgani: nom.slice(m.index).trim() }
+}
+
+/**
+ * Qidiruv tavsiyalari uchun: "PARATsETAMOL-MEDISORB" -> "Paratsetamol-Medisorb".
+ * Qisqartma ko'rinishidagi qo'shimchalar (MR, GT, RNP) katta harfda qoladi; "Neo", "Gel" kabi so'zlar esa yo'q.
+ */
+export function tekisNom(nom: string): string {
+  return nom.split(/([\s-]+)/).map((bolak, i) => {
+    if (/^[\s-]+$/.test(bolak) || !/[A-Za-zА-Яа-яЁё]/.test(bolak)) return bolak
+    const qisqartma = bolak.length <= 2 || (bolak.length === 3 && !/[aeiouyаеёиоуыэюя]/i.test(bolak))
+    if (i > 0 && qisqartma) return bolak.toUpperCase()
+    return bolak.charAt(0).toUpperCase() + bolak.slice(1).toLowerCase()
+  }).join('')
+}
+
 export function doriNomi(nomi: string, nomiRu: string | null, lang: 'uz' | 'ru'): string {
   if (lang === 'ru') return nomiRu || nomi || ''
   const n = nomi || nomiRu || ''

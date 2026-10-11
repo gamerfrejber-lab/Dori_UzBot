@@ -3,20 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="description" content="Dori Qidiruv — Toshkentdagi barcha dorixonalarda kerakli dorini bir zumda topish, narxlarini solishtirish va oldindan band qilish xizmati.">
+    <title>Dori Qidiruv — Toshkent dorixonalarida dori topish va band qilish</title>
+    <meta name="description" content="Dori Qidiruv — Toshkentdagi dorixonalarda kerakli dorini bir zumda toping: 26 000 dan ortiq dori katalogi, narxlar, eng yaqin dorixona va oldindan band qilish.">
+    <meta name="keywords" content="dori qidiruv, dori qidirish, dorixona, dori narxi, Toshkent dorixonalari, поиск лекарств, аптеки Ташкента, цена лекарств">
+    <meta name="google-site-verification" content="yE721PSQbpw5A7CnlhcawjzjPG0UWMbfs6eJu7-gXiw">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Dori Qidiruv">
+    <meta property="og:url" content="https://doriuzbot-production.up.railway.app/">
+    <meta property="og:title" content="Dori Qidiruv — Toshkentda dori topish va band qilish">
+    <meta property="og:description" content="Toshkentdagi dorixonalarda kerakli dorini bir zumda toping. 26 000+ dori katalogi, narxlar, oldindan band qilish.">
+    <meta property="og:image" content="https://doriuzbot-production.up.railway.app/icons/logo-512.png">
+    <meta property="og:locale" content="uz_UZ">
+    <meta property="og:locale:alternate" content="ru_RU">
+    <meta name="twitter:card" content="summary">
+
     <meta name="theme-color" content="#2563eb" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Dori Qidiruv" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="icon" type="image/png" href="/icons/pill.png" />
-    <link rel="apple-touch-icon" href="/icons/pill.png" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/logo-192.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Dori Qidiruv",
+        "alternateName": ["Dori qidirish", "Dori_UzBot", "Поиск лекарств"],
+        "url": "https://doriuzbot-production.up.railway.app/",
+        "inLanguage": ["uz", "ru"],
+        "description": "Toshkentdagi dorixonalarda dori topish, narxlarni ko'rish va oldindan band qilish xizmati."
+      }
+    </script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <title>Dori Qidiruv — Toshkent dorixonalarida dori topish</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Sahifa yuklanguncha va JavaScript ishlatmaydigan qidiruv robotlari uchun; React ishga tushgach almashtiriladi. -->
+      <main style="max-width:720px;margin:48px auto;padding:0 20px;font-family:system-ui,sans-serif;color:#0F172A">
+        <h1>Dori Qidiruv — Toshkent dorixonalarida dori topish</h1>
+        <p>Kerakli dorini bir zumda toping: 26 000 dan ortiq dori katalogi, dorixonalardagi narxlar, eng yaqin dorixona va oldindan band qilish.</p>
+        <p>Поиск лекарств в аптеках Ташкента: каталог более 26 000 препаратов, цены, ближайшая аптека и предварительное бронирование.</p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
