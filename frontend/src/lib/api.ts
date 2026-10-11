@@ -41,8 +41,21 @@ export interface DoriQidiruvResult {
 
 const BASE = ''
 
+// Dori va dorixona ma'lumotlari faqat kirgan foydalanuvchilarga beriladi — token har so'rovga qo'shiladi.
+function authFetch(url: string): Promise<Response> {
+  const token = localStorage.getItem('token')
+  return fetch(BASE + url, token ? { headers: { Authorization: `Bearer ${token}` } } : undefined).then((r) => {
+    if (r.status === 401) {
+      // Token yo'q yoki muddati tugagan: qaytadan kirish kerak.
+      localStorage.removeItem('token')
+      if (!/^\/(login|sms)/.test(window.location.pathname)) window.location.href = '/login'
+    }
+    return r
+  })
+}
+
 async function get<T>(url: string): Promise<T> {
-  const r = await fetch(BASE + url)
+  const r = await authFetch(url)
   if (!r.ok) throw new Error(`HTTP ${r.status}`)
   return r.json()
 }
@@ -68,7 +81,7 @@ export async function doriKategoriya(slug: string): Promise<DoriQidiruvResult[]>
 }
 
 export async function doriQidirish(nomi: string): Promise<DoriQidiruvResult[]> {
-  const r = await fetch(`/api/dori/qidirish?nomi=${encodeURIComponent(nomi)}`)
+  const r = await authFetch(`/api/dori/qidirish?nomi=${encodeURIComponent(nomi)}`)
   if (r.status === 404) return []
   if (!r.ok) throw new Error(`HTTP ${r.status}`)
   return r.json()

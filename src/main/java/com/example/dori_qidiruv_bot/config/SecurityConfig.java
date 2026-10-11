@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -45,13 +47,17 @@ public class SecurityConfig {
                         // Admin ekanini tekshirish hammaga ochiq (token bo'lmasa "admin emas" deydi),
                         // qolgan admin ma'lumotlari faqat adminga.
                         .requestMatchers("/api/health").permitAll()
+                        // Xato sahifasi ochiq: aks holda har qanday 404/500 xato 401 bo'lib ko'rinib,
+                        // sayt foydalanuvchini bekorga tizimdan chiqarib yuboradi.
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/admin/check").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/dorixonachi/check").authenticated()
                         .requestMatchers("/api/dorixonachi/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**", "/api/bron/*/chek").permitAll()
-                        // Katalog qidiruvi va soni — mijozlar ham dori nomlarini topa olishi uchun ochiq.
-                        .requestMatchers(HttpMethod.GET, "/api/katalog/qidirish", "/api/katalog/autocomplete", "/api/katalog/soni").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/bron/*/chek").permitAll()
+                        // Dorilar, narxlar va dorixonalar faqat tizimga kirgan foydalanuvchilarga beriladi.
+                        .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/katalog/qidirish", "/api/katalog/autocomplete", "/api/katalog/soni").authenticated()
                         // Katalogni to'liq sahifalab ko'rish (browse) — faqat admin.
                         .requestMatchers(HttpMethod.GET, "/api/katalog/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/dori/**", "/api/dorixona/**").hasRole("ADMIN")
@@ -59,6 +65,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/dori/**", "/api/dorixona/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+                // Token yo'q yoki eskirgan bo'lsa 401 — sayt shunga qarab kirish sahifasini ochadi.
+                .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
