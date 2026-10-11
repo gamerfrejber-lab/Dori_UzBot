@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { LangProvider } from '@/hooks/useLanguage'
 import { CartProvider } from '@/hooks/useCart'
 import { Header } from '@/components/Header'
@@ -24,9 +25,25 @@ function Aurora() {
   )
 }
 
+// Sayt eski Railway manzilida ham ochiladi; qidiruv tizimlariga har sahifaning asosiy manzilini ko'rsatamiz.
+function Kanonik() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    if (!link) {
+      link = document.createElement('link')
+      link.rel = 'canonical'
+      document.head.appendChild(link)
+    }
+    link.href = 'https://doriqidiruv.com' + (pathname === '/index.html' ? '/' : pathname)
+  }, [pathname])
+  return null
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <Kanonik />
       <LangProvider>
         <CartProvider>
           <Aurora />

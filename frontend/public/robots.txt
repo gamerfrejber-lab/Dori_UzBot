@@ -4,4 +4,4 @@ Disallow: /api/
 Disallow: /admin
 Disallow: /profil
 
-Sitemap: https://doriuzbot-production.up.railway.app/sitemap.xml
+Sitemap: https://doriqidiruv.com/sitemap.xml

@@ -77,9 +77,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         if (allowedOrigins == null || allowedOrigins.isEmpty() || allowedOrigins.get(0).isBlank()) {
-            configuration.setAllowedOriginPatterns(List.of("https://*.onrender.com", "https://*.up.railway.app", "http://localhost:*"));
+            configuration.setAllowedOriginPatterns(List.of("https://doriqidiruv.com", "https://www.doriqidiruv.com", "https://*.onrender.com", "https://*.up.railway.app", "http://localhost:*"));
         } else {
-            configuration.setAllowedOrigins(allowedOrigins);
+            // Sozlamadagi manzillarga saytning o'z domeni har doim qo'shiladi.
+            List<String> origins = new java.util.ArrayList<>(allowedOrigins);
+            origins.add("https://doriqidiruv.com");
+            origins.add("https://www.doriqidiruv.com");
+            configuration.setAllowedOriginPatterns(origins);
         }
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
