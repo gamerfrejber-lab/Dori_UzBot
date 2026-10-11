@@ -317,6 +317,16 @@ function DrugDetailModal({
   const pachka = drug.pachkaNarx || 0
   const canBron = drug.hisobYuritiladi ? (drug.qoldiq || 0) > 0 : drug.available !== false
 
+  // Bron faqat ro'yxatdan o'tganlarga: mehmon "Band qilish"ni bosishi bilan kirish sahifasi ochiladi.
+  const bronBoshlash = (tur: 'dona' | 'pachka') => {
+    if (!localStorage.getItem('token')) {
+      onClose()
+      navigate('/login')
+      return
+    }
+    setBronMode(tur)
+  }
+
   const handleBron = async () => {
     const token = localStorage.getItem('token')
     if (!token) {
@@ -380,15 +390,15 @@ function DrugDetailModal({
           <div className="flex gap-2 mt-4">
             {pachka > 0 ? (
               <>
-                <Button variant="success" className="flex-1" onClick={() => setBronMode('dona')}>
+                <Button variant="success" className="flex-1" onClick={() => bronBoshlash('dona')}>
                   <Pill className="w-4 h-4" /> {t('donaBand')}
                 </Button>
-                <Button className="flex-1" onClick={() => setBronMode('pachka')}>
+                <Button className="flex-1" onClick={() => bronBoshlash('pachka')}>
                   <Package className="w-4 h-4" /> {t('pachkaBand')}
                 </Button>
               </>
             ) : (
-              <Button variant="success" className="flex-1" onClick={() => setBronMode('dona')}>
+              <Button variant="success" className="flex-1" onClick={() => bronBoshlash('dona')}>
                 {t('bandQilish')}
               </Button>
             )}
