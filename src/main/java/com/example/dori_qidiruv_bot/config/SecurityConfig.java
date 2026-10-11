@@ -55,9 +55,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/dorixonachi/check").authenticated()
                         .requestMatchers("/api/dorixonachi/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/bron/*/chek").permitAll()
-                        // Dorilar, narxlar va dorixonalar faqat tizimga kirgan foydalanuvchilarga beriladi.
-                        .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/katalog/qidirish", "/api/katalog/autocomplete", "/api/katalog/soni").authenticated()
+                        // Dorilar, narxlar va dorixonalar mehmonlarga ham ko'rinadi (bosh sahifa va qidiruv ochiq);
+                        // profil va bron qilish esa ro'yxatdan o'tishni talab qiladi.
+                        .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/katalog/qidirish", "/api/katalog/autocomplete", "/api/katalog/soni").permitAll()
                         // Katalogni to'liq sahifalab ko'rish (browse) — faqat admin.
                         .requestMatchers(HttpMethod.GET, "/api/katalog/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/dori/**", "/api/dorixona/**").hasRole("ADMIN")

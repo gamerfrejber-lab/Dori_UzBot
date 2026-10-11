@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Home, Building2, ShoppingCart, User } from 'lucide-react'
 import { useLang } from '@/hooks/useLanguage'
 import { useCart } from '@/hooks/useCart'
@@ -8,7 +8,6 @@ export function BottomNav() {
   const { t } = useLang()
   const { count, toggle } = useCart()
   const location = useLocation()
-  const navigate = useNavigate()
   const token = localStorage.getItem('token')
 
   const isActive = (path: string) =>
@@ -20,21 +19,6 @@ export function BottomNav() {
     { path: '__cart__', icon: ShoppingCart, label: t('savatcha') },
     { path: token ? '/profil' : '/login', icon: User, label: token ? t('profil') : t('kirish') },
   ]
-
-  const handleClick = (path: string, e: React.MouseEvent) => {
-    if (!token && path !== '/login') {
-      e.preventDefault()
-      navigate('/login')
-    }
-  }
-
-  const handleCartClick = () => {
-    if (!token) {
-      navigate('/login')
-      return
-    }
-    toggle()
-  }
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 border-t border-slate-200/60 pb-[env(safe-area-inset-bottom)] md:hidden">
@@ -48,7 +32,7 @@ export function BottomNav() {
             return (
               <button
                 key="cart"
-                onClick={handleCartClick}
+                onClick={toggle}
                 className="flex flex-col items-center justify-center flex-1 relative transition-colors text-ink-dim active:text-brand"
               >
                 <div className="relative">
@@ -67,8 +51,7 @@ export function BottomNav() {
           return (
             <Link
               key={item.path}
-              to={token ? item.path : '/login'}
-              onClick={(e) => handleClick(item.path, e)}
+              to={item.path}
               className={cn(
                 'flex flex-col items-center justify-center flex-1 no-underline transition-colors',
                 active ? 'text-brand' : 'text-ink-dim active:text-brand'

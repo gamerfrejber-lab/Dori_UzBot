@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Pill, Minus, Plus, ShoppingCart, Check } from 'lucide-react'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
@@ -10,6 +11,7 @@ import { bronQilish } from '@/lib/api'
 export function CartPanel() {
   const { lang, t } = useLang()
   const { items, updateQty, remove, clear, isOpen, close } = useCart()
+  const navigate = useNavigate()
   const [bronStatus, setBronStatus] = useState<{ ok: number; fail: number } | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -17,7 +19,12 @@ export function CartPanel() {
 
   const handleBronAll = async () => {
     const token = localStorage.getItem('token')
-    if (!token) return
+    if (!token) {
+      // Bron faqat ro'yxatdan o'tganlarga: mehmonni kirish sahifasiga yuboramiz (savat saqlanib qoladi).
+      close()
+      navigate('/login')
+      return
+    }
     setLoading(true)
     let ok = 0
     let fail = 0

@@ -19,11 +19,7 @@ import { bronQilish } from '@/lib/api'
 
 export function Dorixonalar() {
   const { lang, t } = useLang()
-  const navigate = useNavigate()
 
-  useEffect(() => {
-    if (!localStorage.getItem('token')) navigate('/login')
-  }, [navigate])
   const [pharmacies, setPharmacies] = useState<(Dorixona & { _km?: number })[]>([])
   const [loading, setLoading] = useState(true)
   const [userLoc, setUserLoc] = useState<{ lat: number; lon: number } | null>(null)
@@ -306,6 +302,7 @@ function DrugDetailModal({
   onClose: () => void
 }) {
   const { lang, t } = useLang()
+  const navigate = useNavigate()
   const cart = useCart()
   const [bronMode, setBronMode] = useState<'dona' | 'pachka' | null>(null)
   const [soni, setSoni] = useState(1)
@@ -323,7 +320,8 @@ function DrugDetailModal({
   const handleBron = async () => {
     const token = localStorage.getItem('token')
     if (!token) {
-      setBronResult({ ok: false, xato: lang === 'uz' ? "Avval tizimga kiring." : 'Сначала войдите.' })
+      // Bron faqat ro'yxatdan o'tganlarga: mehmonni kirish sahifasiga yuboramiz.
+      navigate('/login')
       return
     }
     setLoading(true)

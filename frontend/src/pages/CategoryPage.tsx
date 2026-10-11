@@ -23,10 +23,6 @@ export function CategoryPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [showAllKatalog, setShowAllKatalog] = useState(false)
 
-  useEffect(() => {
-    if (!localStorage.getItem('token')) navigate('/login')
-  }, [navigate])
-
   const searchCategory = useCallback(
     async (cat: Category) => {
       setLoading(true)

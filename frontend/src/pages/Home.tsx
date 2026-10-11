@@ -38,10 +38,6 @@ export function Home() {
   const [searchParams, setSearchParams] = useSearchParams()
   const autoSearchDone = useRef(false)
 
-  useEffect(() => {
-    if (!localStorage.getItem('token')) navigate('/login')
-  }, [navigate])
-
   const [results, setResults] = useState<DoriQidiruvResult[]>([])
   const [katalogResults, setKatalogResults] = useState<DoriKatalog[]>([])
   const [searching, setSearching] = useState(false)

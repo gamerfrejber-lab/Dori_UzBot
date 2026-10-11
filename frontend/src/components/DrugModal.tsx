@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Pill, MapPin, Phone, Building2, Package, Check } from 'lucide-react'
 import {
   Dialog,
@@ -21,6 +22,7 @@ interface Props {
 
 export function DrugModal({ drug, open, onClose }: Props) {
   const { lang, t } = useLang()
+  const navigate = useNavigate()
   const cart = useCart()
   const [bronMode, setBronMode] = useState<'dona' | 'pachka' | null>(null)
   const [soni, setSoni] = useState(1)
@@ -44,7 +46,9 @@ export function DrugModal({ drug, open, onClose }: Props) {
   const handleBron = async () => {
     const token = localStorage.getItem('token')
     if (!token) {
-      setBronResult({ ok: false, xato: lang === 'uz' ? "Avval tizimga kiring." : 'Сначала войдите.' })
+      // Bron faqat ro'yxatdan o'tganlarga: mehmonni kirish sahifasiga yuboramiz.
+      onClose()
+      navigate('/login')
       return
     }
     if (soni <= 0) return
