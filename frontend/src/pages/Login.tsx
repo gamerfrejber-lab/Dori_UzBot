@@ -123,6 +123,8 @@ export function Login() {
             <p className="text-sm text-ink-dim">{t('telegramHint')}</p>
           </div>
         </Card>
+
+        <p className="text-center text-sm text-ink-dim mt-5">{t('loginHaqida')}</p>
       </div>
     </section>
   )

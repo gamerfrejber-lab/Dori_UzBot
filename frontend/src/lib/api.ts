@@ -117,6 +117,23 @@ export async function verifyCode(phoneNumber: string, code: string): Promise<{ t
   return r.json()
 }
 
+/** Telegram Mini App ichida: Telegram imzolagan initData orqali kodsiz kirish. */
+export async function telegramLogin(initData: string): Promise<{ token?: string | null }> {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), 10000)
+  try {
+    const r = await fetch('/api/auth/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ initData }),
+      signal: controller.signal,
+    })
+    return await r.json()
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 export interface UserProfile {
   name: string | null
   phoneNumber: string

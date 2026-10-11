@@ -79,6 +79,7 @@ const translations = {
   dorilarTopilmadi: { uz: 'Dorilar topilmadi', ru: 'Лекарства не найдены' },
   loginTitle: { uz: 'Tizimga kirish', ru: 'Вход в систему' },
   loginDesc: { uz: 'Telefon raqamingizni kiriting', ru: 'Введите ваш номер телефона' },
+  loginHaqida: { uz: "Dori Qidiruv — O'zbekiston dorixonalaridan dori qidirish, narxlarni solishtirish va oldindan band qilish xizmati.", ru: 'Dori Qidiruv — поиск лекарств в аптеках Узбекистана, сравнение цен и предварительное бронирование.' },
   telefonRaqam: { uz: 'Telefon raqami', ru: 'Номер телефона' },
   smsKodYuborish: { uz: 'SMS kod yuborish', ru: 'Отправить SMS код' },
   yuborilmoqda: { uz: 'Yuborilmoqda...', ru: 'Отправка...' },
