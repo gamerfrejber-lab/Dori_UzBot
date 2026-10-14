@@ -11,8 +11,15 @@ import java.util.List;
 
 public interface DoriRepository extends JpaRepository<Dori, Long> {
 
+    /**
+     * Faol dorixona — botdagi qoida bilan bir xil: holati "nofaol" emas va shartnomasi
+     * tugamagan (sana yo'q bo'lsa cheklovsiz). Shunda sayt va bot bir xil dorilarni ko'rsatadi.
+     */
+    String FAOL_DORIXONA = "(dx.holat IS NULL OR LOWER(dx.holat) <> 'nofaol') "
+            + "AND (dx.shartnomaTugash IS NULL OR dx.shartnomaTugash >= CURRENT_DATE) ";
+
     @Query("SELECT d FROM Dori d JOIN Dorixona dx ON dx.id = d.dorixonaId "
-            + "WHERE (dx.obunaTugashi IS NULL OR dx.obunaTugashi > CURRENT_TIMESTAMP) "
+            + "WHERE " + FAOL_DORIXONA
             + "AND (LOWER(d.name) LIKE LOWER(CONCAT('%', :name, '%')) "
             + "OR LOWER(d.nameRu) LIKE LOWER(CONCAT('%', :name, '%')) "
             + "OR LOWER(d.name) LIKE LOWER(CONCAT('%', :alt, '%')) "
@@ -21,7 +28,7 @@ public interface DoriRepository extends JpaRepository<Dori, Long> {
 
     /** Kategoriyadagi dorilar; :belgi vergul bilan o'ralgan holda beriladi (",yurak,"). */
     @Query("SELECT d FROM Dori d JOIN Dorixona dx ON dx.id = d.dorixonaId "
-            + "WHERE (dx.obunaTugashi IS NULL OR dx.obunaTugashi > CURRENT_TIMESTAMP) "
+            + "WHERE " + FAOL_DORIXONA
             + "AND d.kategoriya LIKE CONCAT('%', :belgi, '%') ORDER BY d.name")
     List<Dori> findByKategoriya(@Param("belgi") String belgi, Pageable pageable);
 

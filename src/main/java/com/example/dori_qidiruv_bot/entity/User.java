@@ -1,5 +1,6 @@
 package com.example.dori_qidiruv_bot.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -34,9 +35,12 @@ public class User {
     @Column(name = "full_name")
     private String name;
 
+    // Kirish kodi hech qachon JSON javobda chiqmasin (admin ro'yxatida ham).
+    @JsonIgnore
     @Column(name = "verification_code")
     private String verificationCode;
 
+    @JsonIgnore
     @Column(name = "code_expiry")
     private LocalDateTime codeExpiry;
 

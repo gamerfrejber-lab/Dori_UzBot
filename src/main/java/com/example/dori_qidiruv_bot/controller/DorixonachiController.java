@@ -7,6 +7,8 @@ import com.example.dori_qidiruv_bot.entity.User;
 import com.example.dori_qidiruv_bot.repository.BronRepository;
 import com.example.dori_qidiruv_bot.repository.DorixonaRepository;
 import com.example.dori_qidiruv_bot.service.DoriService;
+import com.example.dori_qidiruv_bot.service.OmborService;
+import com.example.dori_qidiruv_bot.service.PanelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +31,8 @@ public class DorixonachiController {
     private final DorixonaRepository dorixonaRepository;
     private final BronRepository bronRepository;
     private final DoriService doriService;
+    private final PanelService panelService;
+    private final OmborService omborService;
 
     /** Foydalanuvchi dorixona egasimi — egasi bo'lsa dorixona ma'lumotlarini qaytaradi. */
     @GetMapping("/check")
@@ -55,7 +59,12 @@ public class DorixonachiController {
     public ResponseEntity<?> doriQoshish(@AuthenticationPrincipal User user, @RequestBody Dori dori) {
         Dorixona dx = ownPharmacy(user);
         if (dx == null) return forbidden();
+        if (dori.getName() == null || dori.getName().isBlank() || dori.getPrice() == null) {
+            return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", "Nomi va narxi kerak"));
+        }
+        dori.setId(null);
         dori.setDorixonaId(dx.getId());
+        if (dori.getAvailable() == null) dori.setAvailable(true);
         return ResponseEntity.ok(doriService.doriQoshish(dori));
     }
 
@@ -65,6 +74,9 @@ public class DorixonachiController {
                                             @PathVariable Long id, @RequestBody Dori dori) {
         Dorixona dx = ownPharmacy(user);
         if (dx == null) return forbidden();
+        // Faqat o'z dorixonasining mahsuloti, va uni boshqa dorixonaga ko'chirib bo'lmaydi.
+        if (!panelService.doriDorixonaniki(id, dx.getId())) return ResponseEntity.notFound().build();
+        dori.setDorixonaId(null);
         return ResponseEntity.ok(doriService.doriYangilash(id, dori));
     }
 
@@ -73,8 +85,9 @@ public class DorixonachiController {
     public ResponseEntity<?> doriOchirish(@AuthenticationPrincipal User user, @PathVariable Long id) {
         Dorixona dx = ownPharmacy(user);
         if (dx == null) return forbidden();
-        doriService.doriOchirish(id);
-        return ResponseEntity.noContent().build();
+        return panelService.doriOchir(id, dx.getId())
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 
     /** Excel fayldan dorilarni import qilish (eski dorilar saqlanadi). */
@@ -122,14 +135,50 @@ public class DorixonachiController {
         if (dx == null) return forbidden();
         String yangiHolat = body.get("holat");
         if (yangiHolat == null) return ResponseEntity.badRequest().body(Map.of("xato", "holat kerak"));
-        return bronRepository.findById(id)
-                .filter(b -> b.getDorixonaId().equals(dx.getId()))
-                .map(b -> {
-                    b.setHolat(yangiHolat);
-                    bronRepository.save(b);
-                    return ResponseEntity.ok(Map.of("ok", true, "holat", yangiHolat));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Map<String, Object> javob = panelService.bronHolat(id, dx.getId(), yangiHolat);
+        return Boolean.TRUE.equals(javob.get("ok"))
+                ? ResponseEntity.ok(javob)
+                : ResponseEntity.status(409).body(javob);
+    }
+
+    // ——— Ombor (botdagi "📥 Kirim", "📤 Chiqim", "📈 Hisobot") ———
+
+    @GetMapping("/ombor/hisobot")
+    public ResponseEntity<?> hisobot(@AuthenticationPrincipal User user) {
+        Dorixona dx = ownPharmacy(user);
+        if (dx == null) return forbidden();
+        return ResponseEntity.ok(omborService.hisobot(dx.getId()));
+    }
+
+    @PostMapping("/ombor/{turi}")
+    public ResponseEntity<?> harakat(@AuthenticationPrincipal User user, @PathVariable String turi,
+                                     @RequestBody Map<String, Object> body) {
+        Dorixona dx = ownPharmacy(user);
+        if (dx == null) return forbidden();
+        long doriId = ((Number) body.getOrDefault("doriId", 0)).longValue();
+        int soni = ((Number) body.getOrDefault("soni", 0)).intValue();
+        if (soni <= 0) return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", "Son musbat bo'lishi kerak"));
+        if (!panelService.doriDorixonaniki(doriId, dx.getId())) return ResponseEntity.notFound().build();
+        String izoh = body.get("izoh") == null ? null : body.get("izoh").toString();
+        if ("kirim".equals(turi)) {
+            omborService.kirim(doriId, soni, null, izoh);
+        } else if ("chiqim".equals(turi)) {
+            if (!omborService.chiqim(doriId, soni, null, izoh)) {
+                return ResponseEntity.status(409).body(Map.of("ok", false,
+                        "xato", "Omborda yetarli mahsulot yo'q", "qoldiq", omborService.qoldiq(doriId)));
+            }
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", "kirim yoki chiqim"));
+        }
+        return ResponseEntity.ok(Map.of("ok", true, "qoldiq", omborService.qoldiq(doriId)));
+    }
+
+    /** Obuna (shartnoma) holati — botdagi "🗓 Obunam". */
+    @GetMapping("/obuna")
+    public ResponseEntity<?> obuna(@AuthenticationPrincipal User user) {
+        Dorixona dx = ownPharmacy(user);
+        if (dx == null) return forbidden();
+        return ResponseEntity.ok(panelService.obuna(dx.getId()));
     }
 
     /** Dorixona ma'lumotlarini yangilash. */

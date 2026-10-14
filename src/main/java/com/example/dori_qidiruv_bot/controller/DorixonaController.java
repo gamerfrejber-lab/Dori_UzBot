@@ -16,6 +16,7 @@ import java.util.List;
 public class DorixonaController {
 
     private final DorixonaRepository dorixonaRepository;
+    private final com.example.dori_qidiruv_bot.service.PanelService panelService;
     private final DoriService doriService;
 
     /**
@@ -81,10 +82,9 @@ public class DorixonaController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (!dorixonaRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        dorixonaRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        // Bog'liq dorilar, bronlar va ombor yozuvlari bilan birga (botdagi kabi).
+        return panelService.dorixonaOchir(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }

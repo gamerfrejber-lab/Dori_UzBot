@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -51,4 +52,21 @@ public class Dorixona {
 
     @Column(name = "egasi_telegram_id")
     private Long egasiTelegramId;
+
+    // Botlar bilan umumiy maydonlar: hudud va shartnoma (obuna) — obuna muddati botlarda
+    // shartnoma_tugash ustunida saqlanadi, sayt ham shuni ko'radi.
+    @Column(name = "viloyat")
+    private String viloyat;
+
+    @Column(name = "tuman")
+    private String tuman;
+
+    @Column(name = "shartnoma_boshlanish")
+    private LocalDate shartnomaBoshlanish;
+
+    @Column(name = "shartnoma_tugash")
+    private LocalDate shartnomaTugash;
+
+    @Column(name = "holat")
+    private String holat;
 }

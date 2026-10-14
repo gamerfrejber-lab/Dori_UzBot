@@ -8,13 +8,16 @@ import com.example.dori_qidiruv_bot.repository.SoovRepository;
 import com.example.dori_qidiruv_bot.repository.UserRepository;
 import com.example.dori_qidiruv_bot.service.DoriService;
 import com.example.dori_qidiruv_bot.service.OmborService;
+import com.example.dori_qidiruv_bot.service.PanelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +40,7 @@ public class AdminController {
     private final OmborService omborService;
     private final SoovRepository soovRepository;
     private final DoriService doriService;
+    private final PanelService panelService;
 
     /**
      * Joriy foydalanuvchi admin yoki yo'qligini aytadi — sayt shunga qarab admin bo'limini
@@ -56,15 +60,10 @@ public class AdminController {
         return ResponseEntity.ok(userRepository.findAll());
     }
 
-    /** Umumiy statistika: foydalanuvchi, dorixona, dori va katalog soni. */
+    /** Umumiy statistika — botdagi "📊 Statistika" ko'rsatkichlari bilan. */
     @GetMapping("/stats")
-    public ResponseEntity<Map<String, Long>> stats() {
-        return ResponseEntity.ok(Map.of(
-                "users", userRepository.count(),
-                "pharmacies", dorixonaRepository.count(),
-                "drugs", doriRepository.count(),
-                "katalog", katalogRepository.count()
-        ));
+    public ResponseEntity<Map<String, Object>> stats() {
+        return ResponseEntity.ok(panelService.statistika());
     }
 
     /** Dorixona bo'yicha ombor hisoboti: nima kelgan, nima sotilgan, nima qolgan. */
@@ -104,19 +103,91 @@ public class AdminController {
         return ResponseEntity.ok(Map.of("ok", true, "qoldiq", qoldiq));
     }
 
-    /** Dorixona obuna muddatini o'rnatish/o'chirish. */
-    @PostMapping("/dorixona/{id}/obuna")
-    public ResponseEntity<Map<String, Object>> obunaYangilash(
-            @PathVariable Long id, @RequestBody Map<String, String> body) {
-        return dorixonaRepository.findById(id)
-                .map(dx -> {
-                    String sana = body.get("obunaTugashi");
-                    dx.setObunaTugashi(sana != null && !sana.isEmpty()
-                            ? java.time.LocalDateTime.parse(sana) : null);
-                    dorixonaRepository.save(dx);
-                    return ResponseEntity.ok(Map.of("ok", (Object) true));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    // ——— Dorixonalar (botdagi "➕ Dorixona qo'shish", "📋 Dorixonalar", "🔄 Uzaytirish", "🗑 O'chirish") ———
+
+    @GetMapping("/dorixonalar")
+    public ResponseEntity<List<Map<String, Object>>> dorixonalar() {
+        return ResponseEntity.ok(panelService.dorixonalar());
+    }
+
+    @PostMapping("/dorixona")
+    public ResponseEntity<Map<String, Object>> dorixonaQosh(@RequestBody Map<String, String> b) {
+        String nomi = b.get("nomi");
+        if (nomi == null || nomi.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", "Dorixona nomi kerak"));
+        }
+        int oylar = parseInt(b.get("oylar"));
+        long id = panelService.dorixonaQosh(nomi.trim(), b.get("viloyat"), b.get("tuman"), b.get("manzil"),
+                b.get("telefon"), b.get("ishBoshlanishi"), b.get("ishTugashi"), oylar);
+        return ResponseEntity.ok(Map.of("ok", true, "id", id));
+    }
+
+    @PutMapping("/dorixona/{id}")
+    public ResponseEntity<Map<String, Object>> dorixonaYangila(@PathVariable Long id, @RequestBody Map<String, String> b) {
+        return panelService.dorixonaYangila(id, b)
+                ? ResponseEntity.ok(Map.of("ok", true))
+                : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/dorixona/{id}/uzaytir")
+    public ResponseEntity<Map<String, Object>> uzaytir(@PathVariable Long id, @RequestBody Map<String, String> b) {
+        int oylar = parseInt(b.get("oylar"));
+        if (oylar <= 0 || oylar > 36) {
+            return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", "Oy soni 1 dan 36 gacha bo'lsin"));
+        }
+        java.time.LocalDate yangi = panelService.obunaUzaytir(id, oylar);
+        return yangi == null
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(Map.of("ok", true, "tugash", yangi.toString()));
+    }
+
+    @DeleteMapping("/dorixona/{id}")
+    public ResponseEntity<Map<String, Object>> dorixonaOchir(@PathVariable Long id) {
+        return panelService.dorixonaOchir(id)
+                ? ResponseEntity.ok(Map.of("ok", true))
+                : ResponseEntity.notFound().build();
+    }
+
+    // ——— Dorixonaning mahsulotlari (botdagi "➕ Dori qo'shish", "✏️ Narx tahrirlash", "🗑 Dori o'chirish") ———
+
+    @GetMapping("/dorixona/{id}/dorilar")
+    public ResponseEntity<?> dorixonaDorilari(@PathVariable Long id) {
+        return ResponseEntity.ok(doriService.dorixonaDorilari(id));
+    }
+
+    @PostMapping("/dorixona/{id}/dori")
+    public ResponseEntity<?> doriQosh(@PathVariable Long id, @RequestBody com.example.dori_qidiruv_bot.entity.Dori dori) {
+        if (dori.getName() == null || dori.getName().isBlank() || dori.getPrice() == null) {
+            return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", "Nomi va narxi kerak"));
+        }
+        dori.setId(null);
+        dori.setDorixonaId(id);
+        if (dori.getAvailable() == null) dori.setAvailable(true);
+        return ResponseEntity.ok(doriService.doriQoshish(dori));
+    }
+
+    @PutMapping("/dori/{id}")
+    public ResponseEntity<?> doriYangila(@PathVariable Long id, @RequestBody com.example.dori_qidiruv_bot.entity.Dori dori) {
+        dori.setDorixonaId(null);
+        return ResponseEntity.ok(doriService.doriYangilash(id, dori));
+    }
+
+    @DeleteMapping("/dori/{id}")
+    public ResponseEntity<Map<String, Object>> doriOchir(@PathVariable Long id) {
+        return panelService.doriOchir(id, null)
+                ? ResponseEntity.ok(Map.of("ok", true))
+                : ResponseEntity.notFound().build();
+    }
+
+    // ——— Buyurtmalar (botdagi "🔔 Buyurtmalar") ———
+
+    @GetMapping("/bronlar")
+    public ResponseEntity<List<Map<String, Object>>> bronlar() {
+        return ResponseEntity.ok(panelService.barchaBronlar());
+    }
+
+    private static int parseInt(String s) {
+        try { return s == null ? 0 : Integer.parseInt(s.trim()); } catch (NumberFormatException e) { return 0; }
     }
 
     /** Excel fayldan dorilarni yangilash — eski dorilarni O'CHIRIB, yangilarini kiritadi. */
