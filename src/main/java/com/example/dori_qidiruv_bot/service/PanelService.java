@@ -101,6 +101,41 @@ public class PanelService {
         return jdbc.update("DELETE FROM dorixona WHERE id = ?", id) > 0;
     }
 
+    /**
+     * Foydalanuvchining dorixonasi. Avval egasi sifatida biriktirilgani qidiriladi; bo'lmasa —
+     * telefon raqami (Telegram tasdiqlagan) dorixonaning raqamiga mos kelgani. Mos kelsa,
+     * foydalanuvchi o'sha dorixonaga egasi qilib biriktiriladi: shunda dorixonalar boti ham
+     * uni egasi deb taniydi. Boshqa egaga biriktirilgan dorixonaga tegilmaydi.
+     */
+    @Transactional
+    public Long egasiDorixonasiId(long telegramId, String telefon) {
+        List<Long> own = jdbc.queryForList(
+                "SELECT id FROM dorixona WHERE egasi_telegram_id = ? ORDER BY id LIMIT 1", Long.class, telegramId);
+        if (!own.isEmpty()) return own.get(0);
+        String raqam = oxirgi9(telefon);
+        if (raqam == null) return null;
+        List<Long> mos = jdbc.queryForList("""
+                SELECT id FROM dorixona
+                WHERE egasi_telegram_id IS NULL
+                  AND RIGHT(regexp_replace(COALESCE(telefon, ''), '[^0-9]', '', 'g'), 9) = ?
+                ORDER BY id
+                """, Long.class, raqam);
+        for (Long id : mos) {
+            if (jdbc.update("UPDATE dorixona SET egasi_telegram_id = ? WHERE id = ? AND egasi_telegram_id IS NULL",
+                    telegramId, id) > 0) {
+                return id;
+            }
+        }
+        return null;
+    }
+
+    /** Telefon raqamining oxirgi 9 raqami (+998 / 8 / bo'shliqlardan qat'i nazar solishtirish uchun). */
+    private static String oxirgi9(String telefon) {
+        if (telefon == null) return null;
+        String d = telefon.replaceAll("[^0-9]", "");
+        return d.length() < 9 ? null : d.substring(d.length() - 9);
+    }
+
     /** Dorixona obunasi haqida qisqa ma'lumot (dorixonachi "Obunam" bo'limi). */
     public Map<String, Object> obuna(long dorixonaId) {
         Map<String, Object> row = jdbc.queryForMap(

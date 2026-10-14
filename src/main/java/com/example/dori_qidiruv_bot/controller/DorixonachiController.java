@@ -37,8 +37,7 @@ public class DorixonachiController {
     /** Foydalanuvchi dorixona egasimi — egasi bo'lsa dorixona ma'lumotlarini qaytaradi. */
     @GetMapping("/check")
     public ResponseEntity<Map<String, Object>> check(@AuthenticationPrincipal User user) {
-        if (user == null) return ResponseEntity.ok(Map.of("egasi", false));
-        Dorixona dx = dorixonaRepository.findByEgasiTelegramId(user.getId());
+        Dorixona dx = ownPharmacy(user);
         if (dx == null) return ResponseEntity.ok(Map.of("egasi", false));
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("egasi", true);
@@ -195,9 +194,11 @@ public class DorixonachiController {
         return ResponseEntity.ok(dorixonaRepository.save(dx));
     }
 
+    /** Egasi sifatida biriktirilgan yoki telefon raqami dorixona raqamiga mos kelgan dorixona. */
     private Dorixona ownPharmacy(User user) {
         if (user == null) return null;
-        return dorixonaRepository.findByEgasiTelegramId(user.getId());
+        Long id = panelService.egasiDorixonasiId(user.getId(), user.getPhoneNumber());
+        return id == null ? null : dorixonaRepository.findById(id).orElse(null);
     }
 
     private ResponseEntity<Map<String, Object>> forbidden() {

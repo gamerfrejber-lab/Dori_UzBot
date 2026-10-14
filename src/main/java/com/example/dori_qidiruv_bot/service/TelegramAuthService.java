@@ -42,6 +42,13 @@ public class TelegramAuthService {
     @Value("${telegram.notify.token:}")
     private String telegramNotifyToken;
 
+    /** Qo'shimcha botlar tokenlari (vergul bilan) — masalan dorixonalar boti; imzo shu yerda tekshiriladi. */
+    @Value("${telegram.extra-bot-tokens:}")
+    private String extraBotTokens;
+
+    /** Kirish natijasi: token va initData qaysi botdan kelgani ("mijoz" yoki "dorixona"). */
+    public record Natija(String token, String manba) { }
+
     private static SimpleClientHttpRequestFactory botRequestFactory() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(Duration.ofSeconds(20));
@@ -53,8 +60,14 @@ public class TelegramAuthService {
      * initData'ni botga tekshirtiradi, foydalanuvchini bazaga yozadi (yo'q bo'lsa yaratadi)
      * va JWT token qaytaradi. Imzo yaroqsiz bo'lsa xato tashlaydi.
      */
-    public String loginWithInitData(String initData) {
-        String userJson = validateViaBot(initData);
+    public Natija loginWithInitData(String initData) {
+        String manba = "mijoz";
+        String userJson = null;
+        for (String t : extraBotTokens.split(",")) {
+            userJson = TelegramInitData.validateAndExtractUser(initData, t);
+            if (userJson != null) { manba = "dorixona"; break; }
+        }
+        if (userJson == null) userJson = validateViaBot(initData);
         if (userJson == null) {
             throw new IllegalStateException("IMZO_YAROQSIZ");
         }
@@ -86,8 +99,8 @@ public class TelegramAuthService {
         user.setCodeExpiry(null);
         userRepository.save(user);
 
-        log.info("Mini App orqali kirdi: telegramId={}", telegramId);
-        return jwtService.generateToken(user);
+        log.info("Mini App orqali kirdi: telegramId={}, bot={}", telegramId, manba);
+        return new Natija(jwtService.generateToken(user), manba);
     }
 
     private String buildFullName(JsonNode node) {

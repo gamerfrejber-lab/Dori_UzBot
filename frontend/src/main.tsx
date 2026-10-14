@@ -16,8 +16,12 @@ tg?.expand?.()
 async function telegramOrqaliKirish() {
   if (!tg?.initData) return
   try {
-    const { token } = await telegramLogin(tg.initData)
+    const { token, manba } = await telegramLogin(tg.initData)
     if (token) localStorage.setItem('token', token)
+    // Dorixonalar botidan ochilgan bo'lsa — to'g'ri dorixona paneliga.
+    if (token && manba === 'dorixona' && (location.pathname === '/' || location.pathname === '/index.html')) {
+      history.replaceState(null, '', '/dorixonachi')
+    }
   } catch {
     // Bot javob bermasa odatdagi kirish sahifasi ochiladi.
   }

@@ -118,7 +118,7 @@ export async function verifyCode(phoneNumber: string, code: string): Promise<{ t
 }
 
 /** Telegram Mini App ichida: Telegram imzolagan initData orqali kodsiz kirish. */
-export async function telegramLogin(initData: string): Promise<{ token?: string | null }> {
+export async function telegramLogin(initData: string): Promise<{ token?: string | null; manba?: string }> {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 10000)
   try {

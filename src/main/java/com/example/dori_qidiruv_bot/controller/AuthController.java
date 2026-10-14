@@ -48,13 +48,12 @@ public class AuthController {
      * Telegram Mini App orqali kirish — telefon va SMS kodsiz, initData imzosi asosida
      */
     @PostMapping("/telegram")
-    public ResponseEntity<AuthResponse> loginWithTelegram(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> loginWithTelegram(@RequestBody Map<String, String> request) {
         try {
-            String token = telegramAuthService.loginWithInitData(request.get("initData"));
-            return ResponseEntity.ok(new AuthResponse(token, "Muvaffaqiyatli"));
+            TelegramAuthService.Natija n = telegramAuthService.loginWithInitData(request.get("initData"));
+            return ResponseEntity.ok(Map.of("token", n.token(), "message", "Muvaffaqiyatli", "manba", n.manba()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(new AuthResponse(null, "Telegram orqali kirib bo'lmadi"));
+            return ResponseEntity.badRequest().body(Map.of("message", "Telegram orqali kirib bo'lmadi"));
         }
     }
 
