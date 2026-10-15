@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Building2, MapPin, Phone, Search, Navigation, Pill, Package, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { xaritaHavolasi, telHavola } from '@/lib/xarita'
 import { Card } from '@/components/ui/card'
 import {
   Dialog,
@@ -233,9 +234,9 @@ function PharmacyModal({
             <MapPin className="w-4 h-4" /> {pharmacy.manzil || pharmacy.address}
           </p>
           {pharmacy.telefon && (
-            <p className="flex items-center gap-1.5 text-ink-dim">
+            <a href={telHavola(pharmacy.telefon)} className="flex items-center gap-1.5 text-brand font-semibold">
               <Phone className="w-4 h-4" /> {pharmacy.telefon}
-            </p>
+            </a>
           )}
           <p className={`font-semibold ${isOpen ? 'text-green-600' : 'text-red-500'}`}>
             {isOpen ? t('ochiq') : t('yopiq')}
@@ -244,15 +245,10 @@ function PharmacyModal({
           {km != null && (
             <p className="text-brand font-semibold">{formatDistance(km, lang)}</p>
           )}
-          {pharmacy.latitude && pharmacy.longitude && (
+          {xaritaHavolasi(pharmacy) && (
             <Button
               className="w-full mt-2"
-              onClick={() =>
-                window.open(
-                  `https://yandex.com/maps/?pt=${pharmacy.longitude},${pharmacy.latitude}&z=17&l=map`,
-                  '_blank'
-                )
-              }
+              onClick={() => window.open(xaritaHavolasi(pharmacy)!, '_blank')}
             >
               <MapPin className="w-4 h-4" /> {t('xaritadaKorish')}
             </Button>

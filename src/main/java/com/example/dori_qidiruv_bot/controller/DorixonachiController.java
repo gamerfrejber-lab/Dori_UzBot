@@ -191,6 +191,8 @@ public class DorixonachiController {
         if (yangi.getTelefon() != null) dx.setTelefon(yangi.getTelefon());
         if (yangi.getIshBoshlanishi() != null) dx.setIshBoshlanishi(yangi.getIshBoshlanishi());
         if (yangi.getIshTugashi() != null) dx.setIshTugashi(yangi.getIshTugashi());
+        if (yangi.getLatitude() != null && Math.abs(yangi.getLatitude()) <= 90) dx.setLatitude(yangi.getLatitude());
+        if (yangi.getLongitude() != null && Math.abs(yangi.getLongitude()) <= 180) dx.setLongitude(yangi.getLongitude());
         return ResponseEntity.ok(dorixonaRepository.save(dx));
     }
 

@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { xaritaHavolasi, telHavola } from '@/lib/xarita'
 import { useLang } from '@/hooks/useLanguage'
 import { useCart, type CartItem } from '@/hooks/useCart'
 import { doriKartaNomi, doriShakliDozasi, doriTavsifi, tayyorNom, tayyorNomBolaklari } from '@/lib/cyrillic'
@@ -140,24 +141,21 @@ export function DrugModal({ drug, open, onClose }: Props) {
                 value={ph.manzil || ph.address}
                 icon={<MapPin className="w-4 h-4" />}
               />
-              <InfoRow
-                label={t('telefon')}
-                value={ph.telefon}
-                icon={<Phone className="w-4 h-4" />}
-              />
+              {ph.telefon && (
+                <InfoRow
+                  label={t('telefon')}
+                  value={<a href={telHavola(ph.telefon)} className="text-brand font-semibold">{ph.telefon}</a>}
+                  icon={<Phone className="w-4 h-4" />}
+                />
+              )}
               {drug._km != null && (
                 <InfoRow label={t('masofa')} value={formatDistance(drug._km, lang)} />
               )}
 
-              {ph.latitude && ph.longitude && (
+              {xaritaHavolasi(ph) && (
                 <Button
                   className="w-full mt-3"
-                  onClick={() =>
-                    window.open(
-                      `https://yandex.com/maps/?pt=${ph.longitude},${ph.latitude}&z=17&l=map`,
-                      '_blank'
-                    )
-                  }
+                  onClick={() => window.open(xaritaHavolasi(ph)!, '_blank')}
                 >
                   <MapPin className="w-4 h-4" />
                   {t('xaritadaKorish')}

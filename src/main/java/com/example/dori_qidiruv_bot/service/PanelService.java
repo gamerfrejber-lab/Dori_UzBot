@@ -38,7 +38,7 @@ public class PanelService {
     public List<Map<String, Object>> dorixonalar() {
         return jdbc.queryForList("""
                 SELECT p.id, p.nomi, p.viloyat, p.tuman, p.manzil, p.telefon,
-                       p.ish_boshlanishi, p.ish_tugashi,
+                       p.ish_boshlanishi, p.ish_tugashi, p.latitude, p.longitude,
                        p.shartnoma_boshlanish::text AS shartnoma_boshlanish,
                        p.shartnoma_tugash::text AS shartnoma_tugash, p.holat,
                        p.egasi_telegram_id, u.full_name AS egasi_ismi, u.phone AS egasi_telefon,
@@ -52,14 +52,14 @@ public class PanelService {
 
     /** Yangi dorixona (botdagi "➕ Dorixona qo'shish" bilan bir xil maydonlar). */
     public long dorixonaQosh(String nomi, String viloyat, String tuman, String manzil, String telefon,
-                             String ishBoshlanishi, String ishTugashi, int oylar) {
+                             String ishBoshlanishi, String ishTugashi, int oylar, Double latitude, Double longitude) {
         LocalDate bugun = LocalDate.now();
         LocalDate tugash = oylar > 0 ? bugun.plusMonths(oylar) : null;
         Long id = jdbc.queryForObject("""
                 INSERT INTO dorixona (nomi, viloyat, tuman, manzil, telefon, ish_boshlanishi, ish_tugashi,
-                                      shartnoma_boshlanish, shartnoma_tugash, holat)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'faol') RETURNING id
-                """, Long.class, nomi, viloyat, tuman, manzil, telefon, ishBoshlanishi, ishTugashi,
+                                      latitude, longitude, shartnoma_boshlanish, shartnoma_tugash, holat)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'faol') RETURNING id
+                """, Long.class, nomi, viloyat, tuman, manzil, telefon, ishBoshlanishi, ishTugashi, latitude, longitude,
                 oylar > 0 ? Date.valueOf(bugun) : null, tugash == null ? null : Date.valueOf(tugash));
         return id == null ? 0 : id;
     }
@@ -70,10 +70,23 @@ public class PanelService {
                 UPDATE dorixona SET
                     nomi = COALESCE(?, nomi), viloyat = COALESCE(?, viloyat), tuman = COALESCE(?, tuman),
                     manzil = COALESCE(?, manzil), telefon = COALESCE(?, telefon),
-                    ish_boshlanishi = COALESCE(?, ish_boshlanishi), ish_tugashi = COALESCE(?, ish_tugashi)
+                    ish_boshlanishi = COALESCE(?, ish_boshlanishi), ish_tugashi = COALESCE(?, ish_tugashi),
+                    latitude = COALESCE(?, latitude), longitude = COALESCE(?, longitude)
                 WHERE id = ?
                 """, bosh(m.get("nomi")), bosh(m.get("viloyat")), bosh(m.get("tuman")), bosh(m.get("manzil")),
-                bosh(m.get("telefon")), bosh(m.get("ishBoshlanishi")), bosh(m.get("ishTugashi")), id) > 0;
+                bosh(m.get("telefon")), bosh(m.get("ishBoshlanishi")), bosh(m.get("ishTugashi")),
+                koordinata(m.get("latitude"), 90), koordinata(m.get("longitude"), 180), id) > 0;
+    }
+
+    /** Koordinatani o'qiydi; noto'g'ri yoki chegaradan tashqari bo'lsa null (o'zgartirilmaydi). */
+    public static Double koordinata(String s, double chegara) {
+        if (s == null || s.isBlank()) return null;
+        try {
+            double v = Double.parseDouble(s.trim().replace(',', '.'));
+            return Double.isFinite(v) && Math.abs(v) <= chegara ? v : null;
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     /** Obunani oy soniga uzaytiradi; tugagan bo'lsa bugundan boshlab (botdagi kabi). */

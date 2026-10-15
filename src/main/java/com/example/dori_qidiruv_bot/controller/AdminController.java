@@ -118,7 +118,8 @@ public class AdminController {
         }
         int oylar = parseInt(b.get("oylar"));
         long id = panelService.dorixonaQosh(nomi.trim(), b.get("viloyat"), b.get("tuman"), b.get("manzil"),
-                b.get("telefon"), b.get("ishBoshlanishi"), b.get("ishTugashi"), oylar);
+                b.get("telefon"), b.get("ishBoshlanishi"), b.get("ishTugashi"), oylar,
+                PanelService.koordinata(b.get("latitude"), 90), PanelService.koordinata(b.get("longitude"), 180));
         return ResponseEntity.ok(Map.of("ok", true, "id", id));
     }
 

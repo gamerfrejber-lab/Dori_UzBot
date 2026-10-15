@@ -9,6 +9,7 @@ import { authJson, ownerDoriApi, type Hisobot } from '@/lib/panel'
 import { DoriBoshqaruv } from '@/components/panel/DoriBoshqaruv'
 import { BronlarRoyxati } from '@/components/panel/BronlarRoyxati'
 import { HisobotQisqa } from '@/components/panel/HisobotQisqa'
+import { JoylashuvMaydoni } from '@/components/panel/JoylashuvMaydoni'
 
 type Tab = 'dorilar' | 'bronlar' | 'obuna' | 'malumot'
 
@@ -19,6 +20,8 @@ interface DorixonaInfo {
   telefon: string
   ishBoshlanishi: string | null
   ishTugashi: string | null
+  latitude?: number | null
+  longitude?: number | null
 }
 
 export function DorixonachiPanel() {
@@ -159,6 +162,10 @@ function MalumotTab({ token, dorixona, onUpdate }: { token: string; dorixona: Do
     ishBoshlanishi: dorixona.ishBoshlanishi || '',
     ishTugashi: dorixona.ishTugashi || '',
   })
+  const [joy, setJoy] = useState<{ lat: number | null; lng: number | null }>({
+    lat: dorixona.latitude ?? null,
+    lng: dorixona.longitude ?? null,
+  })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -169,7 +176,7 @@ function MalumotTab({ token, dorixona, onUpdate }: { token: string; dorixona: Do
       const r = await fetch('/api/dorixonachi/malumot', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, latitude: joy.lat, longitude: joy.lng }),
       })
       if (r.ok) {
         const data = await r.json()
@@ -200,6 +207,7 @@ function MalumotTab({ token, dorixona, onUpdate }: { token: string; dorixona: Do
           />
         </div>
       ))}
+      <JoylashuvMaydoni lat={joy.lat} lng={joy.lng} onChange={(lat, lng) => setJoy({ lat, lng })} />
       <div className="flex items-center gap-3">
         <Button variant="success" onClick={handleSave} disabled={saving}>
           <Check className="w-4 h-4" /> {saving ? '...' : t('dxSaqlash')}

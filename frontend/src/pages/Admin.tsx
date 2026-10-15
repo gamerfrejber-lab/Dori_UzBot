@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { DoriBoshqaruv } from '@/components/panel/DoriBoshqaruv'
 import { BronlarRoyxati } from '@/components/panel/BronlarRoyxati'
 import { HisobotQisqa } from '@/components/panel/HisobotQisqa'
+import { JoylashuvMaydoni } from '@/components/panel/JoylashuvMaydoni'
 
 type Tab = 'stat' | 'dorixonalar' | 'dorilar' | 'arizalar' | 'bronlar' | 'users'
 
@@ -25,6 +26,8 @@ interface DorixonaRow {
   telefon: string | null
   ish_boshlanishi: string | null
   ish_tugashi: string | null
+  latitude: number | null
+  longitude: number | null
   shartnoma_tugash: string | null
   holat: string | null
   egasi_telegram_id: number | null
@@ -249,6 +252,9 @@ function DorixonaQator({ r, onChanged, notify, onMahsulotlar }: {
           <div className="text-xs text-ink-dim mt-0.5">
             {[r.viloyat, r.tuman, r.manzil].filter(Boolean).join(', ') || '—'}{r.telefon ? ` · ${r.telefon}` : ''}
             {r.ish_boshlanishi && r.ish_tugashi ? ` · ${r.ish_boshlanishi}–${r.ish_tugashi}` : ''}
+            {(!r.telefon || !r.latitude) && (
+              <span className="text-amber-700"> · {[!r.telefon && L("telefon yo'q", 'нет телефона'), !r.latitude && L("xaritadagi joyi yo'q", 'нет места на карте')].filter(Boolean).join(', ')}</span>
+            )}
           </div>
           <div className="text-xs mt-0.5">
             <span className={ob.cls}>{L('Obuna', 'Подписка')}: {ob.text}</span>
@@ -318,6 +324,8 @@ function DorixonaForma({ initial, withContract, onSave, onCancel }: {
     ishBoshlanishi: initial?.ish_boshlanishi || '',
     ishTugashi: initial?.ish_tugashi || '',
     oylar: '1',
+    latitude: initial?.latitude != null ? String(initial.latitude) : '',
+    longitude: initial?.longitude != null ? String(initial.longitude) : '',
   })
   const [xato, setXato] = useState('')
   const [saving, setSaving] = useState(false)
@@ -338,6 +346,11 @@ function DorixonaForma({ initial, withContract, onSave, onCancel }: {
         <input className={inputCls} placeholder={L('Ochilish (08:00)', 'Открытие (08:00)')} value={f.ishBoshlanishi} onChange={set('ishBoshlanishi')} />
         <input className={inputCls} placeholder={L('Yopilish (22:00)', 'Закрытие (22:00)')} value={f.ishTugashi} onChange={set('ishTugashi')} />
       </div>
+      <JoylashuvMaydoni
+        lat={f.latitude ? Number(f.latitude) : null}
+        lng={f.longitude ? Number(f.longitude) : null}
+        onChange={(la, lo) => setF((p) => ({ ...p, latitude: la == null ? '' : String(la), longitude: lo == null ? '' : String(lo) }))}
+      />
       {withContract && (
         <select className={inputCls} value={f.oylar} onChange={set('oylar')}>
           {OYLAR.map((m) => <option key={m} value={m}>{L(`Shartnoma: ${m} oy`, `Договор: ${m} мес.`)}</option>)}
