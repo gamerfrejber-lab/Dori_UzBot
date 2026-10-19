@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, lazy, Suspense } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Building2, MapPin, Phone, Search, Navigation, Pill, Package, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -17,6 +17,9 @@ import type { Dorixona, DoriQidiruvResult } from '@/lib/api'
 import { requestLocation, distanceKm, dorixonaOchiqmi, formatDistance } from '@/lib/geo'
 import { doriKartaNomi, doriShakliDozasi } from '@/lib/cyrillic'
 import { bronQilish } from '@/lib/api'
+
+// Xarita kutubxonasi faqat shu sahifa ochilganda yuklanadi (bosh sahifa yengil qoladi).
+const DorixonalarXaritasi = lazy(() => import('@/components/DorixonalarXaritasi'))
 
 export function Dorixonalar() {
   const { lang, t } = useLang()
@@ -125,6 +128,21 @@ export function Dorixonalar() {
         <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-6 text-sm text-ink-dim">
           <Navigation className="w-4 h-4 inline text-brand mr-1.5" />
           {t('joylashuvInfo')}
+        </div>
+      )}
+
+      {!loading && (
+        <div className="mb-6">
+          <Suspense fallback={<div className="h-[320px] sm:h-[420px] rounded-2xl bg-slate-100 animate-pulse" />}>
+            <DorixonalarXaritasi pharmacies={filtered} userLoc={userLoc} lang={lang} onOpen={openPharmacy} />
+          </Suspense>
+          {filtered.some((ph) => !ph.latitude || !ph.longitude) && (
+            <p className="text-xs text-ink-faint mt-2">
+              {lang === 'ru'
+                ? `Местоположение ещё не указано у аптек: ${filtered.filter((ph) => !ph.latitude || !ph.longitude).length}. Они есть в списке ниже.`
+                : `${filtered.filter((ph) => !ph.latitude || !ph.longitude).length} ta dorixonaning xaritadagi joyi hali kiritilmagan — ular pastdagi ro'yxatda bor.`}
+            </p>
+          )}
         </div>
       )}
 
