@@ -1,9 +1,8 @@
-import { useEffect, useState, useCallback, lazy, Suspense } from 'react'
+import { useEffect, useLayoutEffect, useState, useCallback, lazy, Suspense } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Building2, MapPin, Phone, Search, Navigation, Pill, Package, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { xaritaHavolasi, telHavola } from '@/lib/xarita'
-import { Card } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -32,6 +31,19 @@ export function Dorixonalar() {
   const [drugsLoading, setDrugsLoading] = useState(false)
   const [drugDetail, setDrugDetail] = useState<DoriQidiruvResult | null>(null)
   const [filterText, setFilterText] = useState('')
+  const [tepa, setTepa] = useState(64)
+
+  // Xarita sarlavha ostidan boshlansin: sarlavha balandligi qurilmaga qarab o'zgaradi.
+  useLayoutEffect(() => {
+    const header = document.querySelector('header')
+    if (!header) return
+    const olch = () => setTepa(Math.round(header.getBoundingClientRect().bottom))
+    olch()
+    const ro = new ResizeObserver(olch)
+    ro.observe(header)
+    window.addEventListener('resize', olch)
+    return () => { ro.disconnect(); window.removeEventListener('resize', olch) }
+  }, [])
 
   const loadPharmacies = useCallback(async (loc?: { lat: number; lon: number } | null) => {
     try {
@@ -97,105 +109,48 @@ export function Dorixonalar() {
   })
 
   return (
-    <section className="max-w-[1180px] mx-auto px-4 py-6 pb-24 md:pb-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-extrabold text-ink">{t('dorixonaListTitle')}</h1>
-        <p className="text-ink-dim mt-1">{t('dorixonaListDesc')}</p>
-      </div>
+    // Butun ekranli xarita (Yandex xaritadagidek): sarlavha ostidan pastki menyugacha.
+    <section
+      className="fixed left-0 right-0 bottom-[calc(68px+env(safe-area-inset-bottom))] md:bottom-0 z-0"
+      style={{ top: tepa }}
+    >
+      <Suspense fallback={<div className="absolute inset-0 bg-slate-100 animate-pulse" />}>
+        <DorixonalarXaritasi
+          className="absolute inset-0"
+          pharmacies={filtered}
+          userLoc={userLoc}
+          lang={lang}
+          onOpen={openPharmacy}
+        />
+      </Suspense>
 
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" />
+      <div className="absolute top-3 left-3 right-3 z-10 mx-auto max-w-[560px]">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" />
           <input
             type="text"
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
-            placeholder={lang === 'uz' ? 'Dorixona qidirish...' : 'Поиск аптеки...'}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand/40"
+            placeholder={lang === 'uz' ? 'Dorixona yoki manzil qidirish...' : 'Поиск аптеки или адреса...'}
+            className="w-full pl-11 pr-4 py-3 rounded-full border border-slate-200 bg-white text-sm shadow-[0_8px_24px_rgba(15,23,42,0.15)] outline-none focus:ring-2 focus:ring-brand/30"
           />
         </div>
-        <Button
-          variant={userLoc ? 'success' : 'default'}
-          onClick={handleLocate}
-          className="whitespace-nowrap"
-        >
-          <Navigation className="w-4 h-4" />
-          {userLoc ? t('joylashuvAniq') : t('joylashuvAniqla')}
-        </Button>
+        {loading && (
+          <p className="mt-2 mx-auto w-fit rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-ink-dim shadow">
+            {lang === 'uz' ? 'Yuklanmoqda...' : 'Загрузка...'}
+          </p>
+        )}
       </div>
 
-      {!userLoc && (
-        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-6 text-sm text-ink-dim">
-          <Navigation className="w-4 h-4 inline text-brand mr-1.5" />
-          {t('joylashuvInfo')}
-        </div>
-      )}
-
-      {!loading && (
-        <div className="mb-6">
-          <Suspense fallback={<div className="h-[320px] sm:h-[420px] rounded-2xl bg-slate-100 animate-pulse" />}>
-            <DorixonalarXaritasi pharmacies={filtered} userLoc={userLoc} lang={lang} onOpen={openPharmacy} />
-          </Suspense>
-          {filtered.some((ph) => !ph.latitude || !ph.longitude) && (
-            <p className="text-xs text-ink-faint mt-2">
-              {lang === 'ru'
-                ? `Местоположение ещё не указано у аптек: ${filtered.filter((ph) => !ph.latitude || !ph.longitude).length}. Они есть в списке ниже.`
-                : `${filtered.filter((ph) => !ph.latitude || !ph.longitude).length} ta dorixonaning xaritadagi joyi hali kiritilmagan — ular pastdagi ro'yxatda bor.`}
-            </p>
-          )}
-        </div>
-      )}
-
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="w-8 h-8 border-4 border-brand/30 border-t-brand rounded-full animate-spin" />
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((ph) => {
-            const isOpen = dorixonaOchiqmi(ph.ishBoshlanishi, ph.ishTugashi)
-            return (
-              <Card
-                key={ph.id}
-                className="p-4 cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(2,32,71,0.10)]"
-                onClick={() => openPharmacy(ph)}
-              >
-                <div className="flex gap-3 items-start">
-                  <div className="w-12 h-12 rounded-[14px] bg-gradient-to-br from-brand-sea to-brand flex items-center justify-center flex-shrink-0">
-                    <Building2 className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-bold text-ink truncate">{ph.nomi || ph.name}</div>
-                    <div className="text-ink-dim text-sm mt-0.5 flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                      <span className="truncate">{ph.manzil || ph.address || '—'}</span>
-                    </div>
-                    {ph.telefon && (
-                      <div className="text-ink-dim text-sm mt-0.5 flex items-center gap-1">
-                        <Phone className="w-3.5 h-3.5 flex-shrink-0" />
-                        {ph.telefon}
-                      </div>
-                    )}
-                    {ph._km != null && (
-                      <div className="text-brand text-sm font-semibold mt-1">
-                        {formatDistance(ph._km, lang)}
-                      </div>
-                    )}
-                    <div className={`text-sm font-semibold mt-1 ${isOpen ? 'text-green-600' : 'text-red-500'}`}>
-                      {isOpen ? t('ochiq') : t('yopiq')}
-                      {ph.ishBoshlanishi && ph.ishTugashi && ` · ${ph.ishBoshlanishi}–${ph.ishTugashi}`}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            )
-          })}
-        </div>
-      )}
-
-      {filtered.length === 0 && !loading && (
-        <div className="text-center py-12 text-ink-dim">{t('topilmadi')}</div>
-      )}
+      <button
+        type="button"
+        onClick={handleLocate}
+        title={t('joylashuvAniqla')}
+        aria-label={t('joylashuvAniqla')}
+        className={`absolute right-3 bottom-[96px] z-10 w-12 h-12 rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(15,23,42,0.2)] border ${userLoc ? 'bg-brand text-white border-brand' : 'bg-white text-brand border-slate-200'}`}
+      >
+        <Navigation className="w-5 h-5" />
+      </button>
 
       <PharmacyModal
         pharmacy={selected}

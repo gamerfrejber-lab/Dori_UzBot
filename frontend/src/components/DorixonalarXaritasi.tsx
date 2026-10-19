@@ -37,11 +37,12 @@ const SIZ = L.divIcon({
  * ko'rinadi; foydalanuvchi joyini aniqlasa — ko'k nuqta va eng yaqinlarga moslashadi.
  * Belgini bossa: nomi, manzili, telefoni, "Dorilarini ko'rish" va "Yo'l ko'rsatish".
  */
-export default function DorixonalarXaritasi({ pharmacies, userLoc, lang, onOpen }: {
+export default function DorixonalarXaritasi({ pharmacies, userLoc, lang, onOpen, className }: {
   pharmacies: (Dorixona & { _km?: number })[]
   userLoc: { lat: number; lon: number } | null
   lang: 'uz' | 'ru'
   onOpen: (ph: Dorixona) => void
+  className?: string
 }) {
   const boxRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
@@ -58,7 +59,9 @@ export default function DorixonalarXaritasi({ pharmacies, userLoc, lang, onOpen 
 
   useEffect(() => {
     if (!boxRef.current || mapRef.current) return
-    const map = L.map(boxRef.current, { zoomControl: true, scrollWheelZoom: false }).setView(TOSHKENT, 11)
+    // To'liq ekranli xarita: g'ildirak bilan kattalashtirish, tugmalar o'ng pastda (Yandex'dagidek).
+    const map = L.map(boxRef.current, { zoomControl: false, scrollWheelZoom: true }).setView(TOSHKENT, 12)
+    L.control.zoom({ position: 'bottomright' }).addTo(map)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>',
@@ -117,5 +120,5 @@ export default function DorixonalarXaritasi({ pharmacies, userLoc, lang, onOpen 
     }
   }, [imzo, userLat, userLon, lang])
 
-  return <div ref={boxRef} className="isolate h-[320px] sm:h-[420px] w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-100" />
+  return <div ref={boxRef} className={'isolate bg-slate-100 ' + (className ?? 'h-[420px] w-full rounded-2xl overflow-hidden')} />
 }
