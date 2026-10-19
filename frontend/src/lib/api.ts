@@ -99,13 +99,20 @@ export async function dorixonaDorilar(id: number): Promise<DoriQidiruvResult[]> 
   return get(`/api/dorixona/${id}/dorilar`)
 }
 
+/** Kod yetkazilmadi: raqam botda ro'yxatdan o'tmagan (botga /start bosilmagan yoki raqam ulashilmagan). */
+export class KodYetkazilmadi extends Error {}
+
 export async function sendCode(phoneNumber: string): Promise<{ message?: string }> {
   const r = await fetch('/api/auth/send-code', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phoneNumber }),
   })
-  return r.json()
+  const data = await r.json().catch(() => ({}))
+  // Server kodni yubora olmasa 400 qaytaradi — bunda "kod yuborildi" sahifasiga o'tmaymiz.
+  if (r.status === 400) throw new KodYetkazilmadi(data.message || '')
+  if (!r.ok) throw new Error(`HTTP ${r.status}`)
+  return data
 }
 
 export async function verifyCode(phoneNumber: string, code: string): Promise<{ token?: string; message?: string }> {

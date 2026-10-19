@@ -4,7 +4,7 @@ import { Phone, Send, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useLang } from '@/hooks/useLanguage'
-import { sendCode } from '@/lib/api'
+import { sendCode, KodYetkazilmadi } from '@/lib/api'
 
 type Country = 'uz' | 'ru'
 
@@ -33,12 +33,13 @@ function formatPhone(digits: string, country: Country): string {
 }
 
 export function Login() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const navigate = useNavigate()
   const [country, setCountry] = useState<Country>('uz')
   const [digits, setDigits] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [botKerak, setBotKerak] = useState(false)
 
   useEffect(() => {
     if (localStorage.getItem('token')) navigate('/')
@@ -58,12 +59,18 @@ export function Login() {
     if (digits.length < cfg.maxDigits) return
     setLoading(true)
     setError('')
+    setBotKerak(false)
     try {
       await sendCode(fullPhone)
       localStorage.setItem('phone', fullPhone)
       navigate('/sms')
-    } catch {
-      setError(t('serverXato'))
+    } catch (err) {
+      if (err instanceof KodYetkazilmadi) {
+        setBotKerak(true)
+        setError(lang === 'ru' ? 'Не удалось отправить код на этот номер. Сначала откройте бота @dori_UzBot в Telegram, нажмите /start и поделитесь номером — затем попробуйте снова.' : "Bu raqamga kod yuborib bo'lmadi. Avval Telegramda @dori_UzBot botini oching, /start bosing va telefon raqamingizni ulashing — keyin qaytadan urinib ko'ring.")
+      } else {
+        setError(t('serverXato'))
+      }
     } finally {
       setLoading(false)
     }
@@ -106,6 +113,16 @@ export function Login() {
 
             {error && (
               <p className="text-red-500 text-sm mb-3">{error}</p>
+            )}
+            {botKerak && (
+              <a
+                href="https://t.me/dori_UzBot?start=login"
+                target="_blank"
+                rel="noreferrer"
+                className="mb-3 flex items-center justify-center gap-2 w-full rounded-xl border border-brand/30 bg-brand/5 px-4 py-2.5 text-sm font-bold text-brand"
+              >
+                <MessageCircle className="w-4 h-4" /> {lang === 'ru' ? 'Открыть @dori_UzBot' : "@dori_UzBot'ni ochish"}
+              </a>
             )}
 
             <Button
