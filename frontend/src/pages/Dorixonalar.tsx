@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState, useCallback, lazy, Suspense } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Building2, MapPin, Phone, Search, Navigation, Pill, Package, Check } from 'lucide-react'
+import { Building2, MapPin, Phone, Search, Navigation, Pill, Package, Check, Loader2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { xaritaHavolasi, telHavola } from '@/lib/xarita'
 import {
@@ -13,7 +13,7 @@ import { useLang } from '@/hooks/useLanguage'
 import { useCart, type CartItem } from '@/hooks/useCart'
 import * as api from '@/lib/api'
 import type { Dorixona, DoriQidiruvResult } from '@/lib/api'
-import { requestLocation, distanceKm, dorixonaOchiqmi, formatDistance } from '@/lib/geo'
+import { joylashuvOl, joylashuvRuxsatiBormi, telegramJoylashuvSozlamasi, distanceKm, dorixonaOchiqmi, formatDistance, type JoylashuvXato } from '@/lib/geo'
 import { doriKartaNomi, doriShakliDozasi } from '@/lib/cyrillic'
 import { bronQilish } from '@/lib/api'
 
@@ -32,6 +32,8 @@ export function Dorixonalar() {
   const [drugDetail, setDrugDetail] = useState<DoriQidiruvResult | null>(null)
   const [filterText, setFilterText] = useState('')
   const [tepa, setTepa] = useState(64)
+  const [aniqlanmoqda, setAniqlanmoqda] = useState(false)
+  const [joyXato, setJoyXato] = useState<JoylashuvXato | null>(null)
 
   // Xarita sarlavha ostidan boshlansin: sarlavha balandligi qurilmaga qarab o'zgaradi.
   useLayoutEffect(() => {
@@ -78,13 +80,27 @@ export function Dorixonalar() {
     }
   }, [loadPharmacies])
 
-  const handleLocate = async () => {
-    const loc = await requestLocation()
-    if (loc) {
-      setUserLoc(loc)
-      loadPharmacies(loc)
+  const handleLocate = async (jim = false) => {
+    setAniqlanmoqda(true)
+    setJoyXato(null)
+    try {
+      const n = await joylashuvOl()
+      if ('loc' in n) {
+        setUserLoc(n.loc)
+        loadPharmacies(n.loc)
+      } else if (!jim) {
+        setJoyXato(n.xato)
+      }
+    } finally {
+      setAniqlanmoqda(false)
     }
   }
+
+  // Ruxsat avval berilgan bo'lsa — sahifa ochilishi bilan foydalanuvchi joyini ko'rsatamiz.
+  useEffect(() => {
+    joylashuvRuxsatiBormi().then((bor) => { if (bor) handleLocate(true) })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const openPharmacy = async (ph: Dorixona) => {
     setSelected(ph)
@@ -142,14 +158,38 @@ export function Dorixonalar() {
         )}
       </div>
 
+      {joyXato && (
+        <div className="absolute left-3 right-[72px] bottom-[96px] z-10 mx-auto max-w-[420px] rounded-2xl bg-white p-3 pr-9 text-sm shadow-[0_8px_24px_rgba(15,23,42,0.2)] border border-slate-200">
+          <button type="button" onClick={() => setJoyXato(null)} aria-label="Yopish" className="absolute right-2 top-2 p-1 text-ink-faint">
+            <X className="w-4 h-4" />
+          </button>
+          <p className="font-bold text-ink">
+            {lang === 'ru' ? 'Не удалось определить местоположение' : "Joylashuvingizni aniqlab bo'lmadi"}
+          </p>
+          <p className="mt-1 text-ink-dim">
+            {joyXato === 'rad_telegram'
+              ? (lang === 'ru' ? 'Разрешите Telegram доступ к геолокации.' : "Telegram'ga joylashuvdan foydalanishga ruxsat bering.")
+              : joyXato === 'rad'
+                ? (lang === 'ru' ? 'Разрешите сайту доступ к геолокации: нажмите на значок слева от адреса → «Местоположение» → «Разрешить», затем нажмите кнопку снова.' : "Saytga joylashuv ruxsatini bering: manzil satri chapidagi belgini bosing → «Joylashuv» → «Ruxsat berish», keyin tugmani qayta bosing.")
+                : (lang === 'ru' ? 'Включите геолокацию (GPS) на телефоне и попробуйте снова.' : "Telefonda joylashuv (GPS) yoqilganini tekshiring va qayta urinib ko'ring.")}
+          </p>
+          {joyXato === 'rad_telegram' && (
+            <button type="button" onClick={() => telegramJoylashuvSozlamasi()} className="mt-2 rounded-full bg-brand px-3 py-1.5 text-xs font-bold text-white">
+              {lang === 'ru' ? 'Открыть настройки' : 'Sozlamani ochish'}
+            </button>
+          )}
+        </div>
+      )}
+
       <button
         type="button"
-        onClick={handleLocate}
+        onClick={() => handleLocate()}
+        disabled={aniqlanmoqda}
         title={t('joylashuvAniqla')}
         aria-label={t('joylashuvAniqla')}
         className={`absolute right-3 bottom-[96px] z-10 w-12 h-12 rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(15,23,42,0.2)] border ${userLoc ? 'bg-brand text-white border-brand' : 'bg-white text-brand border-slate-200'}`}
       >
-        <Navigation className="w-5 h-5" />
+        {aniqlanmoqda ? <Loader2 className="w-5 h-5 animate-spin" /> : <Navigation className="w-5 h-5" />}
       </button>
 
       <PharmacyModal

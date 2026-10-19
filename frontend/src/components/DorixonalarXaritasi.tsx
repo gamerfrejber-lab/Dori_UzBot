@@ -66,7 +66,8 @@ export default function DorixonalarXaritasi({ pharmacies, userLoc, lang, onOpen,
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>',
     }).addTo(map)
-    map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noreferrer">Leaflet</a>')
+    // OpenStreetMap litsenziyasi manbani ko'rsatishni talab qiladi — kichik qilib burchakda qoldiramiz.
+    map.attributionControl.setPrefix(false)
     layerRef.current = L.layerGroup().addTo(map)
     mapRef.current = map
     return () => { map.remove(); mapRef.current = null }
