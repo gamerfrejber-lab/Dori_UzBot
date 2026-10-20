@@ -44,7 +44,7 @@ public class BronService {
         // Ombor hisobi yuritilayotgan bo'lsa, qoldiqdan ko'p bron qilib bo'lmaydi —
         // aks holda dorixona bajara olmaydigan buyurtma tushardi.
         long qoldiq = omborService.qoldiq(doriId);
-        Map<Long, long[]> qoldiqlar = omborService.qoldiqlar();
+        Map<Long, long[]> qoldiqlar = omborService.qoldiqlar(List.of(doriId));
         boolean hisobYuritiladi = qoldiqlar.containsKey(doriId) && qoldiqlar.get(doriId)[1] > 0;
         if (hisobYuritiladi && soni > qoldiq) {
             throw new IllegalStateException("Omborda faqat " + qoldiq + " ta bor");

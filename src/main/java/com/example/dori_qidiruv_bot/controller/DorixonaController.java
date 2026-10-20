@@ -24,7 +24,7 @@ public class DorixonaController {
      */
     @GetMapping
     public ResponseEntity<List<Dorixona>> getAll() {
-        return ResponseEntity.ok(dorixonaRepository.findAll());
+        return ResponseEntity.ok(doriService.dorixonalar());
     }
 
     /**

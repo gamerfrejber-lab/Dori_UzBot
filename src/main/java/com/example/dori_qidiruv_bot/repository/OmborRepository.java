@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -85,6 +86,28 @@ public interface OmborRepository extends JpaRepository<OmborHarakat, Long> {
             GROUP BY dori_id
             """, nativeQuery = true)
     List<Qoldiq> barchaQoldiqlar();
+
+    /** Faqat berilgan mahsulotlarning qoldig'i — qidiruv natijalari uchun (butun jadvalni yig'ish o'rniga). */
+    @Query(value = """
+            SELECT dori_id AS doriId,
+                   COALESCE(SUM(CASE WHEN turi = 'KIRIM' THEN soni ELSE -soni END), 0) AS qoldiq,
+                   COALESCE(SUM(CASE WHEN turi = 'KIRIM' THEN soni ELSE 0 END), 0) AS kelgan
+            FROM ombor_harakat
+            WHERE dori_id IN (:ids)
+            GROUP BY dori_id
+            """, nativeQuery = true)
+    List<Qoldiq> qoldiqlar(@Param("ids") Collection<Long> ids);
+
+    /** Bitta dorixonadagi mahsulotlarning qoldig'i. */
+    @Query(value = """
+            SELECT o.dori_id AS doriId,
+                   COALESCE(SUM(CASE WHEN o.turi = 'KIRIM' THEN o.soni ELSE -o.soni END), 0) AS qoldiq,
+                   COALESCE(SUM(CASE WHEN o.turi = 'KIRIM' THEN o.soni ELSE 0 END), 0) AS kelgan
+            FROM ombor_harakat o JOIN dori d ON d.id = o.dori_id
+            WHERE d.dorixona_id = :dorixonaId
+            GROUP BY o.dori_id
+            """, nativeQuery = true)
+    List<Qoldiq> dorixonaQoldiqlari(@Param("dorixonaId") Long dorixonaId);
 
     /** Butun tizim bo'yicha jami. */
     interface Umumiy {

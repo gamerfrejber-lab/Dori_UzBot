@@ -1,9 +1,11 @@
 package com.example.dori_qidiruv_bot.service;
 
+import com.example.dori_qidiruv_bot.util.ResursCrc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,44 +17,76 @@ import java.util.Map;
 /**
  * Dorilarga kategoriya yozadi. Dorilar bazaga bot orqali ham tushadi, shuning uchun
  * import paytida emas, shu yerda — sayt tomonida belgilanadi.
+ *
+ * <p>Jadval 5 000 qatorlik bo'laklarda o'qiladi: avval butun "dori" jadvali bitta ro'yxatga yuklanardi va
+ * 1 mln qatorda 320 MB xotira yetmay sayt ishga tushmay qolardi.
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class KategoriyaBelgilovchi {
 
+    private static final int BOLAK = 5000;
+    private static final String QOIDALAR_FAYLI = "kategoriya_qoidalar.tsv";
+
     private final JdbcTemplate jdbc;
     private final KategoriyaAniqlovchi aniqlovchi;
     private final NomTozalovchi nomTozalovchi;
+    private final SaytSozlama sozlama;
 
-    /** Ishga tushganda hammasi qayta hisoblanadi — qoidalar o'zgargan bo'lsa eski belgilar yangilanadi. */
+    /**
+     * Ishga tushganda: qoidalar fayli o'zgargan bo'lsagina hamma dorilar qayta hisoblanadi
+     * (avval har restartda 1 mln qator qayta hisoblanib, ~1,5 daqiqa protsessorni band qilardi).
+     */
+    @Order(10)
     @EventListener(ApplicationReadyEvent.class)
     public void hammasiniQaytaBelgila() {
         nomTozalovchi.tozala();
-        belgila("SELECT id, nomi, nomi_ru, kategoriya FROM dori");
+        String crc = ResursCrc.hisobla(QOIDALAR_FAYLI);
+        if (crc != null && crc.equals(sozlama.ol("kategoriya_qoidalar_crc", null))) {
+            yangilarniBelgila();
+            return;
+        }
+        int jami = bolaklab(false);
+        if (crc != null) sozlama.yoz("kategoriya_qoidalar_crc", crc);
+        log.info("Kategoriya qoidalari o'zgargan — {} ta dorining kategoriyasi yangilandi.", jami);
     }
 
     /** Yangi qo'shilgan (hali belgilanmagan) dorilar: avval nomi tozalanadi, keyin kategoriya belgilanadi. */
     @Scheduled(initialDelay = 120_000, fixedDelay = 120_000)
     public void yangilarniBelgila() {
         nomTozalovchi.tozala();
-        belgila("SELECT id, nomi, nomi_ru, kategoriya FROM dori WHERE kategoriya IS NULL");
+        int jami = bolaklab(true);
+        if (jami > 0) log.info("{} ta yangi doriga kategoriya belgilandi.", jami);
     }
 
-    private void belgila(String sql) {
+    /** Jadvalni id bo'yicha bo'laklab o'qiydi; faqatNull — faqat kategoriyasi yo'qlar (qisman indeks bilan). */
+    private int bolaklab(boolean faqatNull) {
+        int jami = 0;
+        long oxirgiId = 0;
         try {
-            List<Object[]> yangilanadi = new ArrayList<>();
-            for (Map<String, Object> qator : jdbc.queryForList(sql)) {
-                String yangi = aniqlovchi.aniqla((String) qator.get("nomi"), (String) qator.get("nomi_ru"));
-                if (!yangi.equals(qator.get("kategoriya"))) {
-                    yangilanadi.add(new Object[]{yangi, qator.get("id")});
+            while (true) {
+                List<Map<String, Object>> bolak = jdbc.queryForList(
+                        "SELECT id, nomi, nomi_ru, kategoriya FROM dori WHERE id > ?"
+                                + (faqatNull ? " AND kategoriya IS NULL" : "") + " ORDER BY id LIMIT " + BOLAK, oxirgiId);
+                if (bolak.isEmpty()) break;
+                List<Object[]> yangilanadi = new ArrayList<>();
+                for (Map<String, Object> qator : bolak) {
+                    String yangi = aniqlovchi.aniqla((String) qator.get("nomi"), (String) qator.get("nomi_ru"));
+                    if (!yangi.equals(qator.get("kategoriya"))) {
+                        yangilanadi.add(new Object[]{yangi, qator.get("id")});
+                    }
                 }
+                if (!yangilanadi.isEmpty()) {
+                    jdbc.batchUpdate("UPDATE dori SET kategoriya = ? WHERE id = ?", yangilanadi);
+                    jami += yangilanadi.size();
+                }
+                oxirgiId = ((Number) bolak.get(bolak.size() - 1).get("id")).longValue();
+                if (bolak.size() < BOLAK) break;
             }
-            if (yangilanadi.isEmpty()) return;
-            jdbc.batchUpdate("UPDATE dori SET kategoriya = ? WHERE id = ?", yangilanadi);
-            log.info("{} ta doriga kategoriya belgilandi.", yangilanadi.size());
         } catch (Exception e) {
             log.warn("Kategoriyalarni belgilab bo'lmadi: {}", e.getMessage());
         }
+        return jami;
     }
 }

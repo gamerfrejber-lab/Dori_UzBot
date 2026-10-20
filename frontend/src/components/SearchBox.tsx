@@ -22,9 +22,13 @@ export function SearchBox({ onSearch }: Props) {
   const [activeIndex, setActiveIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  // Yozish davomida eski so'rov hali kelmagan bo'lsa, u bekor qilinadi — server va internet bekorga band bo'lmaydi.
+  const abortRef = useRef<AbortController | null>(null)
 
   const doSearch = useCallback(
     (q: string) => {
+      clearTimeout(timerRef.current)
+      abortRef.current?.abort()
       setShowDropdown(false)
       if (q.trim().length >= 2) onSearch(q.trim())
     },
@@ -33,8 +37,11 @@ export function SearchBox({ onSearch }: Props) {
 
   const fetchSuggestions = useCallback(
     async (q: string) => {
+      abortRef.current?.abort()
+      const controller = new AbortController()
+      abortRef.current = controller
       try {
-        const data = await fetchAC(q)
+        const data = await fetchAC(q, 30, controller.signal)
         const current = inputRef.current?.value.trim().toLowerCase() ?? ''
         if (!current.startsWith(q.toLowerCase().substring(0, 2))) return
 
@@ -69,10 +76,12 @@ export function SearchBox({ onSearch }: Props) {
     setQuery(value)
     clearTimeout(timerRef.current)
     if (value.trim().length < 2) {
+      abortRef.current?.abort()
       setShowDropdown(false)
       return
     }
-    timerRef.current = setTimeout(() => fetchSuggestions(value.trim()), 200)
+    // Har harfga emas: yozish 300 ms to'xtagandan keyin bitta so'rov.
+    timerRef.current = setTimeout(() => fetchSuggestions(value.trim()), 300)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -100,7 +109,10 @@ export function SearchBox({ onSearch }: Props) {
   }
 
   useEffect(() => {
-    return () => clearTimeout(timerRef.current)
+    return () => {
+      clearTimeout(timerRef.current)
+      abortRef.current?.abort()
+    }
   }, [])
 
   const highlight = (text: string) => {

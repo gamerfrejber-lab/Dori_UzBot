@@ -7,10 +7,14 @@ import com.example.dori_qidiruv_bot.dto.VerifyRequest;
 import com.example.dori_qidiruv_bot.entity.User;
 import com.example.dori_qidiruv_bot.service.AuthService;
 import com.example.dori_qidiruv_bot.service.TelegramAuthService;
+import com.example.dori_qidiruv_bot.service.SorovChegarasi;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.Map;
 
 @RestController
@@ -20,6 +24,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final TelegramAuthService telegramAuthService;
+    private final SorovChegarasi chegara;
 
     @org.springframework.beans.factory.annotation.Value("${telegram.bot-username:dori_UzBot}")
     private String botUsername;
@@ -28,7 +33,13 @@ public class AuthController {
      * Telefon raqam yuborish - SMS kod olish
      */
     @PostMapping("/send-code")
-    public ResponseEntity<AuthResponse> sendCode(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> sendCode(@RequestBody AuthRequest request, HttpServletRequest http) {
+        // Bir raqamga: daqiqasiga 1 ta, soatiga 5 ta kod; bir IP'dan 10 daqiqada 10 ta.
+        String raqam = raqam(request.getPhoneNumber());
+        long kut = Math.max(chegara.tekshir("kod:tel:" + raqam, 1, Duration.ofMinutes(1)),
+                Math.max(chegara.tekshir("kod:telsoat:" + raqam, 5, Duration.ofHours(1)),
+                        chegara.tekshir("kod:ip:" + http.getRemoteAddr(), 10, Duration.ofMinutes(10))));
+        if (kut > 0) return juda(kut, new AuthResponse(null, kutish(kut)));
         try {
             String message = authService.sendVerificationCode(request.getPhoneNumber());
             return ResponseEntity.ok(new AuthResponse(null, message));
@@ -48,7 +59,10 @@ public class AuthController {
      * Telegram Mini App orqali kirish — telefon va SMS kodsiz, initData imzosi asosida
      */
     @PostMapping("/telegram")
-    public ResponseEntity<Map<String, Object>> loginWithTelegram(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> loginWithTelegram(@RequestBody Map<String, String> request,
+                                                                 HttpServletRequest http) {
+        long kut = chegara.tekshir("tg:ip:" + http.getRemoteAddr(), 30, Duration.ofMinutes(1));
+        if (kut > 0) return juda(kut, Map.of("message", kutish(kut)));
         try {
             TelegramAuthService.Natija n = telegramAuthService.loginWithInitData(request.get("initData"));
             return ResponseEntity.ok(Map.of("token", n.token(), "message", "Muvaffaqiyatli", "manba", n.manba()));
@@ -61,7 +75,12 @@ public class AuthController {
      * Kodni tekshirish va token olish
      */
     @PostMapping("/verify")
-    public ResponseEntity<AuthResponse> verify(@RequestBody VerifyRequest request) {
+    public ResponseEntity<AuthResponse> verify(@RequestBody VerifyRequest request, HttpServletRequest http) {
+        // 6 xonali kodni tanlab topib bo'lmasin: bir raqamga 10 daqiqada 5 urinish, bir IP'dan 30 urinish.
+        String raqam = raqam(request.getPhoneNumber());
+        long kut = Math.max(chegara.tekshir("tekshir:tel:" + raqam, 5, Duration.ofMinutes(10)),
+                chegara.tekshir("tekshir:ip:" + http.getRemoteAddr(), 30, Duration.ofMinutes(10)));
+        if (kut > 0) return juda(kut, new AuthResponse(null, kutish(kut)));
         try {
             String token = authService.verifyCode(request.getPhoneNumber(), request.getCode());
             return ResponseEntity.ok(new AuthResponse(token, "Muvaffaqiyatli"));
@@ -103,5 +122,22 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    private static String raqam(String telefon) {
+        String r = telefon == null ? "" : telefon.replaceAll("[^0-9]", "");
+        return r.length() > 9 ? r.substring(r.length() - 9) : r;
+    }
+
+    private static String kutish(long soniya) {
+        return soniya >= 60
+                ? "Juda ko'p urinish. " + ((soniya + 59) / 60) + " daqiqadan keyin qayta urinib ko'ring."
+                : "Juda ko'p urinish. " + soniya + " soniyadan keyin qayta urinib ko'ring.";
+    }
+
+    private static <T> ResponseEntity<T> juda(long soniya, T body) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header("Retry-After", String.valueOf(soniya))
+                .body(body);
     }
 }

@@ -2,6 +2,7 @@ package com.example.dori_qidiruv_bot.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +12,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
+/**
+ * Render'ning bepul rejasi uchun "uyg'otuvchi" ping. Railway'da kerak emas: APP_KEEP_ALIVE_URL bo'sh bo'lsa
+ * yoki sayt Railway'da ishlayotgan bo'lsa (RAILWAY_ENVIRONMENT_NAME bor) bu komponent umuman yaratilmaydi.
+ */
 @Slf4j
 @Component
+@ConditionalOnExpression("!'${app.keep-alive-url:}'.isBlank() and '${RAILWAY_ENVIRONMENT_NAME:}'.isBlank()")
 public class KeepAliveService {
 
     @Value("${app.keep-alive-url:}")

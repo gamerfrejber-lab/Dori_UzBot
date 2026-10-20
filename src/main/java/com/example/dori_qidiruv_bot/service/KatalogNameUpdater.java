@@ -1,6 +1,8 @@
 package com.example.dori_qidiruv_bot.service;
 
+import com.example.dori_qidiruv_bot.util.ResursCrc;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
@@ -13,19 +15,31 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Additive, repeatable update: preserves original names, IDs and stock. */
+/**
+ * Katalogga tayyor ruscha/o'zbekcha nomlarni yozadi (asl nom, id va qoldiqqa tegmaydi).
+ * Fayl (5 MB) faqat o'zgargan bo'lsa o'qiladi: avval har ishga tushishda 26 ming UPDATE bajarilardi.
+ */
+@Slf4j
 @Component
 @Order(110)
 @RequiredArgsConstructor
 public class KatalogNameUpdater implements CommandLineRunner {
+    private static final String FAYL = "dori_katalog_localized.tsv";
+
     private final JdbcTemplate jdbcTemplate;
+    private final SaytSozlama sozlama;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void run(String... args) throws Exception {
+        String crc = ResursCrc.hisobla(FAYL);
+        if (crc != null && crc.equals(sozlama.ol("katalog_nomlar_crc", null))) {
+            log.info("Katalog nomlari o'zgarmagan — yangilash o'tkazib yuborildi.");
+            return;
+        }
         List<Object[]> batch = new ArrayList<>();
         try (var reader = new BufferedReader(new InputStreamReader(
-                new ClassPathResource("dori_katalog_localized.tsv").getInputStream(), StandardCharsets.UTF_8))) {
+                new ClassPathResource(FAYL).getInputStream(), StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] c = line.split("\t", -1);
@@ -37,6 +51,7 @@ public class KatalogNameUpdater implements CommandLineRunner {
             }
         }
         if (!batch.isEmpty()) update(batch);
+        if (crc != null) sozlama.yoz("katalog_nomlar_crc", crc);
     }
 
     private void update(List<Object[]> batch) {

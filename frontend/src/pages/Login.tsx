@@ -4,7 +4,7 @@ import { Phone, Send, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useLang } from '@/hooks/useLanguage'
-import { sendCode, KodYetkazilmadi } from '@/lib/api'
+import { sendCode, KodYetkazilmadi, JudaKopUrinish } from '@/lib/api'
 
 type Country = 'uz' | 'ru'
 
@@ -68,6 +68,8 @@ export function Login() {
       if (err instanceof KodYetkazilmadi) {
         setBotKerak(true)
         setError(lang === 'ru' ? 'Не удалось отправить код на этот номер. Сначала откройте бота @dori_UzBot в Telegram, нажмите /start и поделитесь номером — затем попробуйте снова.' : "Bu raqamga kod yuborib bo'lmadi. Avval Telegramda @dori_UzBot botini oching, /start bosing va telefon raqamingizni ulashing — keyin qaytadan urinib ko'ring.")
+      } else if (err instanceof JudaKopUrinish) {
+        setError(lang === 'ru' ? 'Слишком много попыток. Попробуйте немного позже.' : err.message || "Juda ko'p urinish. Birozdan keyin qayta urinib ko'ring.")
       } else {
         setError(t('serverXato'))
       }

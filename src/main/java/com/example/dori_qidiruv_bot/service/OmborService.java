@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /** Ombor hisobi: kirim (mahsulot keldi), chiqim (sotildi) va hisobotlar. */
@@ -115,8 +116,22 @@ public class OmborService {
      * Ro'yxatlarda qoldiqni ko'rsatish uchun bitta so'rovda olinadi.
      */
     public Map<Long, long[]> qoldiqlar() {
+        return xaritaga(omborRepository.barchaQoldiqlar());
+    }
+
+    /** Faqat berilgan mahsulotlar qoldig'i: qidiruv natijasidagi 50 ta dori uchun butun jadval yig'ilmaydi. */
+    public Map<Long, long[]> qoldiqlar(Collection<Long> doriIds) {
+        if (doriIds == null || doriIds.isEmpty()) return new HashMap<>();
+        return xaritaga(omborRepository.qoldiqlar(doriIds));
+    }
+
+    public Map<Long, long[]> dorixonaQoldiqlari(Long dorixonaId) {
+        return xaritaga(omborRepository.dorixonaQoldiqlari(dorixonaId));
+    }
+
+    private static Map<Long, long[]> xaritaga(List<OmborRepository.Qoldiq> royxat) {
         Map<Long, long[]> map = new HashMap<>();
-        for (OmborRepository.Qoldiq q : omborRepository.barchaQoldiqlar()) {
+        for (OmborRepository.Qoldiq q : royxat) {
             if (q.getDoriId() == null) continue;
             long qoldiq = q.getQoldiq() == null ? 0 : q.getQoldiq();
             long kelgan = q.getKelgan() == null ? 0 : q.getKelgan();

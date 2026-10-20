@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
@@ -54,6 +56,7 @@ public class DoriMalumotService {
     private static final int NAMUNA_SONI = 8;
 
     private final JdbcTemplate jdbc;
+    private final SaytSozlama saytSozlama;
     private final ObjectMapper json = new ObjectMapper();
 
     @Value("${anthropic.api-key:}")
@@ -63,20 +66,12 @@ public class DoriMalumotService {
 
     // ---------------------------------------------------------------- sozlamalar
 
-    private void jadvalSozlama() {
-        jdbc.execute("CREATE TABLE IF NOT EXISTS sayt_sozlama (kalit VARCHAR(100) PRIMARY KEY, qiymat TEXT)");
-    }
-
     public String sozlama(String kalit, String standart) {
-        jadvalSozlama();
-        List<String> q = jdbc.queryForList("SELECT qiymat FROM sayt_sozlama WHERE kalit = ?", String.class, kalit);
-        return q.isEmpty() || q.get(0) == null ? standart : q.get(0);
+        return saytSozlama.ol(kalit, standart);
     }
 
     public void sozlamaYoz(String kalit, String qiymat) {
-        jadvalSozlama();
-        jdbc.update("INSERT INTO sayt_sozlama (kalit, qiymat) VALUES (?, ?) "
-                + "ON CONFLICT (kalit) DO UPDATE SET qiymat = EXCLUDED.qiymat", kalit, qiymat);
+        saytSozlama.yoz(kalit, qiymat);
     }
 
     public boolean kalitBormi() {
@@ -96,46 +91,75 @@ public class DoriMalumotService {
 
     private record Guruh(Set<String> namunalar, String ishlab, String davlat) { }
 
-    /** Katalog va dorixona dorilaridan yangi asosiy nomlarni jadvalga qo'shadi; sotuvdagilarni ustuvor qiladi. */
+    /** Bir yo'la xotirada ushlanadigan guruhlar soni — shundan oshsa bazaga yozib, xotira bo'shatiladi. */
+    private static final int GURUH_BOLAGI = 5000;
+
+    /**
+     * Katalog va dorixona dorilaridan yangi asosiy nomlarni jadvalga qo'shadi; sotuvdagilarni ustuvor qiladi.
+     * Jadvallar o'zgarmagan bo'lsa (soni va oxirgi id bir xil) hech narsa qilinmaydi. Qatorlar oqim bilan
+     * (fetchSize) o'qiladi va bo'laklab yoziladi — 1 mln qatorli jadval ham xotiraga to'liq yuklanmaydi.
+     */
     @Scheduled(initialDelayString = "${malumot.sinxron-kechikish:90000}", fixedDelay = 30 * 60_000)
     public void sinxronla() {
         try {
-            Map<String, Guruh> guruhlar = new LinkedHashMap<>();
-            jdbc.query("SELECT nomi, ishlab_chiqaruvchi, davlat FROM dori_katalog", rs -> {
-                qosh(guruhlar, rs.getString(1), rs.getString(2), rs.getString(3));
-            });
-            Set<String> sotuvda = new HashSet<>();
-            jdbc.query("SELECT nomi, ishlab_chiqaruvchi FROM dori WHERE nomi IS NOT NULL", rs -> {
-                String k = qosh(guruhlar, rs.getString(1), rs.getString(2), null);
-                if (k != null) sotuvda.add(k);
-            });
+            String belgi = jdbc.queryForObject("SELECT (SELECT COUNT(*) || ':' || COALESCE(MAX(id), 0) FROM dori_katalog) "
+                    + "|| '/' || (SELECT COUNT(*) || ':' || COALESCE(MAX(id), 0) FROM dori)", String.class);
+            if (belgi != null && belgi.equals(sozlama("malumot_sinxron_belgi", null))) return;
 
-            Set<String> bor = new HashSet<>(jdbc.queryForList("SELECT kalit FROM dori_malumot", String.class));
-            List<Object[]> yangi = new ArrayList<>();
-            guruhlar.forEach((k, g) -> {
-                if (bor.contains(k)) return;
-                boolean doriEmas = DoriKalit.doriEmasmi(k);
-                yangi.add(new Object[]{k, String.join("\n", g.namunalar()), g.ishlab(), g.davlat(),
-                        doriEmas ? "DORI_EMAS" : "KUTMOQDA", sotuvda.contains(k) ? 2 : 1});
+            JdbcTemplate oqim = new JdbcTemplate(jdbc.getDataSource());
+            oqim.setFetchSize(2000);
+            TransactionTemplate tx = new TransactionTemplate(new DataSourceTransactionManager(jdbc.getDataSource()));
+            tx.setReadOnly(true);
+            int[] qoshildi = {0};
+
+            // Katalog nomi bo'yicha tartiblangan — bir asosiy nomdagi mahsulotlar ketma-ket keladi.
+            tx.executeWithoutResult(st -> {
+                Map<String, Guruh> guruhlar = new LinkedHashMap<>();
+                oqim.query("SELECT nomi, ishlab_chiqaruvchi, davlat FROM dori_katalog ORDER BY nomi", rs -> {
+                    qosh(guruhlar, rs.getString(1), rs.getString(2), rs.getString(3));
+                    if (guruhlar.size() >= GURUH_BOLAGI) qoshildi[0] += yangilariniYoz(guruhlar, false);
+                });
+                qoshildi[0] += yangilariniYoz(guruhlar, false);
             });
-            if (!yangi.isEmpty()) {
-                jdbc.batchUpdate("INSERT INTO dori_malumot (kalit, namunalar, ishlab_chiqaruvchi, davlat, holat, ustuvor, "
-                        + "urinish, tahrirlangan, yangilangan) VALUES (?, ?, ?, ?, ?, ?, 0, FALSE, NOW()) "
-                        + "ON CONFLICT (kalit) DO NOTHING", yangi);
-                log.info("Dori ma'lumotnomasiga {} ta yangi nom qo'shildi.", yangi.size());
-            }
-            if (!sotuvda.isEmpty()) {
-                List<Object[]> ustuvor = sotuvda.stream().map(k -> new Object[]{k}).toList();
-                jdbc.batchUpdate("UPDATE dori_malumot SET ustuvor = 2 WHERE kalit = ? AND ustuvor < 2", ustuvor);
-            }
+            // Dorixonalardagi nomlar (takrorlarsiz) — bular "sotuvda", navbatda oldinda turadi.
+            tx.executeWithoutResult(st -> {
+                Map<String, Guruh> guruhlar = new LinkedHashMap<>();
+                oqim.query("SELECT DISTINCT nomi, ishlab_chiqaruvchi FROM dori WHERE nomi IS NOT NULL ORDER BY nomi", rs -> {
+                    qosh(guruhlar, rs.getString(1), rs.getString(2), null);
+                    if (guruhlar.size() >= GURUH_BOLAGI) qoshildi[0] += yangilariniYoz(guruhlar, true);
+                });
+                qoshildi[0] += yangilariniYoz(guruhlar, true);
+            });
+            if (qoshildi[0] > 0) log.info("Dori ma'lumotnomasiga {} ta yangi nom qo'shildi.", qoshildi[0]);
+            if (belgi != null) sozlamaYoz("malumot_sinxron_belgi", belgi);
         } catch (Exception e) {
             log.warn("Dori ma'lumotnomasini sinxronlab bo'lmadi: {}", e.getMessage());
         }
     }
 
-    private static String qosh(Map<String, Guruh> guruhlar, String nomi, String ishlab, String davlat) {
+    /** Guruhlarni bazaga yozadi (borlari o'tkazib yuboriladi) va xaritani tozalaydi. Qo'shilganlar sonini qaytaradi. */
+    private int yangilariniYoz(Map<String, Guruh> guruhlar, boolean sotuvda) {
+        if (guruhlar.isEmpty()) return 0;
+        List<Object[]> qatorlar = new ArrayList<>(guruhlar.size());
+        guruhlar.forEach((k, g) -> qatorlar.add(new Object[]{k, String.join("\n", g.namunalar()), g.ishlab(), g.davlat(),
+                DoriKalit.doriEmasmi(k) ? "DORI_EMAS" : "KUTMOQDA", sotuvda ? 2 : 1}));
+        int qoshildi = 0;
+        for (int n : jdbc.batchUpdate("INSERT INTO dori_malumot (kalit, namunalar, ishlab_chiqaruvchi, davlat, holat, ustuvor, "
+                + "urinish, tahrirlangan, yangilangan) VALUES (?, ?, ?, ?, ?, ?, 0, FALSE, NOW()) "
+                + "ON CONFLICT (kalit) DO NOTHING", qatorlar)) {
+            if (n > 0) qoshildi += n;
+        }
+        if (sotuvda) {
+            jdbc.batchUpdate("UPDATE dori_malumot SET ustuvor = 2 WHERE kalit = ? AND ustuvor < 2",
+                    guruhlar.keySet().stream().map(k -> new Object[]{k}).toList());
+        }
+        guruhlar.clear();
+        return qoshildi;
+    }
+
+    private static void qosh(Map<String, Guruh> guruhlar, String nomi, String ishlab, String davlat) {
         String k = DoriKalit.kalit(nomi);
-        if (k.isBlank()) return null;
+        if (k.isBlank()) return;
         Guruh g = guruhlar.computeIfAbsent(k, x -> new Guruh(new LinkedHashSet<>(),
                 ishlab == null ? null : ishlab.trim(), davlat == null ? null : davlat.trim()));
         if (g.namunalar().size() < NAMUNA_SONI) {
@@ -144,7 +168,6 @@ public class DoriMalumotService {
                     + (davlat != null && !davlat.isBlank() ? ", " + davlat.trim() : "");
             g.namunalar().add(q);
         }
-        return k;
     }
 
     // ---------------------------------------------------------------- yozdirish

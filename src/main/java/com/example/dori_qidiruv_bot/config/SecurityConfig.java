@@ -57,6 +57,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/bron/*/chek").permitAll()
                         // Dorilar, narxlar va dorixonalar mehmonlarga ham ko'rinadi (bosh sahifa va qidiruv ochiq);
                         // profil va bron qilish esa ro'yxatdan o'tishni talab qiladi.
+                        // Barcha dorilar ro'yxati (sahifalanmagan, 1 mln qatorgacha) — faqat admin; aks holda bitta so'rov
+                        // bilan serverni band qilish mumkin edi. Sayt bu endpointni ishlatmaydi.
+                        .requestMatchers(HttpMethod.GET, "/api/dori").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/katalog/qidirish", "/api/katalog/autocomplete", "/api/katalog/soni").permitAll()
                         // Katalogni to'liq sahifalab ko'rish (browse) — faqat admin.

@@ -4,7 +4,7 @@ import { Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useLang } from '@/hooks/useLanguage'
-import { verifyCode, sendCode, KodYetkazilmadi } from '@/lib/api'
+import { verifyCode, sendCode, KodYetkazilmadi, JudaKopUrinish } from '@/lib/api'
 
 function formatPhoneDisplay(value: string): string {
   const digits = (value || '').replace(/\D/g, '')
@@ -93,7 +93,9 @@ export function SmsVerify() {
     } catch (err) {
       setResendStatus(err instanceof KodYetkazilmadi
         ? (lang === 'ru' ? 'Код не отправлен: откройте @dori_UzBot и нажмите /start' : "Kod yuborilmadi: @dori_UzBot'da /start bosing")
-        : t('serverXato'))
+        : err instanceof JudaKopUrinish
+          ? (lang === 'ru' ? 'Слишком часто. Попробуйте через минуту.' : err.message || "Juda tez. Bir daqiqadan keyin urinib ko'ring.")
+          : t('serverXato'))
     }
     setTimeout(() => setResendStatus(null), 3000)
   }

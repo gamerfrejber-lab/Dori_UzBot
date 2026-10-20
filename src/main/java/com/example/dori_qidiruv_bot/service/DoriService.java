@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.dori_qidiruv_bot.util.LatCyrUtil;
+import com.example.dori_qidiruv_bot.util.Naqsh;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,25 +37,34 @@ public class DoriService {
     private final DoriKatalogRepository katalogRepository;
     private final OmborService omborService;
 
-    /**
-     * Katalogdan (butun O'zbekiston ro'yxati) qidirish — dori qo'shishda tanlash uchun.
-     * Natijalar soni cheklanadi (avtomatik to'ldirish ro'yxati juda uzun bo'lib ketmasligi uchun).
-     */
-    /** Katalogdagi jami dorilar soni. */
+    /** Katalogdagi jami dorilar soni (bosh sahifadagi raqam) — 10 daqiqa keshda, COUNT(*) har safar emas. */
+    @Cacheable("katalogSoni")
     public long katalogSoni() {
         return katalogRepository.count();
     }
 
+    /** Barcha dorixonalar (xarita va ro'yxat uchun) — 15 soniya keshda; bot yoki paneldagi o'zgarish shu vaqtda ko'rinadi. */
+    @Cacheable("dorixonalar")
+    public List<Dorixona> dorixonalar() {
+        return dorixonaRepository.findAll();
+    }
+
+    /**
+     * Katalogdan (butun O'zbekiston ro'yxati) qidirish — bosh sahifa qidiruvi va kategoriyalar uchun.
+     * Bir xil so'rov ko'p foydalanuvchidan keladi, shuning uchun 10 daqiqa keshlanadi.
+     */
+    @Cacheable(value = "katalogQidirish", key = "T(com.example.dori_qidiruv_bot.util.Naqsh).kalit(#q) + ':' + #limit")
     public List<DoriKatalog> katalogQidirish(String q, int limit) {
         if (q == null || q.trim().length() < 2) {
             return List.of();
         }
         int chegara = Math.max(1, Math.min(limit, 50));
         String trimmed = q.trim();
-        String alt = translitAlt(trimmed);
-        return katalogRepository.qidirish(trimmed, alt, PageRequest.of(0, chegara));
+        return katalogRepository.qidirish(Naqsh.ichida(trimmed), Naqsh.ichida(translitAlt(trimmed)), chegara);
     }
 
+    /** Qidiruv maydonidagi takliflar: avval nomi shu so'z bilan boshlanadiganlar, yetmasa — ichida uchraydiganlar. */
+    @Cacheable(value = "katalogAutocomplete", key = "T(com.example.dori_qidiruv_bot.util.Naqsh).kalit(#q) + ':' + #limit")
     public List<DoriKatalog> katalogAutocomplete(String q, int limit) {
         if (q == null || q.trim().length() < 2) {
             return List.of();
@@ -61,7 +72,18 @@ public class DoriService {
         int chegara = Math.max(1, Math.min(limit, 50));
         String trimmed = q.trim();
         String alt = translitAlt(trimmed);
-        return katalogRepository.autocomplete(trimmed, alt, PageRequest.of(0, chegara));
+        List<DoriKatalog> natija = new ArrayList<>(katalogRepository.autocompleteBosh(
+                trimmed, alt, chegara));
+        // 2 harfli so'zda trigram indeks yordam bermaydi — faqat boshlanishi bo'yicha qidiramiz.
+        if (natija.size() < chegara && trimmed.length() >= 3) {
+            java.util.Set<Long> bor = new java.util.HashSet<>();
+            natija.forEach(k -> bor.add(k.getId()));
+            for (DoriKatalog k : katalogRepository.autocompleteIchida(Naqsh.ichida(trimmed), Naqsh.ichida(alt), chegara)) {
+                if (natija.size() >= chegara) break;
+                if (bor.add(k.getId())) natija.add(k);
+            }
+        }
+        return natija;
     }
 
     /**
@@ -74,8 +96,7 @@ public class DoriService {
         org.springframework.data.domain.Page<DoriKatalog> natija;
         if (q != null && !q.trim().isEmpty()) {
             String trimmed = q.trim();
-            String alt = translitAlt(trimmed);
-            natija = katalogRepository.royxatQidirish(trimmed, alt,
+            natija = katalogRepository.royxatQidirish(Naqsh.ichida(trimmed), Naqsh.ichida(translitAlt(trimmed)),
                     PageRequest.of(sahifa, olcham, org.springframework.data.domain.Sort.by("nomi")));
         } else {
             natija = katalogRepository.findAll(
@@ -89,22 +110,28 @@ public class DoriService {
         return map;
     }
 
+    /** Dorixonalardagi dorilar bo'yicha qidiruv. Narx va qoldiq tez o'zgaradi — kesh atigi 15 soniya. */
+    @Cacheable(value = "doriQidirish", key = "T(com.example.dori_qidiruv_bot.util.Naqsh).kalit(#nomi)")
     public List<DoriQidiruvResponse> qidirish(String nomi) {
-        String alt = LatCyrUtil.hasLatin(nomi) ? LatCyrUtil.latToCyr(nomi)
-                   : LatCyrUtil.hasCyrillic(nomi) ? LatCyrUtil.cyrToLat(nomi) : nomi;
-        return javobga(doriRepository.findByNameContainingIgnoreCase(nomi, alt, PageRequest.of(0, 50)));
+        if (nomi == null || nomi.trim().length() < 2) {
+            return List.of();
+        }
+        String q = nomi.trim();
+        return javobga(doriRepository.nomiBoyicha(Naqsh.ichida(q), Naqsh.ichida(translitAlt(q)), 50));
     }
 
     /** Kategoriya sahifasi uchun: shu kategoriyaga tushgan, dorixonalarda bor dorilar. */
+    @Cacheable(value = "kategoriya", key = "#slug")
     public List<DoriQidiruvResponse> kategoriyaBoyicha(String slug) {
         if (slug == null || !slug.matches("[a-z-]{2,40}")) {
             return List.of();
         }
-        return javobga(doriRepository.findByKategoriya("," + slug + ",", PageRequest.of(0, 500)));
+        return javobga(doriRepository.kategoriyaBoyicha("%," + slug + ",%", 500));
     }
 
     private List<DoriQidiruvResponse> javobga(List<Dori> dorilar) {
-        Map<Long, long[]> qoldiqlar = omborService.qoldiqlar();
+        // Qoldiq faqat topilgan dorilar uchun hisoblanadi (avval har qidiruvda butun ombor jadvali yig'ilardi).
+        Map<Long, long[]> qoldiqlar = omborService.qoldiqlar(dorilar.stream().map(Dori::getId).toList());
 
         List<Long> dorixonaIds = dorilar.stream()
                 .map(Dori::getDorixonaId)
@@ -137,7 +164,7 @@ public class DoriService {
     /** Dorixonadagi mahsulotlar, har birida ombor qoldig'i bilan. */
     public List<Dori> dorixonaDorilari(Long dorixonaId) {
         List<Dori> dorilar = doriRepository.findByDorixonaIdOrderByNameAsc(dorixonaId);
-        Map<Long, long[]> qoldiqlar = omborService.qoldiqlar();
+        Map<Long, long[]> qoldiqlar = omborService.dorixonaQoldiqlari(dorixonaId);
         for (Dori dori : dorilar) {
             long[] ombor = qoldiqlar.getOrDefault(dori.getId(), new long[] { 0, 0 });
             dori.setQoldiq(ombor[0]);

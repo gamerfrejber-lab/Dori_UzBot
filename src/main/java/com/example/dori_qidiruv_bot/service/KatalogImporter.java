@@ -38,9 +38,9 @@ public class KatalogImporter implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        long mavjud = katalogRepository.count();
-        if (mavjud > 0) {
-            log.info("Dori katalogi allaqachon yuklangan ({} ta) — import o'tkazib yuborildi.", mavjud);
+        // EXISTS — birinchi qatorni topgach to'xtaydi (COUNT(*) katta jadvalni to'liq sanardi).
+        if (katalogRepository.bormi()) {
+            log.info("Dori katalogi allaqachon yuklangan — import o'tkazib yuborildi.");
             return;
         }
 

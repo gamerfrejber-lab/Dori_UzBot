@@ -41,8 +41,8 @@ export interface DoriQidiruvResult {
 
 const BASE = ''
 
-async function get<T>(url: string): Promise<T> {
-  const r = await fetch(BASE + url)
+async function get<T>(url: string, signal?: AbortSignal): Promise<T> {
+  const r = await fetch(BASE + url, { signal })
   if (!r.ok) throw new Error(`HTTP ${r.status}`)
   return r.json()
 }
@@ -59,8 +59,9 @@ export async function katalogQidirish(q: string, limit = 12): Promise<DoriKatalo
   return get(`/api/katalog/qidirish?q=${encodeURIComponent(q)}&limit=${limit}`)
 }
 
-export async function autocomplete(q: string, limit = 30): Promise<DoriKatalog[]> {
-  return get(`/api/katalog/autocomplete?q=${encodeURIComponent(q)}&limit=${limit}`)
+/** signal — eski (endi keraksiz) so'rovni bekor qilish uchun: foydalanuvchi yozishda davom etsa. */
+export async function autocomplete(q: string, limit = 30, signal?: AbortSignal): Promise<DoriKatalog[]> {
+  return get(`/api/katalog/autocomplete?q=${encodeURIComponent(q)}&limit=${limit}`, signal)
 }
 
 export async function doriKategoriya(slug: string): Promise<DoriQidiruvResult[]> {
@@ -132,6 +133,9 @@ export async function dorixonaDorilar(id: number): Promise<DoriQidiruvResult[]> 
   return get(`/api/dorixona/${id}/dorilar`)
 }
 
+/** Juda ko'p urinish (429): server matnida qancha kutish kerakligi yozilgan. */
+export class JudaKopUrinish extends Error {}
+
 /** Kod yetkazilmadi: raqam botda ro'yxatdan o'tmagan (botga /start bosilmagan yoki raqam ulashilmagan). */
 export class KodYetkazilmadi extends Error {}
 
@@ -144,6 +148,8 @@ export async function sendCode(phoneNumber: string): Promise<{ message?: string 
   const data = await r.json().catch(() => ({}))
   // Server kodni yubora olmasa 400 qaytaradi — bunda "kod yuborildi" sahifasiga o'tmaymiz.
   if (r.status === 400) throw new KodYetkazilmadi(data.message || '')
+  // Juda tez-tez so'ralsa (masalan, daqiqasiga bir martadan ko'p) server 429 qaytaradi va qancha kutishni aytadi.
+  if (r.status === 429) throw new JudaKopUrinish(data.message || '')
   if (!r.ok) throw new Error(`HTTP ${r.status}`)
   return data
 }
