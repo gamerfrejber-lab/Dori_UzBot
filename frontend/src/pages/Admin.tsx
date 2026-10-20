@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Shield, Building2, Pill, Users, BarChart3, FileCheck, Bell, Plus, Check, X, Trash2, CalendarPlus, Pencil, Search } from 'lucide-react'
+import { Shield, Building2, Pill, Users, BarChart3, FileCheck, FileText, Bell, Plus, Check, X, Trash2, CalendarPlus, Pencil, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useLang } from '@/hooks/useLanguage'
@@ -11,8 +11,9 @@ import { DoriBoshqaruv } from '@/components/panel/DoriBoshqaruv'
 import { BronlarRoyxati } from '@/components/panel/BronlarRoyxati'
 import { HisobotQisqa } from '@/components/panel/HisobotQisqa'
 import { JoylashuvMaydoni } from '@/components/panel/JoylashuvMaydoni'
+import { YoriqnomaBoshqaruv } from '@/components/panel/YoriqnomaBoshqaruv'
 
-type Tab = 'stat' | 'dorixonalar' | 'dorilar' | 'arizalar' | 'bronlar' | 'users'
+type Tab = 'stat' | 'dorixonalar' | 'dorilar' | 'yoriqnoma' | 'arizalar' | 'bronlar' | 'users'
 
 const inputCls =
   'w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:ring-2 focus:ring-brand/30'
@@ -83,6 +84,7 @@ export function Admin() {
     { key: 'stat', label: L('Statistika', 'Статистика'), icon: <BarChart3 className="w-4 h-4" /> },
     { key: 'dorixonalar', label: L('Dorixonalar', 'Аптеки'), icon: <Building2 className="w-4 h-4" /> },
     { key: 'dorilar', label: L('Mahsulotlar va ombor', 'Товары и склад'), icon: <Pill className="w-4 h-4" /> },
+    { key: 'yoriqnoma', label: L("Yo'riqnomalar", 'Инструкции'), icon: <FileText className="w-4 h-4" /> },
     { key: 'arizalar', label: L('Arizalar', 'Заявки'), icon: <FileCheck className="w-4 h-4" /> },
     { key: 'bronlar', label: L('Buyurtmalar', 'Заказы'), icon: <Bell className="w-4 h-4" /> },
     { key: 'users', label: L('Foydalanuvchilar', 'Пользователи'), icon: <Users className="w-4 h-4" /> },
@@ -117,6 +119,7 @@ export function Admin() {
         {tab === 'stat' && <StatistikaTab />}
         {tab === 'dorixonalar' && <DorixonalarTab onMahsulotlar={(id) => { setTanlanganDx(id); setTab('dorilar') }} />}
         {tab === 'dorilar' && <DorilarTab dxId={tanlanganDx} setDxId={setTanlanganDx} />}
+        {tab === 'yoriqnoma' && <YoriqnomaBoshqaruv />}
         {tab === 'arizalar' && <ArizalarTab />}
         {tab === 'bronlar' && <BronlarRoyxati url="/api/admin/bronlar" canEdit={false} />}
         {tab === 'users' && <UsersTab />}

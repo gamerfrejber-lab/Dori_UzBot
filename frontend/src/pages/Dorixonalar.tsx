@@ -16,6 +16,7 @@ import type { Dorixona, DoriQidiruvResult } from '@/lib/api'
 import { joylashuvOl, joylashuvRuxsatiBormi, telegramJoylashuvSozlamasi, distanceKm, dorixonaOchiqmi, formatDistance, type JoylashuvXato } from '@/lib/geo'
 import { doriKartaNomi, doriShakliDozasi } from '@/lib/cyrillic'
 import { bronQilish } from '@/lib/api'
+import { DoriYoriqnoma } from '@/components/DoriYoriqnoma'
 
 // Xarita kutubxonasi faqat shu sahifa ochilganda yuklanadi (bosh sahifa yengil qoladi).
 const DorixonalarXaritasi = lazy(() => import('@/components/DorixonalarXaritasi'))
@@ -457,6 +458,8 @@ function DrugDetailModal({
         <Button variant="secondary" className="w-full mt-3" onClick={handleAddToCart}>
           {t('savatchagaQosh')}
         </Button>
+
+        <DoriYoriqnoma nomi={drug.name || drug.nomi || ''} lang={lang} />
       </DialogContent>
     </Dialog>
   )

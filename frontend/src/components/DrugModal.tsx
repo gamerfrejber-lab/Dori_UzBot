@@ -14,6 +14,7 @@ import { useCart, type CartItem } from '@/hooks/useCart'
 import { doriKartaNomi, doriShakliDozasi, doriTavsifi, tayyorNom, tayyorNomBolaklari } from '@/lib/cyrillic'
 import { formatDistance } from '@/lib/geo'
 import { bronQilish, type DoriQidiruvResult } from '@/lib/api'
+import { DoriYoriqnoma } from '@/components/DoriYoriqnoma'
 
 interface Props {
   drug: DoriQidiruvResult | null
@@ -238,6 +239,8 @@ export function DrugModal({ drug, open, onClose }: Props) {
         <Button variant="secondary" className="w-full mt-3" onClick={handleAddToCart}>
           {t('savatchagaQosh')}
         </Button>
+
+        <DoriYoriqnoma nomi={drug.name || drug.nomi || ''} lang={lang} />
       </DialogContent>
     </Dialog>
   )

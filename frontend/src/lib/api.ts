@@ -95,6 +95,39 @@ export async function bronQilish(
   return r.json()
 }
 
+export interface YoriqnomaTil {
+  guruh: string
+  qollanilishi: string[]
+  qabul_qilish: string[]
+  doza: string[]
+  mumkin_emas: string[]
+  birga_ichilmaydi: string[]
+  nojoya: string[]
+  homiladorlik: string
+  ehtiyot: string[]
+}
+
+export interface DoriYoriqnomasi {
+  dori_emas: boolean
+  ishonch: 'yuqori' | 'orta' | 'past'
+  tasir_moddasi: string
+  retseptli: boolean
+  uz: YoriqnomaTil
+  ru: YoriqnomaTil
+}
+
+export interface DoriMalumotJavob {
+  holat: 'TAYYOR' | 'KUTMOQDA' | 'NAVBATDA' | 'DORI_EMAS' | 'XATO' | 'YOQ'
+  ishlabChiqaruvchi?: string | null
+  davlat?: string | null
+  malumot?: DoriYoriqnomasi
+}
+
+/** Dori yo'riqnomasi (qo'llanilishi, dozasi, qarshi ko'rsatmalar...) — nomi bo'yicha. */
+export async function doriMalumot(nomi: string): Promise<DoriMalumotJavob> {
+  return get(`/api/dori/malumot?nomi=${encodeURIComponent(nomi)}`)
+}
+
 export async function dorixonaDorilar(id: number): Promise<DoriQidiruvResult[]> {
   return get(`/api/dorixona/${id}/dorilar`)
 }
