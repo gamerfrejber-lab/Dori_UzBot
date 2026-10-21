@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { xaritaHavolasi, telHavola } from '@/lib/xarita'
+import { tashqiOch } from '@/lib/telegram'
 import { useLang } from '@/hooks/useLanguage'
 import { useCart, type CartItem } from '@/hooks/useCart'
 import { doriKartaNomi, doriShakliDozasi, doriTavsifi, tayyorNom, tayyorNomBolaklari } from '@/lib/cyrillic'
@@ -156,7 +157,7 @@ export function DrugModal({ drug, open, onClose }: Props) {
               {xaritaHavolasi(ph) && (
                 <Button
                   className="w-full mt-3"
-                  onClick={() => window.open(xaritaHavolasi(ph)!, '_blank')}
+                  onClick={() => tashqiOch(xaritaHavolasi(ph)!)}
                 >
                   <MapPin className="w-4 h-4" />
                   {t('xaritadaKorish')}

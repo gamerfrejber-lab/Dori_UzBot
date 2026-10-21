@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Building2, MapPin, Phone, Search, Navigation, Pill, Package, Check, Loader2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { xaritaHavolasi, telHavola } from '@/lib/xarita'
+import { tashqiOch, vertikalSurishniOchir } from '@/lib/telegram'
 import {
   Dialog,
   DialogContent,
@@ -33,19 +34,35 @@ export function Dorixonalar() {
   const [drugDetail, setDrugDetail] = useState<DoriQidiruvResult | null>(null)
   const [filterText, setFilterText] = useState('')
   const [tepa, setTepa] = useState(64)
+  const [past, setPast] = useState(0)
   const [aniqlanmoqda, setAniqlanmoqda] = useState(false)
   const [joyXato, setJoyXato] = useState<JoylashuvXato | null>(null)
 
-  // Xarita sarlavha ostidan boshlansin: sarlavha balandligi qurilmaga qarab o'zgaradi.
+  // Xarita sarlavha ostidan pastki menyugacha cho'zilsin: ikkalasining balandligi qurilmaga (telefon, Telegram,
+  // iPhone'ning pastki chizig'i) qarab o'zgaradi, shuning uchun qat'iy son emas, haqiqiy o'lcham olinadi.
   useLayoutEffect(() => {
     const header = document.querySelector('header')
-    if (!header) return
-    const olch = () => setTepa(Math.round(header.getBoundingClientRect().bottom))
+    const menyu = document.querySelector<HTMLElement>('nav[data-pastki-menyu]')
+    const olch = () => {
+      if (header) setTepa(Math.round(header.getBoundingClientRect().bottom))
+      const korinadi = menyu && getComputedStyle(menyu).display !== 'none'
+      setPast(korinadi ? Math.max(0, Math.round(window.innerHeight - menyu!.getBoundingClientRect().top)) : 0)
+    }
     olch()
     const ro = new ResizeObserver(olch)
-    ro.observe(header)
+    if (header) ro.observe(header)
+    if (menyu) ro.observe(menyu)
     window.addEventListener('resize', olch)
     return () => { ro.disconnect(); window.removeEventListener('resize', olch) }
+  }, [])
+
+  // Xarita sahifasida orqadagi sahifa aylanmasin, Telegram'da esa pastga surish ilovani yopmasin.
+  useEffect(() => {
+    const html = document.documentElement
+    const avvalgi = html.style.overflow
+    html.style.overflow = 'hidden'
+    const qaytar = vertikalSurishniOchir()
+    return () => { html.style.overflow = avvalgi; qaytar() }
   }, [])
 
   const loadPharmacies = useCallback(async (loc?: { lat: number; lon: number } | null) => {
@@ -128,8 +145,8 @@ export function Dorixonalar() {
   return (
     // Butun ekranli xarita (Yandex xaritadagidek): sarlavha ostidan pastki menyugacha.
     <section
-      className="fixed left-0 right-0 bottom-[calc(68px+env(safe-area-inset-bottom))] md:bottom-0 z-0"
-      style={{ top: tepa }}
+      className="fixed left-0 right-0 z-0"
+      style={{ top: tepa, bottom: past }}
     >
       <Suspense fallback={<div className="absolute inset-0 bg-slate-100 animate-pulse" />}>
         <DorixonalarXaritasi
@@ -149,7 +166,7 @@ export function Dorixonalar() {
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
             placeholder={lang === 'uz' ? 'Dorixona yoki manzil qidirish...' : 'Поиск аптеки или адреса...'}
-            className="w-full pl-11 pr-4 py-3 rounded-full border border-slate-200 bg-white text-sm shadow-[0_8px_24px_rgba(15,23,42,0.15)] outline-none focus:ring-2 focus:ring-brand/30"
+            className="w-full pl-11 pr-4 py-3 rounded-full border border-slate-200 bg-white text-base sm:text-sm shadow-[0_8px_24px_rgba(15,23,42,0.15)] outline-none focus:ring-2 focus:ring-brand/30"
           />
         </div>
         {loading && (
@@ -262,7 +279,7 @@ function PharmacyModal({
           {xaritaHavolasi(pharmacy) && (
             <Button
               className="w-full mt-2"
-              onClick={() => window.open(xaritaHavolasi(pharmacy)!, '_blank')}
+              onClick={() => tashqiOch(xaritaHavolasi(pharmacy)!)}
             >
               <MapPin className="w-4 h-4" /> {t('xaritadaKorish')}
             </Button>

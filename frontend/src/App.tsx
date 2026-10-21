@@ -17,11 +17,7 @@ import { CategoryPage } from '@/pages/CategoryPage'
 
 function Aurora() {
   return (
-    <div className="aurora" aria-hidden="true">
-      <span />
-      <span />
-      <span />
-    </div>
+    <div className="aurora" aria-hidden="true" />
   )
 }
 

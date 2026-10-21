@@ -3,6 +3,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { Dorixona } from '@/lib/api'
 import { telHavola, xaritaHavolasi } from '@/lib/xarita'
+import { tashqiOch } from '@/lib/telegram'
 import { dorixonaOchiqmi } from '@/lib/geo'
 
 const TOSHKENT: L.LatLngExpression = [41.3111, 69.2797]
@@ -70,7 +71,11 @@ export default function DorixonalarXaritasi({ pharmacies, userLoc, lang, onOpen,
     map.attributionControl.setPrefix(false)
     layerRef.current = L.layerGroup().addTo(map)
     mapRef.current = map
-    return () => { map.remove(); mapRef.current = null }
+    // Konteyner o'lchami o'zgarsa (sarlavha balandligi, telefon burilishi, Telegram paneli) xarita qayta o'lchanadi —
+    // aks holda chetlarda kulrang bo'sh joy qolardi.
+    const ro = new ResizeObserver(() => map.invalidateSize({ pan: false }))
+    ro.observe(boxRef.current)
+    return () => { ro.disconnect(); map.remove(); mapRef.current = null }
   }, [])
 
   useEffect(() => {
@@ -99,10 +104,19 @@ export default function DorixonalarXaritasi({ pharmacies, userLoc, lang, onOpen,
         ${ph.telefon ? `<a href="${telHavola(ph.telefon)}" style="display:block;font-size:13px;font-weight:700;color:#2563EB;margin-top:4px">${esc(ph.telefon)}</a>` : ''}
         <div style="display:flex;gap:6px;margin-top:10px">
           <button type="button" data-act="ochish" style="flex:1;padding:8px 10px;border-radius:10px;border:0;background:#2563EB;color:#fff;font-weight:700;font-size:13px;cursor:pointer">${L_("Dorilarini ko'rish", 'Лекарства')}</button>
-          <a href="${xaritaHavolasi(ph) || '#'}" target="_blank" rel="noreferrer" style="flex:1;text-align:center;padding:8px 10px;border-radius:10px;border:1px solid #CBD5E1;color:#0F172A;font-weight:700;font-size:13px;text-decoration:none">${L_("Yo'l ko'rsatish", 'Маршрут')}</a>
+          <a href="${xaritaHavolasi(ph) || '#'}" data-act="yol" target="_blank" rel="noreferrer" style="flex:1;text-align:center;padding:8px 10px;border-radius:10px;border:1px solid #CBD5E1;color:#0F172A;font-weight:700;font-size:13px;text-decoration:none">${L_("Yo'l ko'rsatish", 'Маршрут')}</a>
         </div>`
       box.querySelector('[data-act="ochish"]')?.addEventListener('click', () => onOpenRef.current(ph))
-      L.marker(joy, { icon: belgi(ochiq), title: ph.nomi || ph.name || '' }).bindPopup(box).addTo(layer)
+      box.querySelector('[data-act="yol"]')?.addEventListener('click', (e) => {
+        const url = xaritaHavolasi(ph)
+        if (!url) return
+        e.preventDefault()
+        tashqiOch(url)
+      })
+      // Oyna ochilganda xarita shunday suriladiki, u tepadagi qidiruv maydoni va pastdagi tugmalar ostida qolmaydi.
+      L.marker(joy, { icon: belgi(ochiq), title: ph.nomi || ph.name || '' })
+        .bindPopup(box, { maxWidth: 280, autoPanPaddingTopLeft: L.point(12, 84), autoPanPaddingBottomRight: L.point(64, 16) })
+        .addTo(layer)
     })
 
     if (userLat != null && userLon != null) {
