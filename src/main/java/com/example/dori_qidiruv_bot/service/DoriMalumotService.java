@@ -17,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
@@ -106,35 +104,42 @@ public class DoriMalumotService {
                     + "|| '/' || (SELECT COUNT(*) || ':' || COALESCE(MAX(id), 0) FROM dori)", String.class);
             if (belgi != null && belgi.equals(sozlama("malumot_sinxron_belgi", null))) return;
 
-            JdbcTemplate oqim = new JdbcTemplate(jdbc.getDataSource());
-            oqim.setFetchSize(2000);
-            TransactionTemplate tx = new TransactionTemplate(new DataSourceTransactionManager(jdbc.getDataSource()));
-            tx.setReadOnly(true);
             int[] qoshildi = {0};
-
             // Katalog nomi bo'yicha tartiblangan — bir asosiy nomdagi mahsulotlar ketma-ket keladi.
-            tx.executeWithoutResult(st -> {
-                Map<String, Guruh> guruhlar = new LinkedHashMap<>();
-                oqim.query("SELECT nomi, ishlab_chiqaruvchi, davlat FROM dori_katalog ORDER BY nomi", rs -> {
-                    qosh(guruhlar, rs.getString(1), rs.getString(2), rs.getString(3));
-                    if (guruhlar.size() >= GURUH_BOLAGI) qoshildi[0] += yangilariniYoz(guruhlar, false);
-                });
-                qoshildi[0] += yangilariniYoz(guruhlar, false);
-            });
+            oqimlabOqi("SELECT nomi, ishlab_chiqaruvchi, davlat FROM dori_katalog ORDER BY nomi", 3, false, qoshildi);
             // Dorixonalardagi nomlar (takrorlarsiz) — bular "sotuvda", navbatda oldinda turadi.
-            tx.executeWithoutResult(st -> {
-                Map<String, Guruh> guruhlar = new LinkedHashMap<>();
-                oqim.query("SELECT DISTINCT nomi, ishlab_chiqaruvchi FROM dori WHERE nomi IS NOT NULL ORDER BY nomi", rs -> {
-                    qosh(guruhlar, rs.getString(1), rs.getString(2), null);
-                    if (guruhlar.size() >= GURUH_BOLAGI) qoshildi[0] += yangilariniYoz(guruhlar, true);
-                });
-                qoshildi[0] += yangilariniYoz(guruhlar, true);
-            });
+            oqimlabOqi("SELECT DISTINCT nomi, ishlab_chiqaruvchi FROM dori WHERE nomi IS NOT NULL ORDER BY nomi", 2, true, qoshildi);
             if (qoshildi[0] > 0) log.info("Dori ma'lumotnomasiga {} ta yangi nom qo'shildi.", qoshildi[0]);
             if (belgi != null) sozlamaYoz("malumot_sinxron_belgi", belgi);
         } catch (Exception e) {
             log.warn("Dori ma'lumotnomasini sinxronlab bo'lmadi: {}", e.getMessage());
         }
+    }
+
+    /**
+     * So'rov natijasini oqim bilan o'qiydi (fetchSize — qatorlar 2 000 tadan keladi, hammasi xotiraga yuklanmaydi).
+     * O'qish uchun alohida ulanish olinadi: yozuvlar (yangilariniYoz) boshqa, oddiy ulanishda bajariladi.
+     */
+    private void oqimlabOqi(String sql, int ustunlar, boolean sotuvda, int[] qoshildi) throws java.sql.SQLException {
+        Map<String, Guruh> guruhlar = new LinkedHashMap<>();
+        try (java.sql.Connection c = jdbc.getDataSource().getConnection()) {
+            c.setAutoCommit(false); // Postgres kursor (fetchSize) faqat tranzaksiya ichida ishlaydi
+            c.setReadOnly(true);
+            try (java.sql.PreparedStatement ps = c.prepareStatement(sql)) {
+                ps.setFetchSize(2000);
+                try (java.sql.ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        qosh(guruhlar, rs.getString(1), rs.getString(2), ustunlar > 2 ? rs.getString(3) : null);
+                        if (guruhlar.size() >= GURUH_BOLAGI) qoshildi[0] += yangilariniYoz(guruhlar, sotuvda);
+                    }
+                }
+            } finally {
+                c.rollback();
+                c.setReadOnly(false);
+                c.setAutoCommit(true);
+            }
+        }
+        qoshildi[0] += yangilariniYoz(guruhlar, sotuvda);
     }
 
     /** Guruhlarni bazaga yozadi (borlari o'tkazib yuboriladi) va xaritani tozalaydi. Qo'shilganlar sonini qaytaradi. */

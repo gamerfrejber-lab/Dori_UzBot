@@ -16,11 +16,18 @@ import java.util.List;
  */
 public interface DoriKatalogRepository extends JpaRepository<DoriKatalog, Long> {
 
+    /**
+     * Tartib ifoda bo'yicha ("nomi || ''"): oddiy "ORDER BY k.nomi" bo'lsa Postgres nomi indeksini boshidan o'qib,
+     * har qatorni tekshirib chiqishni tanlaydi — kam uchraydigan so'zda 1 mln qatorda 20+ soniya ketardi.
+     * Ifoda bo'yicha tartibda avval trigram indeks bilan mos qatorlar topiladi, keyin faqat ular saralanadi.
+     */
+    String TARTIB = " ORDER BY (k.nomi || '') ";
+
     String MOS = "(k.nomi ILIKE :p OR k.nomi_ru ILIKE :p OR k.nomi_uz ILIKE :p OR k.ishlab_chiqaruvchi ILIKE :p "
             + "OR k.nomi ILIKE :alt OR k.ishlab_chiqaruvchi ILIKE :alt)";
 
     /** Katalog bo'yicha qidiruv (nomi, tarjimalari yoki ishlab chiqaruvchi bo'yicha). */
-    @Query(value = "SELECT k.* FROM dori_katalog k WHERE " + MOS + " ORDER BY k.nomi LIMIT :limit", nativeQuery = true)
+    @Query(value = "SELECT k.* FROM dori_katalog k WHERE " + MOS + TARTIB + "LIMIT :limit", nativeQuery = true)
     List<DoriKatalog> qidirish(@Param("p") String p, @Param("alt") String alt, @Param("limit") int limit);
 
     /**
@@ -40,15 +47,15 @@ public interface DoriKatalogRepository extends JpaRepository<DoriKatalog, Long> 
     List<DoriKatalog> autocompleteBosh(@Param("bosh") String bosh, @Param("boshAlt") String boshAlt, @Param("limit") int limit);
 
     /** Autocomplete, 2-qadam (boshlanishi bo'yicha yetmasa): nomi ichida uchraydiganlar, trigram indeks bilan. */
-    @Query(value = "SELECT k.* FROM dori_katalog k WHERE (k.nomi ILIKE :p OR k.nomi ILIKE :alt) "
-            + "ORDER BY k.nomi LIMIT :limit", nativeQuery = true)
+    @Query(value = "SELECT k.* FROM dori_katalog k WHERE (k.nomi ILIKE :p OR k.nomi ILIKE :alt)"
+            + TARTIB + "LIMIT :limit", nativeQuery = true)
     List<DoriKatalog> autocompleteIchida(@Param("p") String p, @Param("alt") String alt, @Param("limit") int limit);
 
     /**
      * Katalogni sahifalab qidirish (admin). Jami soni 10 001 bilan chegaralangan: to'liq COUNT(*) har sahifada
      * butun mos qatorlarni sanardi, admin uchun "10 000+" yetarli.
      */
-    @Query(value = "SELECT k.* FROM dori_katalog k WHERE " + MOS,
+    @Query(value = "SELECT k.* FROM dori_katalog k WHERE " + MOS + TARTIB,
             countQuery = "SELECT COUNT(*) FROM (SELECT 1 FROM dori_katalog k WHERE " + MOS + " LIMIT 10001) t",
             nativeQuery = true)
     Page<DoriKatalog> royxatQidirish(@Param("p") String p, @Param("alt") String alt, Pageable pageable);

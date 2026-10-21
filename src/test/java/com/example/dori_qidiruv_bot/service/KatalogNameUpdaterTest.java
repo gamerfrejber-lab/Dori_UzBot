@@ -32,7 +32,8 @@ class KatalogNameUpdaterTest {
                     rows.addAndGet(batch.size());
                     return new int[batch.size()];
                 });
-        new KatalogNameUpdater(jdbc).run();
+        // Belgi (CRC) hali saqlanmagan — fayl to'liq o'qiladi.
+        new KatalogNameUpdater(jdbc, mock(SaytSozlama.class)).run();
         assertEquals(26357, rows.get());
         verify(jdbc, times(27)).batchUpdate(anyString(), org.mockito.ArgumentMatchers.<List<Object[]>>any());
     }

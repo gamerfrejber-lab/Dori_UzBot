@@ -38,13 +38,13 @@ public class DoriService {
     private final OmborService omborService;
 
     /** Katalogdagi jami dorilar soni (bosh sahifadagi raqam) — 10 daqiqa keshda, COUNT(*) har safar emas. */
-    @Cacheable("katalogSoni")
+    @Cacheable(value = "katalogSoni", sync = true)
     public long katalogSoni() {
         return katalogRepository.count();
     }
 
     /** Barcha dorixonalar (xarita va ro'yxat uchun) — 15 soniya keshda; bot yoki paneldagi o'zgarish shu vaqtda ko'rinadi. */
-    @Cacheable("dorixonalar")
+    @Cacheable(value = "dorixonalar", sync = true)
     public List<Dorixona> dorixonalar() {
         return dorixonaRepository.findAll();
     }
@@ -53,18 +53,23 @@ public class DoriService {
      * Katalogdan (butun O'zbekiston ro'yxati) qidirish — bosh sahifa qidiruvi va kategoriyalar uchun.
      * Bir xil so'rov ko'p foydalanuvchidan keladi, shuning uchun 10 daqiqa keshlanadi.
      */
-    @Cacheable(value = "katalogQidirish", key = "T(com.example.dori_qidiruv_bot.util.Naqsh).kalit(#q) + ':' + #limit")
+    @Cacheable(value = "katalogQidirish", key = "T(com.example.dori_qidiruv_bot.util.Naqsh).kalit(#q) + ':' + #limit", sync = true)
     public List<DoriKatalog> katalogQidirish(String q, int limit) {
         if (q == null || q.trim().length() < 2) {
             return List.of();
         }
         int chegara = Math.max(1, Math.min(limit, 50));
         String trimmed = q.trim();
+        // 2 harfli so'zda trigram indeks ishlamaydi ("%па%" butun jadvalni o'qiydi) — nomi shu harflar bilan
+        // boshlanadiganlarni indeks bo'yicha qaytaramiz.
+        if (trimmed.length() < 3) {
+            return katalogRepository.autocompleteBosh(trimmed, translitAlt(trimmed), chegara);
+        }
         return katalogRepository.qidirish(Naqsh.ichida(trimmed), Naqsh.ichida(translitAlt(trimmed)), chegara);
     }
 
     /** Qidiruv maydonidagi takliflar: avval nomi shu so'z bilan boshlanadiganlar, yetmasa — ichida uchraydiganlar. */
-    @Cacheable(value = "katalogAutocomplete", key = "T(com.example.dori_qidiruv_bot.util.Naqsh).kalit(#q) + ':' + #limit")
+    @Cacheable(value = "katalogAutocomplete", key = "T(com.example.dori_qidiruv_bot.util.Naqsh).kalit(#q) + ':' + #limit", sync = true)
     public List<DoriKatalog> katalogAutocomplete(String q, int limit) {
         if (q == null || q.trim().length() < 2) {
             return List.of();
@@ -97,7 +102,7 @@ public class DoriService {
         if (q != null && !q.trim().isEmpty()) {
             String trimmed = q.trim();
             natija = katalogRepository.royxatQidirish(Naqsh.ichida(trimmed), Naqsh.ichida(translitAlt(trimmed)),
-                    PageRequest.of(sahifa, olcham, org.springframework.data.domain.Sort.by("nomi")));
+                    PageRequest.of(sahifa, olcham));
         } else {
             natija = katalogRepository.findAll(
                     PageRequest.of(sahifa, olcham, org.springframework.data.domain.Sort.by("nomi")));
@@ -111,7 +116,7 @@ public class DoriService {
     }
 
     /** Dorixonalardagi dorilar bo'yicha qidiruv. Narx va qoldiq tez o'zgaradi — kesh atigi 15 soniya. */
-    @Cacheable(value = "doriQidirish", key = "T(com.example.dori_qidiruv_bot.util.Naqsh).kalit(#nomi)")
+    @Cacheable(value = "doriQidirish", key = "T(com.example.dori_qidiruv_bot.util.Naqsh).kalit(#nomi)", sync = true)
     public List<DoriQidiruvResponse> qidirish(String nomi) {
         if (nomi == null || nomi.trim().length() < 2) {
             return List.of();
@@ -121,7 +126,7 @@ public class DoriService {
     }
 
     /** Kategoriya sahifasi uchun: shu kategoriyaga tushgan, dorixonalarda bor dorilar. */
-    @Cacheable(value = "kategoriya", key = "#slug")
+    @Cacheable(value = "kategoriya", key = "#slug", sync = true)
     public List<DoriQidiruvResponse> kategoriyaBoyicha(String slug) {
         if (slug == null || !slug.matches("[a-z-]{2,40}")) {
             return List.of();

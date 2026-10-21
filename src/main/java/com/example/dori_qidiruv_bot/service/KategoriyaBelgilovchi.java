@@ -44,7 +44,8 @@ public class KategoriyaBelgilovchi {
         nomTozalovchi.tozala();
         String crc = ResursCrc.hisobla(QOIDALAR_FAYLI);
         if (crc != null && crc.equals(sozlama.ol("kategoriya_qoidalar_crc", null))) {
-            yangilarniBelgila();
+            int jami = bolaklab(true);
+            if (jami > 0) log.info("{} ta yangi doriga kategoriya belgilandi.", jami);
             return;
         }
         int jami = bolaklab(false);
