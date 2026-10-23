@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Pill, MapPin, Phone, Building2, Package, Check } from 'lucide-react'
+import { Pill, MapPin, Phone, Building2, Package, Check, Truck } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -152,6 +152,12 @@ export function DrugModal({ drug, open, onClose }: Props) {
               )}
               {drug._km != null && (
                 <InfoRow label={t('masofa')} value={formatDistance(drug._km, lang)} />
+              )}
+              {ph.yetkazishYoqilgan && (
+                <p className="flex items-center gap-1.5 rounded-xl bg-green-50 px-3 py-2 font-semibold text-green-700">
+                  <Truck className="w-4 h-4" />
+                  {lang === 'uz' ? "Yetkazib beradi — savatchaga qo'shib, \"Yetkazib bering\"ni bosing" : 'Есть доставка — добавьте в корзину и нажмите «Доставка»'}
+                </p>
               )}
 
               {xaritaHavolasi(ph) && (

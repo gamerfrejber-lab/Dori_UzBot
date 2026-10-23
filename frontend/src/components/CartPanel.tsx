@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Pill, Minus, Plus, ShoppingCart, Check } from 'lucide-react'
+import { Pill, Minus, Plus, ShoppingCart, Check, Truck } from 'lucide-react'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { useLang } from '@/hooks/useLanguage'
-import { useCart } from '@/hooks/useCart'
+import { useCart, type CartItem } from '@/hooks/useCart'
 import { doriKartaNomi } from '@/lib/cyrillic'
-import { bronQilish } from '@/lib/api'
+import { bronQilish, dorixonalar, type Dorixona } from '@/lib/api'
+import { YetkazishOynasi } from '@/components/YetkazishOynasi'
 
 export function CartPanel() {
   const { lang, t } = useLang()
@@ -16,6 +17,24 @@ export function CartPanel() {
   const [loading, setLoading] = useState(false)
 
   const jami = items.reduce((s, it) => s + (it.price || 0) * (it.soni || 1), 0)
+
+  // Yetkazish: savatchadagi mahsulotlar dorixona bo'yicha guruhlanadi — har dorixona o'zinikini o'zi yetkazadi.
+  const [dxlar, setDxlar] = useState<Dorixona[]>([])
+  // Oyna ochilgan paytdagi dorixona va mahsulotlar saqlab qo'yiladi: buyurtmadan keyin ular savatchadan
+  // olinsa ham, tasdiq oynasi yopilib ketmaydi.
+  const [yetkazish, setYetkazish] = useState<{ dx: Dorixona; items: CartItem[] } | null>(null)
+  useEffect(() => {
+    if (isOpen && items.length) dorixonalar().then(setDxlar).catch(() => {})
+  }, [isOpen, items.length])
+  const yetkazadiganlar = useMemo(() => {
+    const ids = Array.from(new Set(items.map((it) => it.dorixona?.id).filter((x): x is number => x != null)))
+    return ids.map((id) => dxlar.find((d) => d.id === id)).filter((d): d is Dorixona => !!d && !!d.yetkazishYoqilgan)
+  }, [items, dxlar])
+
+  // Buyurtma berilgan dorixonaning mahsulotlari savatchadan olinadi (oxiridan boshlab — indekslar siljimasin).
+  const guruhniOchir = (dxId: number) => {
+    for (let i = items.length - 1; i >= 0; i--) if (items[i].dorixona?.id === dxId) remove(i)
+  }
 
   const handleBronAll = async () => {
     const token = localStorage.getItem('token')
@@ -136,11 +155,26 @@ export function CartPanel() {
                   <Check className="w-4 h-4" />
                   {loading ? '...' : t('bronHammasi')}
                 </Button>
+                {yetkazadiganlar.map((d) => (
+                  <Button key={d.id} className="w-full rounded-xl mt-2" variant="secondary" onClick={() => { setYetkazish({ dx: d, items: items.filter((it) => it.dorixona?.id === d.id) }); close() }}>
+                    <Truck className="w-4 h-4" />
+                    {lang === 'uz' ? `Yetkazib bering — ${d.nomi || d.name}` : `Доставка — ${d.nomi || d.name}`}
+                  </Button>
+                ))}
               </>
             )}
           </div>
         )}
       </SheetContent>
+      {yetkazish && (
+        <YetkazishOynasi
+          open
+          onClose={() => setYetkazish(null)}
+          dorixona={{ id: yetkazish.dx.id, name: yetkazish.dx.nomi || yetkazish.dx.name || '', latitude: yetkazish.dx.latitude, longitude: yetkazish.dx.longitude }}
+          items={yetkazish.items}
+          onBuyurtmaQilindi={() => guruhniOchir(yetkazish.dx.id)}
+        />
+      )}
     </Sheet>
   )
 }

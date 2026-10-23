@@ -109,6 +109,7 @@ public class PanelService {
     public boolean dorixonaOchir(long id) {
         jdbc.update("DELETE FROM ombor_harakat WHERE dori_id IN (SELECT id FROM dori WHERE dorixona_id = ?)", id);
         jdbc.update("DELETE FROM bron WHERE dorixona_id = ?", id);
+        jdbc.update("DELETE FROM yetkazish WHERE dorixona_id = ?", id); // qatorlari ON DELETE CASCADE bilan o'chadi
         jdbc.update("DELETE FROM dorixona_soov WHERE dorixona_id = ?", id);
         jdbc.update("DELETE FROM dori WHERE dorixona_id = ?", id);
         return jdbc.update("DELETE FROM dorixona WHERE id = ?", id) > 0;

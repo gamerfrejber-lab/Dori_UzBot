@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useLang } from '@/hooks/useLanguage'
 import { getProfile, getBronlar, adminCheck, type UserProfile, type BronItem } from '@/lib/api'
+import { MeningYetkazishlarim } from '@/components/MeningYetkazishlarim'
 
 export function Profil() {
   const { lang, t } = useLang()
@@ -139,6 +140,8 @@ export function Profil() {
           </div>
         )}
       </Card>
+
+      <MeningYetkazishlarim />
 
       {isDorixonachi && (
         <Link to="/dorixonachi">

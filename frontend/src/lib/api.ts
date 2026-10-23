@@ -9,6 +9,7 @@ export interface Dorixona {
   longitude: number | null
   ishBoshlanishi: string | null
   ishTugashi: string | null
+  yetkazishYoqilgan?: boolean | null
 }
 
 export interface DoriKatalog {

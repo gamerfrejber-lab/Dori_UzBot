@@ -69,4 +69,8 @@ public class Dorixona {
 
     @Column(name = "holat")
     private String holat;
+
+    /** Dorixona yetkazib beradimi — faqat o'qish uchun (sozlamasi YetkazishService orqali yoziladi). */
+    @Column(name = "yetkazish_yoqilgan", insertable = false, updatable = false)
+    private Boolean yetkazishYoqilgan;
 }

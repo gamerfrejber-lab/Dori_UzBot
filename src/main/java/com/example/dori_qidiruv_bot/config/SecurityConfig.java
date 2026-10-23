@@ -60,6 +60,8 @@ public class SecurityConfig {
                         // Barcha dorilar ro'yxati (sahifalanmagan, 1 mln qatorgacha) — faqat admin; aks holda bitta so'rov
                         // bilan serverni band qilish mumkin edi. Sayt bu endpointni ishlatmaydi.
                         .requestMatchers(HttpMethod.GET, "/api/dori").hasRole("ADMIN")
+                        // Yetkazish narxini hisoblash mehmonga ham ochiq (savatchada ko'rsatiladi); buyurtma — faqat kirganlarga.
+                        .requestMatchers(HttpMethod.GET, "/api/yetkazish/narx").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/dori/**", "/api/dorixona/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/katalog/qidirish", "/api/katalog/autocomplete", "/api/katalog/soni").permitAll()
                         // Katalogni to'liq sahifalab ko'rish (browse) — faqat admin.

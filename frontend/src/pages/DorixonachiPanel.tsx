@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Building2, Pill, ShoppingCart, FileText, Check, CalendarDays } from 'lucide-react'
+import { Building2, Pill, ShoppingCart, FileText, Check, CalendarDays, Truck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useLang } from '@/hooks/useLanguage'
 import { cn } from '@/lib/utils'
 import { authJson, ownerDoriApi, type Hisobot } from '@/lib/panel'
 import { DoriBoshqaruv } from '@/components/panel/DoriBoshqaruv'
+import { YetkazishBoshqaruv } from '@/components/panel/YetkazishBoshqaruv'
 import { BronlarRoyxati } from '@/components/panel/BronlarRoyxati'
 import { HisobotQisqa } from '@/components/panel/HisobotQisqa'
 import { JoylashuvMaydoni } from '@/components/panel/JoylashuvMaydoni'
 
-type Tab = 'dorilar' | 'bronlar' | 'obuna' | 'malumot'
+type Tab = 'dorilar' | 'bronlar' | 'yetkazish' | 'obuna' | 'malumot'
 
 interface DorixonaInfo {
   id: number
@@ -71,6 +72,7 @@ export function DorixonachiPanel() {
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
     { key: 'dorilar', label: t('dxDorilar'), icon: <Pill className="w-4 h-4" /> },
     { key: 'bronlar', label: t('dxBronlar'), icon: <ShoppingCart className="w-4 h-4" /> },
+    { key: 'yetkazish', label: lang === 'ru' ? 'Доставка' : 'Yetkazish', icon: <Truck className="w-4 h-4" /> },
     { key: 'obuna', label: lang === 'ru' ? 'Моя подписка' : 'Obunam', icon: <CalendarDays className="w-4 h-4" /> },
     { key: 'malumot', label: t('dxMalumot'), icon: <FileText className="w-4 h-4" /> },
   ]
@@ -106,6 +108,7 @@ export function DorixonachiPanel() {
       <Card className="p-4 sm:p-6">
         {activeTab === 'dorilar' && <MahsulotlarTab />}
         {activeTab === 'bronlar' && <BronlarRoyxati url="/api/dorixonachi/bronlar" canEdit />}
+        {activeTab === 'yetkazish' && <YetkazishBoshqaruv />}
         {activeTab === 'obuna' && <ObunaTab />}
         {activeTab === 'malumot' && <MalumotTab token={token!} dorixona={dorixona} onUpdate={setDorixona} />}
       </Card>
