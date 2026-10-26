@@ -5,6 +5,7 @@ import { doriAsosiyNomi, doriKartaNomi, doriShakli, cyrToLat } from '@/lib/cyril
 import { useLang } from '@/hooks/useLanguage'
 import type { DoriQidiruvResult, DoriKatalog } from '@/lib/api'
 import { formatDistance } from '@/lib/geo'
+import { RetseptBelgisi } from '@/components/Retsept'
 
 interface DrugResultCardProps {
   drug: DoriQidiruvResult
@@ -32,6 +33,7 @@ export function DrugResultCard({ drug, onClick }: DrugResultCardProps) {
           <p className="text-sm text-ink-dim mt-0.5">
             {drug.ishlab_chiqaruvchi || drug.manufacturer || '—'}
           </p>
+          {drug.retseptli && <div className="mt-1.5"><RetseptBelgisi lang={lang} /></div>}
         </div>
       </div>
 

@@ -42,7 +42,10 @@ public class KategoriyaBelgilovchi {
     @EventListener(ApplicationReadyEvent.class)
     public void hammasiniQaytaBelgila() {
         nomTozalovchi.tozala();
-        String crc = ResursCrc.hisobla(QOIDALAR_FAYLI);
+        // Retsept qoidalari ham kategoriya ustuniga yoziladi (",retseptli,"), shuning uchun ikkala fayl kuzatiladi.
+        String kategoriyaCrc = ResursCrc.hisobla(QOIDALAR_FAYLI);
+        String retseptCrc = ResursCrc.hisobla(RetseptAniqlovchi.QOIDALAR_FAYLI);
+        String crc = kategoriyaCrc == null || retseptCrc == null ? null : kategoriyaCrc + "/" + retseptCrc;
         if (crc != null && crc.equals(sozlama.ol("kategoriya_qoidalar_crc", null))) {
             int jami = bolaklab(true);
             if (jami > 0) log.info("{} ta yangi doriga kategoriya belgilandi.", jami);

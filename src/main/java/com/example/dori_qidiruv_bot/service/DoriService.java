@@ -36,6 +36,7 @@ public class DoriService {
     private final DorixonaRepository dorixonaRepository;
     private final DoriKatalogRepository katalogRepository;
     private final OmborService omborService;
+    private final KategoriyaAniqlovchi kategoriyaAniqlovchi;
 
     /** Katalogdagi jami dorilar soni (bosh sahifadagi raqam) — 10 daqiqa keshda, COUNT(*) har safar emas. */
     @Cacheable(value = "katalogSoni", sync = true)
@@ -160,10 +161,30 @@ public class DoriService {
                             dori.getAvailable(),
                             dorixona,
                             ombor[0],
-                            ombor[1] > 0
+                            ombor[1] > 0,
+                            retseptli(dori)
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Dori retsept bilan beriladimi. Kategoriya belgisi bo'lsa — o'sha (",retseptli,"), hali belgilanmagan
+     * yangi dori uchun esa nomning o'zidan aniqlanadi.
+     */
+    public boolean retseptli(Dori dori) {
+        String k = dori.getKategoriya();
+        if (k != null && !k.isEmpty()) return k.contains("," + KategoriyaAniqlovchi.RETSEPTLI + ",");
+        return kategoriyaAniqlovchi.retseptlimi(dori.getName(), dori.getNameRu());
+    }
+
+    /** Berilgan mahsulotlardan retsept bilan beriladiganlari (savatcha uchun: ular yetkazilmaydi). */
+    public List<Long> retseptlilar(List<Long> idlar) {
+        if (idlar == null || idlar.isEmpty()) return List.of();
+        return doriRepository.findAllById(idlar.stream().distinct().limit(100).toList()).stream()
+                .filter(this::retseptli)
+                .map(Dori::getId)
+                .toList();
     }
 
     /** Dorixonadagi mahsulotlar, har birida ombor qoldig'i bilan. */

@@ -29,6 +29,12 @@ public class DoriController {
         return ResponseEntity.ok(doriService.kategoriyaBoyicha(slug));
     }
 
+    /** Savatchadagi mahsulotlardan qaysilari retsept bilan beriladi (ular yetkazilmaydi): ?ids=1,2,3 */
+    @GetMapping("/retseptli")
+    public ResponseEntity<List<Long>> retseptlilar(@RequestParam(required = false) List<Long> ids) {
+        return ResponseEntity.ok(doriService.retseptlilar(ids));
+    }
+
     @PostMapping
     public ResponseEntity<Dori> doriQoshish(@RequestBody Dori dori) {
         return ResponseEntity.ok(doriService.doriQoshish(dori));

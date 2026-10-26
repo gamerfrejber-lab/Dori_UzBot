@@ -9,6 +9,7 @@ import { useLang } from '@/hooks/useLanguage'
 import * as api from '@/lib/api'
 import type { DoriQidiruvResult, DoriKatalog } from '@/lib/api'
 import { requestLocation, distanceKm } from '@/lib/geo'
+import { RetseptOgohlantirish } from '@/components/Retsept'
 
 export function CategoryPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -120,6 +121,8 @@ export function CategoryPage() {
               </div>
             )}
           </div>
+
+          {category.slug === 'retseptli' && <RetseptOgohlantirish lang={lang} className="mt-4" kop />}
 
           {isBolalar && (
             <div className="mt-4 bg-pink-50 border border-pink-200 rounded-2xl p-4 text-sm text-pink-700">

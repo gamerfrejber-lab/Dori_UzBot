@@ -1,4 +1,4 @@
-import{r as a,j as v}from"./index-CLNUKQ63.js";import{L as s}from"./leaflet-D0nhxSBH.js";const b=[41.3111,69.2797],w=s.divIcon({className:"",iconSize:[30,38],iconAnchor:[15,36],html:`<svg width="30" height="38" viewBox="0 0 34 42" xmlns="http://www.w3.org/2000/svg">
+import{r as a,j as v}from"./index-BYsa1cMU.js";import{L as s}from"./leaflet-C8w5IJrC.js";const b=[41.3111,69.2797],w=s.divIcon({className:"",iconSize:[30,38],iconAnchor:[15,36],html:`<svg width="30" height="38" viewBox="0 0 34 42" xmlns="http://www.w3.org/2000/svg">
     <path d="M17 41C17 41 32 26.5 32 16.5C32 8 25.3 1.5 17 1.5S2 8 2 16.5C2 26.5 17 41 17 41Z" fill="#DC2626" stroke="#fff" stroke-width="2.5"/>
     <circle cx="17" cy="16" r="5.5" fill="#fff"/></svg>`}),L=s.divIcon({className:"",iconSize:[26,32],iconAnchor:[13,30],html:`<svg width="26" height="32" viewBox="0 0 34 42" xmlns="http://www.w3.org/2000/svg">
     <path d="M17 41C17 41 32 26.5 32 16.5C32 8 25.3 1.5 17 1.5S2 8 2 16.5C2 26.5 17 41 17 41Z" fill="#2563EB" stroke="#fff" stroke-width="2.5"/>

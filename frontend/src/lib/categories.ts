@@ -265,6 +265,19 @@ export const categories: Category[] = [
     accentColor: 'text-lime-700',
   },
   {
+    // Kategoriya emas, belgi: dori o'z guruhida ham turadi (masalan antibiotik), bu yerda ham ko'rinadi.
+    slug: 'retseptli',
+    uz: 'Retseptli dorilar',
+    ru: 'Рецептурные препараты',
+    descUz: "Faqat shifokor retsepti bilan beriladi: bron qilish mumkin, yetkazib berilmaydi",
+    descRu: 'Отпускаются только по рецепту врача: можно забронировать, доставки нет',
+    search: ['амоксициллин', 'цефтриаксон', 'азитромицин', 'преднизолон', 'метформин'],
+    iconName: 'ClipboardList',
+    color: 'bg-orange-50 text-orange-500',
+    bgGradient: 'from-orange-50 via-orange-50/40 to-amber-50',
+    accentColor: 'text-orange-600',
+  },
+  {
     slug: 'boshqa',
     uz: 'Boshqa dorilar',
     ru: 'Другие препараты',

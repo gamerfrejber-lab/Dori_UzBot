@@ -19,7 +19,8 @@ const BOLIMLAR: { kalit: keyof YoriqnomaTil; uz: string; ru: string }[] = [
  * Dori oynasidagi yo'riqnoma: qo'llanilishi, qabul qilish tartibi, dozasi, qarshi ko'rsatmalar va h.k.
  * Ma'lumot hali tayyor bo'lmasa yoki ishonchsiz bo'lsa hech narsa (yoki qisqa izoh) ko'rsatiladi.
  */
-export function DoriYoriqnoma({ nomi, lang }: { nomi: string; lang: Lang }) {
+/** retseptli — saytning o'z qoidalari bo'yicha retseptli bo'lsa, yo'riqnoma "retseptsiz" desa ham "Retsept bilan" ko'rinadi. */
+export function DoriYoriqnoma({ nomi, lang, retseptli = false }: { nomi: string; lang: Lang; retseptli?: boolean }) {
   const [javob, setJavob] = useState<DoriMalumotJavob | null>(null)
   const [ochiq, setOchiq] = useState<string | null>('qollanilishi')
 
@@ -59,7 +60,7 @@ export function DoriYoriqnoma({ nomi, lang }: { nomi: string; lang: Lang }) {
       <div className="flex items-center gap-2 bg-brand/5 px-4 py-3">
         <FileText className="w-5 h-5 text-brand shrink-0" />
         <h3 className="font-bold text-ink">{L("Yo'riqnoma", 'Инструкция')}</h3>
-        {m.retseptli ? (
+        {m.retseptli || retseptli ? (
           <span className="ml-auto rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-bold text-orange-700">{L('Retsept bilan', 'По рецепту')}</span>
         ) : (
           <span className="ml-auto rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-700">{L('Retseptsiz', 'Без рецепта')}</span>

@@ -10,6 +10,8 @@ export interface CartItem {
   dorixona: { id: number; name: string } | null
   soni: number
   tur: 'dona' | 'pachka'
+  /** Retsept bilan beriladi — yetkazilmaydi (eski savatchalarda yo'q, server ham tekshiradi). */
+  retseptli?: boolean
 }
 
 interface CartContextType {

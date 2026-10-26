@@ -204,8 +204,8 @@ export function YetkazishOynasi({ open, onClose, dorixona, items, onBuyurtmaQili
             </div>
 
             <p className="text-xs text-ink-faint">
-              {L("Dorini dorixonaning o'zi yetkazadi. Retsept bilan beriladigan dorilar yetkazilmaydi — ularni dorixonadan olib ketish mumkin.",
-                'Доставляет сама аптека. Рецептурные препараты не доставляются — их можно забрать в аптеке.')}
+              {L("Dorini dorixonaning o'zi yetkazadi. Retsept bilan beriladigan dorilar qonunga ko'ra yetkazilmaydi — ularni bron qilib, asl retsept bilan dorixonadan olasiz.",
+                'Доставляет сама аптека. Рецептурные препараты по закону не доставляются — забронируйте их и заберите в аптеке по оригиналу рецепта.')}
             </p>
             {xato && <p className="text-red-600 font-semibold">{xato}</p>}
             <Button variant="success" className="w-full" onClick={yubor} disabled={yuborilmoqda || !narx?.mumkin}>

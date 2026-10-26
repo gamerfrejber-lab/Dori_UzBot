@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button'
 import { useLang } from '@/hooks/useLanguage'
 import { useCart, type CartItem } from '@/hooks/useCart'
 import { doriKartaNomi } from '@/lib/cyrillic'
-import { bronQilish, dorixonalar, type Dorixona } from '@/lib/api'
+import { bronQilish, dorixonalar, retseptliIdlar, type Dorixona } from '@/lib/api'
 import { YetkazishOynasi } from '@/components/YetkazishOynasi'
+import { RetseptBelgisi } from '@/components/Retsept'
 
 export function CartPanel() {
   const { lang, t } = useLang()
@@ -23,17 +24,35 @@ export function CartPanel() {
   // Oyna ochilgan paytdagi dorixona va mahsulotlar saqlab qo'yiladi: buyurtmadan keyin ular savatchadan
   // olinsa ham, tasdiq oynasi yopilib ketmaydi.
   const [yetkazish, setYetkazish] = useState<{ dx: Dorixona; items: CartItem[] } | null>(null)
+  // Retseptli mahsulotlar serverdan so'raladi: eski savatchadagi mahsulotda belgi bo'lmasligi mumkin.
+  const [rxIdlar, setRxIdlar] = useState<Set<number>>(new Set())
+  const idlarKaliti = items.map((it) => it.id).join(',')
   useEffect(() => {
     if (isOpen && items.length) dorixonalar().then(setDxlar).catch(() => {})
   }, [isOpen, items.length])
+  useEffect(() => {
+    if (!isOpen || !idlarKaliti) return
+    retseptliIdlar(idlarKaliti.split(',').map(Number)).then((ids) => setRxIdlar(new Set(ids))).catch(() => {})
+  }, [isOpen, idlarKaliti])
+  const retseptli = (it: CartItem) => !!it.retseptli || rxIdlar.has(it.id)
   const yetkazadiganlar = useMemo(() => {
     const ids = Array.from(new Set(items.map((it) => it.dorixona?.id).filter((x): x is number => x != null)))
-    return ids.map((id) => dxlar.find((d) => d.id === id)).filter((d): d is Dorixona => !!d && !!d.yetkazishYoqilgan)
-  }, [items, dxlar])
+    return ids
+      .map((id) => dxlar.find((d) => d.id === id))
+      .filter((d): d is Dorixona => !!d && !!d.yetkazishYoqilgan)
+      .map((dx) => {
+        const guruh = items.filter((it) => it.dorixona?.id === dx.id)
+        return { dx, yetkaziladi: guruh.filter((it) => !retseptli(it)), rxSoni: guruh.filter(retseptli).length }
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items, dxlar, rxIdlar])
+  const rxBor = items.some(retseptli)
 
-  // Buyurtma berilgan dorixonaning mahsulotlari savatchadan olinadi (oxiridan boshlab — indekslar siljimasin).
-  const guruhniOchir = (dxId: number) => {
-    for (let i = items.length - 1; i >= 0; i--) if (items[i].dorixona?.id === dxId) remove(i)
+  // Yetkazishga buyurtma qilingan mahsulotlar savatchadan olinadi; retseptlilari bron uchun qoladi
+  // (oxiridan boshlab — indekslar siljimasin).
+  const yetkazilganlarniOchir = (yetkazilgan: CartItem[]) => {
+    const idlar = new Set(yetkazilgan.map((it) => it.id))
+    for (let i = items.length - 1; i >= 0; i--) if (idlar.has(items[i].id)) remove(i)
   }
 
   const handleBronAll = async () => {
@@ -89,6 +108,7 @@ export function CartPanel() {
                         {item.dorixona?.name}
                         {item.manufacturer && ` · ${item.manufacturer}`}
                       </div>
+                      {retseptli(item) && <div className="mt-1"><RetseptBelgisi lang={lang} yetkazilmaydi /></div>}
                       <div className="font-bold text-brand text-sm mt-1">
                         {narx.toLocaleString()} {t('som')}
                       </div>
@@ -155,12 +175,35 @@ export function CartPanel() {
                   <Check className="w-4 h-4" />
                   {loading ? '...' : t('bronHammasi')}
                 </Button>
-                {yetkazadiganlar.map((d) => (
-                  <Button key={d.id} className="w-full rounded-xl mt-2" variant="secondary" onClick={() => { setYetkazish({ dx: d, items: items.filter((it) => it.dorixona?.id === d.id) }); close() }}>
-                    <Truck className="w-4 h-4" />
-                    {lang === 'uz' ? `Yetkazib bering — ${d.nomi || d.name}` : `Доставка — ${d.nomi || d.name}`}
-                  </Button>
+                {yetkazadiganlar.map(({ dx: d, yetkaziladi, rxSoni }) => yetkaziladi.length > 0 ? (
+                  <div key={d.id} className="mt-2">
+                    <Button className="w-full rounded-xl" variant="secondary" onClick={() => { setYetkazish({ dx: d, items: yetkaziladi }); close() }}>
+                      <Truck className="w-4 h-4" />
+                      {lang === 'uz' ? `Yetkazib bering — ${d.nomi || d.name}` : `Доставка — ${d.nomi || d.name}`}
+                    </Button>
+                    {rxSoni > 0 && (
+                      <p className="mt-1 text-xs text-orange-700">
+                        {lang === 'uz'
+                          ? `${rxSoni} ta retseptli dori yetkazilmaydi — u savatchada qoladi, uni bron qiling.`
+                          : `${rxSoni} рецептурных препарата не доставляются — они останутся в корзине, забронируйте их.`}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <p key={d.id} className="mt-2 rounded-xl bg-slate-50 px-3 py-2 text-xs text-ink-dim">
+                    <Truck className="mr-1 inline h-3.5 w-3.5" />
+                    {lang === 'uz'
+                      ? `${d.nomi || d.name}: savatchadagi dorilar retsept bilan beriladi — ularni yetkazib bo'lmaydi.`
+                      : `${d.nomi || d.name}: препараты в корзине рецептурные — их нельзя доставить.`}
+                  </p>
                 ))}
+                {rxBor && (
+                  <p className="mt-3 text-xs leading-snug text-orange-800">
+                    {lang === 'uz'
+                      ? "📋 Retsept bilan beriladigan dorilarni qonunga ko'ra yetkazib bo'lmaydi. Ularni bron qiling va dorixonaga shifokor imzosi va muhri bosilgan asl retsept bilan boring."
+                      : '📋 Рецептурные препараты по закону нельзя доставить. Забронируйте их и приходите в аптеку с оригиналом рецепта с подписью и печатью врача.'}
+                  </p>
+                )}
               </>
             )}
           </div>
@@ -172,7 +215,7 @@ export function CartPanel() {
           onClose={() => setYetkazish(null)}
           dorixona={{ id: yetkazish.dx.id, name: yetkazish.dx.nomi || yetkazish.dx.name || '', latitude: yetkazish.dx.latitude, longitude: yetkazish.dx.longitude }}
           items={yetkazish.items}
-          onBuyurtmaQilindi={() => guruhniOchir(yetkazish.dx.id)}
+          onBuyurtmaQilindi={() => yetkazilganlarniOchir(yetkazish.items)}
         />
       )}
     </Sheet>

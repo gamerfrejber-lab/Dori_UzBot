@@ -46,6 +46,7 @@ public class YetkazishService {
     private final JdbcTemplate jdbc;
     private final DoriRepository doriRepository;
     private final OmborService omborService;
+    private final DoriService doriService;
 
     // ---------------------------------------------------------------- jadvallar
 
@@ -281,8 +282,9 @@ public class YetkazishService {
             if (Boolean.FALSE.equals(dori.getAvailable())) {
                 throw new IllegalStateException("«" + dori.getName() + "» hozir mavjud emas");
             }
-            if (retseptlimi(dori.getName())) {
-                throw new IllegalStateException("«" + dori.getName() + "» retsept bilan beriladi — uni faqat dorixonadan olib ketish mumkin");
+            if (doriService.retseptli(dori) || yoriqnomadaRetseptli(dori.getName())) {
+                throw new IllegalStateException("«" + dori.getName() + "» retsept bilan beriladi — qonunga ko'ra uni yetkazib bo'lmaydi. "
+                        + "Bron qilib, shifokor imzosi va muhri bor retsept bilan dorixonadan oling");
             }
             String tur = "pachka".equals(q.tur()) ? "pachka" : "dona";
             Double narx = "pachka".equals(tur) && dori.getPachkaNarx() != null && dori.getPachkaNarx() > 0
@@ -344,8 +346,8 @@ public class YetkazishService {
         return j;
     }
 
-    /** Dori yo'riqnomasida retseptli deb belgilangan bo'lsa — yetkazilmaydi (faqat olib ketish). */
-    private boolean retseptlimi(String nomi) {
+    /** Dori yo'riqnomasida (sun'iy intellekt yozgan) retseptli deb belgilangan bo'lsa ham yetkazilmaydi. */
+    private boolean yoriqnomadaRetseptli(String nomi) {
         try {
             String kalit = com.example.dori_qidiruv_bot.util.DoriKalit.kalit(nomi);
             List<String> m = jdbc.queryForList(

@@ -16,6 +16,7 @@ import { doriKartaNomi, doriShakliDozasi, doriTavsifi, tayyorNom, tayyorNomBolak
 import { formatDistance } from '@/lib/geo'
 import { bronQilish, type DoriQidiruvResult } from '@/lib/api'
 import { DoriYoriqnoma } from '@/components/DoriYoriqnoma'
+import { RetseptOgohlantirish } from '@/components/Retsept'
 
 interface Props {
   drug: DoriQidiruvResult | null
@@ -45,6 +46,8 @@ export function DrugModal({ drug, open, onClose }: Props) {
   const price = (drug.price || drug.narx || 0).toLocaleString()
   const pachka = drug.pachkaNarx || 0
   const canBron = drug.hisobYuritiladi ? (drug.qoldiq || 0) > 0 : drug.available !== false
+  // Retseptli dori: bron qilsa bo'ladi, lekin yetkazilmaydi — dorixona faqat asl retseptni ko'rib beradi.
+  const retseptli = !!drug.retseptli
 
   // Bron faqat ro'yxatdan o'tganlarga: mehmon "Band qilish"ni bosishi bilan kirish sahifasi ochiladi.
   const bronBoshlash = (tur: 'dona' | 'pachka') => {
@@ -87,6 +90,7 @@ export function DrugModal({ drug, open, onClose }: Props) {
       dorixona: ph ? { id: ph.id, name: ph.nomi || ph.name || '' } : null,
       soni: 1,
       tur: 'dona',
+      retseptli,
     }
     cart.add(item)
     onClose()
@@ -153,7 +157,7 @@ export function DrugModal({ drug, open, onClose }: Props) {
               {drug._km != null && (
                 <InfoRow label={t('masofa')} value={formatDistance(drug._km, lang)} />
               )}
-              {ph.yetkazishYoqilgan && (
+              {ph.yetkazishYoqilgan && !retseptli && (
                 <p className="flex items-center gap-1.5 rounded-xl bg-green-50 px-3 py-2 font-semibold text-green-700">
                   <Truck className="w-4 h-4" />
                   {lang === 'uz' ? "Yetkazib beradi — savatchaga qo'shib, \"Yetkazib bering\"ni bosing" : 'Есть доставка — добавьте в корзину и нажмите «Доставка»'}
@@ -172,6 +176,8 @@ export function DrugModal({ drug, open, onClose }: Props) {
             </>
           )}
         </div>
+
+        {retseptli && <RetseptOgohlantirish lang={lang} className="mt-4" />}
 
         {canBron && !bronResult && !bronMode && (
           <div className="flex gap-2 mt-4">
@@ -231,6 +237,13 @@ export function DrugModal({ drug, open, onClose }: Props) {
                   <span className="text-2xl font-bold text-green-600">{bronResult.kod}</span>
                 </p>
                 <p className="text-sm text-ink-dim mt-2">{t('bronInfo')}</p>
+                {retseptli && (
+                  <p className="text-sm text-orange-700 font-semibold mt-2">
+                    {lang === 'uz'
+                      ? "📋 Dorixonaga shifokor imzosi va muhri bosilgan asl retseptni olib boring — usiz dori berilmaydi."
+                      : '📋 Возьмите в аптеку оригинал рецепта с подписью и печатью врача — без него препарат не отпустят.'}
+                  </p>
+                )}
                 {bronResult.doriTugadi && (
                   <p className="text-sm text-orange-600 font-semibold mt-2">
                     {lang === 'uz' ? "⚠ Bu dori tugadi — dorixona adminiga xabar yuborildi." : '⚠ Лекарство закончилось — уведомление отправлено аптеке.'}
@@ -247,7 +260,7 @@ export function DrugModal({ drug, open, onClose }: Props) {
           {t('savatchagaQosh')}
         </Button>
 
-        <DoriYoriqnoma nomi={drug.name || drug.nomi || ''} lang={lang} />
+        <DoriYoriqnoma nomi={drug.name || drug.nomi || ''} lang={lang} retseptli={retseptli} />
       </DialogContent>
     </Dialog>
   )

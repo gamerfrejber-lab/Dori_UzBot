@@ -37,6 +37,8 @@ export interface DoriQidiruvResult {
   dorixona?: Dorixona
   qoldiq?: number
   hisobYuritiladi?: boolean
+  /** Retsept bilan beriladi: bron qilish mumkin, yetkazib bo'lmaydi. */
+  retseptli?: boolean
   _km?: number | null
 }
 
@@ -67,6 +69,12 @@ export async function autocomplete(q: string, limit = 30, signal?: AbortSignal):
 
 export async function doriKategoriya(slug: string): Promise<DoriQidiruvResult[]> {
   return get(`/api/dori/kategoriya/${encodeURIComponent(slug)}`)
+}
+
+/** Savatchadagi mahsulotlardan retsept bilan beriladiganlari (ular yetkazilmaydi). */
+export async function retseptliIdlar(ids: number[]): Promise<number[]> {
+  if (!ids.length) return []
+  return get(`/api/dori/retseptli?ids=${ids.join(',')}`)
 }
 
 export async function doriQidirish(nomi: string): Promise<DoriQidiruvResult[]> {

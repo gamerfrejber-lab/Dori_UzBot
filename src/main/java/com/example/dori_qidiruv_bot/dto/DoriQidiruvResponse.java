@@ -26,4 +26,7 @@ public class DoriQidiruvResponse {
 
     /** Ombor hisobi yuritilyaptimi — 0 qoldiq "tugagan"mi yoki shunchaki hisobsizmi. */
     private Boolean hisobYuritiladi;
+
+    /** Retsept bilan beriladi: bron qilish mumkin, yetkazib bo'lmaydi. */
+    private Boolean retseptli;
 }
