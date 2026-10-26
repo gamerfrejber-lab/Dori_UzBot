@@ -55,8 +55,13 @@ export function DoriBoshqaruv({ api, onChanged }: { api: DoriApi; onChanged?: ()
     setBusy(true)
     try {
       const r = await api.importFile(file)
-      notify(true, L(`Fayldan ${r.soni ?? 0} ta mahsulot qo'shildi. Nomlar bir necha daqiqada o'zi tozalanadi.`,
-        `Из файла добавлено: ${r.soni ?? 0}. Названия очистятся автоматически через несколько минут.`))
+      const qism = [
+        L(`qo'shildi: ${r.soni ?? 0}`, `добавлено: ${r.soni ?? 0}`),
+        r.dublikat ? L(`allaqachon bor edi: ${r.dublikat}`, `уже были: ${r.dublikat}`) : '',
+        r.otkazildi ? L(`o'tkazildi (format xatosi): ${r.otkazildi}`, `пропущено (ошибка формата): ${r.otkazildi}`) : '',
+      ].filter(Boolean).join(' · ')
+      notify((r.soni ?? 0) > 0, L(`Fayldan — ${qism}. Nomlar bir necha daqiqada o'zi tozalanadi.`,
+        `Из файла — ${qism}. Названия очистятся автоматически через несколько минут.`))
       reload()
     } catch (err) {
       notify(false, (err as Error).message)
@@ -72,10 +77,14 @@ export function DoriBoshqaruv({ api, onChanged }: { api: DoriApi; onChanged?: ()
           <Plus className="w-4 h-4" /> {L("Qo'lda qo'shish", 'Добавить вручную')}
         </Button>
         <Button size="sm" variant="secondary" disabled={busy} onClick={() => fileRef.current?.click()}>
-          <Upload className="w-4 h-4" /> {busy ? '...' : L('Fayldan (Excel)', 'Из файла (Excel)')}
+          <Upload className="w-4 h-4" /> {busy ? '...' : L('Fayldan (Excel, CSV)', 'Из файла (Excel, CSV)')}
         </Button>
-        <input ref={fileRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={onFile} />
+        <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv,.txt" className="hidden" onChange={onFile} />
       </div>
+      <p className="mb-3 text-xs text-ink-dim">
+        {L("Fayl ustunlari: Nomi, Narxi, Soni (botdagi bilan bir xil). Bor mahsulot qayta qo'shilmaydi, Soni — omborga kirim bo'ladi.",
+          'Столбцы файла: Название, Цена, Количество (как в боте). Уже имеющиеся товары не дублируются, количество записывается как приход.')}
+      </p>
 
       {xabar && (
         <p className={`mb-3 text-sm font-semibold rounded-xl px-3 py-2 ${xabar.ok ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
@@ -86,8 +95,10 @@ export function DoriBoshqaruv({ api, onChanged }: { api: DoriApi; onChanged?: ()
       {showAdd && (
         <QoshishForma
           onCancel={() => setShowAdd(false)}
-          onSave={async (d) => {
-            await api.add(d)
+          onSave={async (d, soni) => {
+            const yangi = (await api.add(d)) as { id?: number }
+            // Botdagi "Hozir nechta bor?" — birinchi kirim.
+            if (soni > 0 && yangi?.id) await api.stock('kirim', yangi.id, soni)
             setShowAdd(false)
             notify(true, L("Mahsulot qo'shildi", 'Товар добавлен'))
             reload()
@@ -131,10 +142,10 @@ export function DoriBoshqaruv({ api, onChanged }: { api: DoriApi; onChanged?: ()
   )
 }
 
-function QoshishForma({ onSave, onCancel }: { onSave: (d: Partial<PanelDori>) => Promise<void>; onCancel: () => void }) {
+function QoshishForma({ onSave, onCancel }: { onSave: (d: Partial<PanelDori>, soni: number) => Promise<void>; onCancel: () => void }) {
   const { lang } = useLang()
   const L = (uz: string, ru: string) => (lang === 'ru' ? ru : uz)
-  const [f, setF] = useState({ name: '', nameRu: '', manufacturer: '', price: '', pachkaNarx: '' })
+  const [f, setF] = useState({ name: '', nameRu: '', manufacturer: '', price: '', pachkaNarx: '', soni: '' })
   const [saving, setSaving] = useState(false)
   const [xato, setXato] = useState('')
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) => setF({ ...f, [k]: e.target.value })
@@ -154,7 +165,7 @@ function QoshishForma({ onSave, onCancel }: { onSave: (d: Partial<PanelDori>) =>
         price: Number(f.price),
         pachkaNarx: f.pachkaNarx ? Number(f.pachkaNarx) : null,
         available: true,
-      })
+      }, f.soni ? Math.max(0, Math.floor(Number(f.soni))) : 0)
     } catch (e) {
       setXato((e as Error).message)
     } finally {
@@ -171,6 +182,7 @@ function QoshishForma({ onSave, onCancel }: { onSave: (d: Partial<PanelDori>) =>
         <input className={inputCls} type="number" min="0" placeholder={L("Dona narxi, so'm *", 'Цена за шт., сум *')} value={f.price} onChange={set('price')} />
         <input className={inputCls} type="number" min="0" placeholder={L('Pachka narxi', 'Цена упаковки')} value={f.pachkaNarx} onChange={set('pachkaNarx')} />
       </div>
+      <input className={inputCls} type="number" min="0" placeholder={L('Hozir nechta bor (ixtiyoriy) — birinchi kirim', 'Сколько есть сейчас (необяз.) — первый приход')} value={f.soni} onChange={set('soni')} />
       {xato && <p className="text-sm text-red-600 sm:col-span-2">{xato}</p>}
       <div className="flex gap-2 sm:col-span-2">
         <Button size="sm" variant="success" disabled={saving} onClick={save}><Check className="w-4 h-4" /> {L('Saqlash', 'Сохранить')}</Button>

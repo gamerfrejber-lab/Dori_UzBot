@@ -35,6 +35,9 @@ public interface DoriRepository extends JpaRepository<Dori, Long> {
     /** Berilgan dorixonadagi barcha dorilar (nomi bo'yicha alifbo tartibida) — (dorixona_id, nomi) indeksi. */
     List<Dori> findByDorixonaIdOrderByNameAsc(Long dorixonaId);
 
+    /** Dorixonada shu nomdagi mahsulot bormi (katta-kichik harf farqisiz) — bot ham takror nomni qabul qilmaydi. */
+    boolean existsByDorixonaIdAndNameIgnoreCase(Long dorixonaId, String name);
+
     /** Berilgan dorixonadagi barcha dorilarni o'chirish (Excel import — yangilash rejimi). */
     void deleteByDorixonaId(Long dorixonaId);
 }

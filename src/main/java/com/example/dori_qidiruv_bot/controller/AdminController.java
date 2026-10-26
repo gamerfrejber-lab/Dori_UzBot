@@ -41,6 +41,7 @@ public class AdminController {
     private final SoovRepository soovRepository;
     private final DoriService doriService;
     private final PanelService panelService;
+    private final com.example.dori_qidiruv_bot.service.FaylImport faylImport;
 
     /**
      * Joriy foydalanuvchi admin yoki yo'qligini aytadi — sayt shunga qarab admin bo'limini
@@ -213,8 +214,8 @@ public class AdminController {
             @PathVariable Long dorixonaId,
             @RequestParam("file") MultipartFile file) {
         try {
-            int soni = doriService.excelImportQoshish(dorixonaId, file);
-            return ResponseEntity.ok(Map.of("ok", true, "soni", soni));
+            var n = faylImport.qosh(dorixonaId, file.getBytes());
+            return ResponseEntity.ok(Map.of("ok", true, "soni", n.qoshildi(), "dublikat", n.dublikat(), "otkazildi", n.otkazildi()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", e.getMessage()));
         } catch (Exception e) {

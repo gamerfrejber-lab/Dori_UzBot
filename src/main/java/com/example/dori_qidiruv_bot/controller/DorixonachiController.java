@@ -33,6 +33,8 @@ public class DorixonachiController {
     private final DoriService doriService;
     private final PanelService panelService;
     private final OmborService omborService;
+    private final com.example.dori_qidiruv_bot.service.FaylImport faylImport;
+    private final com.example.dori_qidiruv_bot.repository.DoriRepository doriRepository;
 
     /** Foydalanuvchi dorixona egasimi — egasi bo'lsa dorixona ma'lumotlarini qaytaradi. */
     @GetMapping("/check")
@@ -60,6 +62,11 @@ public class DorixonachiController {
         if (dx == null) return forbidden();
         if (dori.getName() == null || dori.getName().isBlank() || dori.getPrice() == null) {
             return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", "Nomi va narxi kerak"));
+        }
+        dori.setName(dori.getName().trim());
+        // Botdagi kabi: dorixonada shu nomdagi mahsulot bo'lsa qayta qo'shilmaydi.
+        if (doriRepository.existsByDorixonaIdAndNameIgnoreCase(dx.getId(), dori.getName())) {
+            return ResponseEntity.status(409).body(Map.of("ok", false, "xato", "Bunday mahsulot allaqachon bor — narxini yoki qoldig'ini ro'yxatdan o'zgartiring"));
         }
         dori.setId(null);
         dori.setDorixonaId(dx.getId());
@@ -89,17 +96,20 @@ public class DorixonachiController {
                 : ResponseEntity.notFound().build();
     }
 
-    /** Excel fayldan dorilarni import qilish (eski dorilar saqlanadi). */
+    /**
+     * Fayldan mahsulot qo'shish (eski mahsulotlar saqlanadi) — botdagi "📁 Fayldan" bilan bir xil:
+     * .xlsx/.xls/.csv/.txt, ustunlar Nomi, Narxi, Soni; bor nomlar qayta qo'shilmaydi, Soni — birinchi kirim.
+     */
     @PostMapping("/dori/import")
     public ResponseEntity<?> excelImport(@AuthenticationPrincipal User user,
                                           @RequestParam("file") MultipartFile file) {
         Dorixona dx = ownPharmacy(user);
         if (dx == null) return forbidden();
         try {
-            int soni = doriService.excelImportQoshish(dx.getId(), file);
-            return ResponseEntity.ok(Map.of("ok", true, "soni", soni));
+            var n = faylImport.qosh(dx.getId(), file.getBytes());
+            return ResponseEntity.ok(Map.of("ok", true, "soni", n.qoshildi(), "dublikat", n.dublikat(), "otkazildi", n.otkazildi()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("ok", false, "xato", "Faylni o'qib bo'lmadi: " + e.getMessage()));
         }
     }
 

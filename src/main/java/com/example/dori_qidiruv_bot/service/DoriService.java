@@ -238,13 +238,6 @@ public class DoriService {
         return excelParse(file, dorixonaId);
     }
 
-    @Transactional
-    public int excelImportQoshish(Long dorixonaId, MultipartFile file) throws IOException {
-        dorixonaRepository.findById(dorixonaId)
-                .orElseThrow(() -> new IllegalArgumentException("Dorixona topilmadi: " + dorixonaId));
-        return excelParse(file, dorixonaId);
-    }
-
     private int excelParse(MultipartFile file, Long dorixonaId) throws IOException {
         List<Dori> dorilar = new ArrayList<>();
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {

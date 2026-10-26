@@ -54,7 +54,7 @@ export interface DoriApi {
   update: (id: number, d: Partial<PanelDori>) => Promise<unknown>
   remove: (id: number) => Promise<unknown>
   stock: (turi: 'kirim' | 'chiqim', doriId: number, soni: number) => Promise<{ qoldiq?: number }>
-  importFile: (file: File) => Promise<{ soni?: number }>
+  importFile: (file: File) => Promise<{ soni?: number; dublikat?: number; otkazildi?: number }>
   hisobot: () => Promise<Hisobot>
 }
 
